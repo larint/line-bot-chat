@@ -5,3 +5,4 @@ launch.json
 .npmrc
 *.log
 app.js
+**/services/*.js

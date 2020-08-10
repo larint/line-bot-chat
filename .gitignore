@@ -3,5 +3,5 @@ zbuild
 launch.json
 .vscode
 .npmrc
-!*.log
+*.log
 app.js

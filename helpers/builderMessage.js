@@ -1,35 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.router = void 0;
-const express = require("express");
-const node_fetch_1 = require("node-fetch");
-let router = express.Router();
-exports.router = router;
-const bot_sdk_1 = require("@line/bot-sdk");
-require('dotenv').config();
-const config = {
-    channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-    channelSecret: process.env.LINE_CHANNEL_SECRET
+exports.BuilderMessage = void 0;
+class BuilderMessage {
+}
+exports.BuilderMessage = BuilderMessage;
+BuilderMessage.getBotMessage = () => {
+    return [
+        { 'key': 'hello', 'answer': ['Hello :name!', 'Tell me something', 'How can i help you?', 'Hi, I\'m bot LINE.'] },
+        { 'key': 'hi', 'answer': ['Hello :name!', 'Tell me something', 'How can i help you?', 'Hi, I\'m bot LINE.'] },
+        { 'key': 'how are you', 'answer': 'i\'m fine! thank you.' },
+        { 'key': 'how are you doing', 'answer': 'i\'m fine! thank you.' },
+        { 'key': 'good morning', 'answer': 'Good morning :name.' },
+        { 'key': 'evening', 'answer': 'Good evening :name.' },
+        { 'key': 'afternoon', 'answer': 'Good afternoon :name.' },
+        { 'key': 'night', 'answer': 'Good night :name.' },
+        { 'key': 'are you human', 'answer': 'i am not human' },
+        { 'key': 'are you robot', 'answer': 'i am a robot' },
+        { 'key': 'your name', 'answer': 'My name: Pikachu' },
+        { 'key': 'old are you', 'answer': 'i am 1 years old' },
+        { 'key': 'can you speak', 'answer': 'i can speak english' },
+        { 'key': 'you live', 'answer': 'i live in USA' },
+        { 'key': 'weather', 'answer': 'the weather today very nice' },
+    ];
 };
-const client = new bot_sdk_1.Client(config);
-router.get('/', async (req, res, next) => {
-    let auth = 'https://access.line.me/oauth2/v2.1/authorize?scope=profile%20openid&response_type=code&state=VsLVpr5e7lm29hXKG4YKdX5zgXZgNxSp&redirect_uri=' + process.env.URI_PATH + '/webhook&client_id=' + process.env.LINE_LOGIN_ID;
-    res.render('index', { title: 'Test', auth: auth });
-}).post('/getFriendDemographics', async (req, res, next) => {
-    let data = await client.getFriendDemographics();
-    res.send(JSON.stringify(data));
-}).get('/getStatistics/:date', async (req, res, next) => {
-    let result = {};
-    result.reply = await client.getNumberOfSentReplyMessages(req.params.date);
-    result.sentPush = await client.getNumberOfSentPushMessages(req.params.date);
-    result.sentMulticast = await client.getNumberOfSentMulticastMessages(req.params.date);
-    result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(req.params.date);
-    result.messageDeliveries = await client.getNumberOfMessageDeliveries(req.params.date);
-    res.send(result);
-}).post('/sendBroadcast', async (req, res, next) => {
-    let result = {};
-    let replyObj;
-    replyObj = {
+BuilderMessage.createMessageCv = () => {
+    return {
         "type": "flex",
         "altText": "Q1. Which is the API to create chatbot?",
         "contents": {
@@ -80,7 +75,7 @@ router.get('/', async (req, res, next) => {
                                     },
                                     {
                                         "type": "text",
-                                        "text": "122",
+                                        "text": 11,
                                         "size": "lg",
                                         "wrap": true,
                                         "flex": 4,
@@ -172,36 +167,4 @@ router.get('/', async (req, res, next) => {
             }
         }
     };
-    result.messageAPIResponseBase = await client.broadcast(replyObj);
-    res.send(result.messageAPIResponseBase);
-});
-router.get('/webhook', async (req, res, next) => {
-    let params = {
-        grant_type: 'authorization_code',
-        code: req.query.code,
-        redirect_uri: `${process.env.URI_PATH}/webhook`,
-        client_id: process.env.LINE_LOGIN_ID,
-        client_secret: process.env.LINE_LOGIN_SECRET
-    };
-    let query = '';
-    for (let key in params) {
-        query += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&';
-    }
-    query = query.substring(0, query.length - 1);
-    let data = await node_fetch_1.default('https://api.line.me/oauth2/v2.1/token', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/x-www-form-urlencoded',
-        },
-        body: query
-    });
-    let token = await data.json();
-    let data1 = await node_fetch_1.default('https://api.line.me/v2/profile', {
-        method: 'GET',
-        headers: {
-            'Authorization': `Bearer ` + token.access_token,
-        },
-    });
-    let token1 = await data1.json();
-    res.render('index', { user: token1 });
-});
+};

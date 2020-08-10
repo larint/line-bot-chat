@@ -1,31 +1,16 @@
 import * as express from 'express'
 import { Router, Request, Response, NextFunction } from "express"
 import * as lineTypes from "@line/bot-sdk/dist/types";
+import { messageStatistic } from '../helpers/type'
 import fetch from 'node-fetch'
 
 let router = express.Router()
 
 import { Client } from '@line/bot-sdk'
+import { Types } from 'mysql'
 
 require('dotenv').config()
 
-interface messageDemographicsResult {
-	ReplyMessages?: lineTypes.NumberOfMessagesSentResponse,
-	SentPushMessages?: lineTypes.NumberOfMessagesSentResponse,
-	SentMulticastMessages?: lineTypes.NumberOfMessagesSentResponse,
-	SentBroadcastMessages?: lineTypes.NumberOfMessagesSentResponse,
-	MessageDeliveries?: lineTypes.NumberOfMessageDeliveriesResponse,
-	MessageAPIResponseBase?: lineTypes.MessageAPIResponseBase
-}
-
-interface token {
-	access_token: string,
-	token_type: string,
-	refresh_token: string,
-	expires_in: string,
-	scope: string,
-	id_token: string,
-}
 
 const config = {
 	channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN as string,
@@ -41,20 +26,20 @@ router.get('/', async (req, res, next) => {
 	res.render('index', { title: 'Test', auth: auth });
 }).post('/getFriendDemographics', async (req, res, next) => {
 	let data = await client.getFriendDemographics()
-	res.send(data)
+	res.send(JSON.stringify(data))
 }).get('/getStatistics/:date', async (req, res, next) => {
 
-	let result: messageDemographicsResult = {}
+	let result: messageStatistic = {}
 
-	result.ReplyMessages = await client.getNumberOfSentReplyMessages(req.params.date)
-	result.SentPushMessages = await client.getNumberOfSentPushMessages(req.params.date)
-	result.SentMulticastMessages = await client.getNumberOfSentMulticastMessages(req.params.date)
-	result.SentBroadcastMessages = await client.getNumberOfSentBroadcastMessages(req.params.date)
-	result.MessageDeliveries = await client.getNumberOfMessageDeliveries(req.params.date)
+	result.reply = await client.getNumberOfSentReplyMessages(req.params.date)
+	result.sentPush = await client.getNumberOfSentPushMessages(req.params.date)
+	result.sentMulticast = await client.getNumberOfSentMulticastMessages(req.params.date)
+	result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(req.params.date)
+	result.messageDeliveries = await client.getNumberOfMessageDeliveries(req.params.date)
 
 	res.send(result)
 }).post('/sendBroadcast', async (req, res, next) => {
-	let result: messageDemographicsResult = {}
+	let result: messageStatistic = {}
 
 	let replyObj: lineTypes.Message | lineTypes.Message[] | lineTypes.FlexBubble | lineTypes.FlexMessage
 	replyObj = {
@@ -201,12 +186,12 @@ router.get('/', async (req, res, next) => {
 		}
 	}
 
-	result.MessageAPIResponseBase = await client.broadcast(replyObj)
+	result.messageAPIResponseBase = await client.broadcast(replyObj)
 
 	// await client.getUserInteractionStatistics(result.MessageAPIResponseBase);
 	// let id = 'x-line-request-id';
 
-	res.send(result.MessageAPIResponseBase)
+	res.send(result.messageAPIResponseBase)
 });
 
 router.get('/webhook', async (req, res, next) => {

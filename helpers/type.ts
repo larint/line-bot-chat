@@ -1,3 +1,5 @@
+import * as Types from "@line/bot-sdk/dist/types";
+
 export interface typeArea {
 	city?: string,
 	confirmed?: string,
@@ -20,4 +22,22 @@ export interface typeDataCovid {
 		deaths?: string,
 	},
 	areas: typeArea[] | undefined
+}
+
+export interface messageStatistic {
+	reply?: Types.NumberOfMessagesSentResponse,
+	sentPush?: Types.NumberOfMessagesSentResponse,
+	sentMulticast?: Types.NumberOfMessagesSentResponse,
+	sentBroadcast?: Types.NumberOfMessagesSentResponse,
+	messageDeliveries?: Types.NumberOfMessageDeliveriesResponse,
+	messageAPIResponseBase?: Types.MessageAPIResponseBase
+}
+
+export interface token {
+	access_token: string,
+	token_type: string,
+	refresh_token: string,
+	expires_in: string,
+	scope: string,
+	id_token: string,
 }

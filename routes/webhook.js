@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     helper_1.log(JSON.stringify(req.headers));
     res.send('respond with a resource');
 }).post('/', (req, res) => {
-    helper_1.log(JSON.stringify(req.headers));
+    helper_1.log(JSON.stringify(req.body.events));
     if (!Array.isArray(req.body.events)) {
         return res.status(500).end();
     }

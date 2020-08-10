@@ -15,7 +15,7 @@ router.get('/', (req: Request, res: Response) => {
   res.send('respond with a resource')
 }).post('/', (req, res) => {
 
-  log(JSON.stringify(req.headers))
+  log(JSON.stringify(req.body.events))
 
   // req.body.events should be an array of events
   if (!Array.isArray(req.body.events)) {

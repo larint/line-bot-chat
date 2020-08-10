@@ -3,10 +3,12 @@ import { Request, Response, NextFunction, ErrorRequestHandler } from 'express'
 import * as cookieParser from 'cookie-parser'
 import * as session from 'express-session'
 import * as morgan from 'morgan'
+import * as nodeSchedule from 'node-schedule'
 import * as fs from 'fs'
 import * as path from 'path'
+import { LineSchedule } from './services/LineSchedule'
 import './helpers/db'
-
+import * as moment from 'moment'
 // ROUTER
 import { router as indexRouter } from './routes/index'
 import { router as usersRouter } from './routes/users'
@@ -56,5 +58,8 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	res.render('error');
 });
 
+nodeSchedule.scheduleJob('8 * * *', function () {
+	LineSchedule.run()
+});
 
 app.listen(3000, () => console.log('listening @ 3000', new Date()))

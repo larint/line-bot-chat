@@ -1,5 +1,31 @@
 
+export interface BotMessage {
+    key: string,
+    answer: string
+}
+
 class BuilderMessage {
+    static getAnswerBot = async (messageReceive: string, profile: any) => {
+        let patternMsg = BuilderMessage.getBotMessage();
+        let answer = ''
+
+        patternMsg.forEach((item: any) => {
+            if (messageReceive.includes(item.key)) {
+                let text = ''
+                if (Array.isArray(item.answer)) {
+                    let idx = Math.floor(Math.random() * item.answer.length);
+                    text = item.answer[idx];
+                } else {
+                    text = item.answer
+                }
+                answer = text.replace(':name', profile.displayName)
+                return
+            }
+        })
+
+        return answer
+    }
+
     static getBotMessage = () => {
         return [
             { 'key': 'hello', 'answer': ['Hello :name!', 'Tell me something', 'How can i help you?', 'Hi, I\'m bot LINE.'] },
@@ -17,6 +43,7 @@ class BuilderMessage {
             { 'key': 'can you speak', 'answer': 'i can speak english' },
             { 'key': 'you live', 'answer': 'i live in USA' },
             { 'key': 'weather', 'answer': 'the weather today very nice' },
+            { 'key': 'your location', 'answer': 'Here my location:' },
         ]
     }
 

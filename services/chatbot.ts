@@ -1,7 +1,7 @@
 import { MessageEvent, UnfollowEvent, FollowEvent, PostbackEvent, JoinEvent, LeaveEvent, BeaconEvent } from '@line/bot-sdk/dist/types'
 import { Client } from "@line/bot-sdk"
 import * as types from "@line/bot-sdk/dist/types"
-import { BuilderMessage as Builder } from "../helpers/builderMessage"
+import { BuilderMessage as Builder, BotMessage } from "../helpers/builderMessage"
 
 require('dotenv').config()
 
@@ -71,48 +71,15 @@ class ChatBot {
 
     static handleText = async (event: any) => {
         let messageReceive = event.message.text.toLowerCase()
-        let patternMsg = Builder.getBotMessage();
 
         let profile = await client.getProfile(event.source.userId).then((profile) => profile);
-        let key = ''
-        patternMsg.forEach((mes) => {
-            key += mes.key + '\n '
-        })
 
-        let ab = await new Promise((resolve, reject) => {
-            patternMsg.forEach((mes) => {
-                if (messageReceive.includes(mes.key)) {
-                    let answer = ''
-                    if (Array.isArray(mes.answer)) {
-                        let idx = Math.floor(Math.random() * mes.answer.length);
-                        answer = mes.answer[idx];
-                    } else {
-                        answer = mes.answer
-                    }
-                    answer = answer.replace(':name', profile.displayName)
-                    return resolve(answer)
-                }
-            })
+        let answer = await Builder.getAnswerBot(messageReceive, profile)
 
-            reject(`Syntax for chatting with bot:${key}`)
-        }).then((answer) => ChatBot.sendMessage(event.replyToken, {
+        return ChatBot.sendMessage(event.replyToken, {
             type: "text",
             text: answer
-        })).catch((msg) => ChatBot.sendMessage(event.replyToken, {
-            type: "text",
-            text: msg
-        }))
-
-
-        if (messageReceive == 'loc') {
-            return ChatBot.sendMessage(event.replyToken, {
-                "type": "location",
-                "title": "my location",
-                "address": "〒150-0002 東京都渋谷区渋谷２丁目２１−１",
-                "latitude": 35.65910807942215,
-                "longitude": 139.70372892916203
-            });
-        }
+        })
     }
 
     static handleImage = (event: any) => {

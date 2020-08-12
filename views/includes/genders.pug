@@ -1,0 +1,15 @@
+h4 Percentage per gender
+table.table
+    thead
+        tr
+            th Date Update
+            th unknown
+            th male
+            th female
+    tbody
+        each item in genders
+            tr
+                td=item.date_update
+                td=item.unknown
+                td=item.male
+                td=item.female

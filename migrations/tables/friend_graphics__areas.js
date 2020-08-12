@@ -77,26 +77,26 @@ TableFriendGraphicsAreas.areaTrans = {
     "澎湖縣": "penghu_county",
     "金門縣": "kinmen_county",
     "連江縣": "lianjiang_county",
-    "bangkok": "bangkok",
-    "pattaya": "pattaya",
-    "northern": "northern",
-    "central": "central",
-    "southern": "southern",
-    "eastern": "eastern",
-    "northeastern": "northeastern",
-    "western": "western",
-    "bali": "bali",
-    "bandung": "bandung",
-    "banjarmasin": "banjarmasin",
-    "jabodetabek": "jabodetabek",
-    "makassar": "makassar",
-    "medan": "medan",
-    "palembang": "palembang",
-    "samarinda": "samarinda",
-    "semarang": "semarang",
-    "surabaya": "surabaya",
-    "yogyakarta": "yogyakarta",
-    "lainnya": "lainnya",
+    "Bangkok": "bangkok",
+    "Pattaya": "pattaya",
+    "Northern": "northern",
+    "Central": "central",
+    "Southern": "southern",
+    "Eastern": "eastern",
+    "NorthEastern": "northeastern",
+    "Western": "western",
+    "Bali": "bali",
+    "Bandung": "bandung",
+    "Banjarmasin": "banjarmasin",
+    "Jabodetabek": "jabodetabek",
+    "Makassar": "makassar",
+    "Medan": "medan",
+    "Palembang": "palembang",
+    "Samarinda": "samarinda",
+    "Semarang": "semarang",
+    "Surabaya": "surabaya",
+    "Yogyakarta": "yogyakarta",
+    "Lainnya": "lainnya",
 };
 TableFriendGraphicsAreas.up = () => {
     let migration = new migration_1.Migration();
@@ -106,7 +106,7 @@ TableFriendGraphicsAreas.up = () => {
         table.string('date_update');
         let citys = Object.values(TableFriendGraphicsAreas.areaTrans);
         citys.map((city) => {
-            table.integer(city).default(0);
+            table.float(city).default(0);
         });
     });
 };

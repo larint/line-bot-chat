@@ -25,26 +25,52 @@ export interface Params {
 
 
 class DB {
+	static convertRowDataToArrayCsv = async (rowData: any[]) => {
 
-	static exeQuery = (sql: string): Promise<any> => {
-		console.log(sql)
+		let dataArr: any[] = []
+		rowData.forEach((row: any, idx) => {
+			let rowArr = [], fields = []
+			if (idx == 0) {
+				fields = Object.keys(row)
+				dataArr.push(fields)
+			}
+			for (let column in row) {
+				rowArr.push(row[column])
+			}
+			dataArr.push(rowArr)
+		})
+
+		return dataArr
+	}
+
+	static exeQuery = (sql: string, selectPlainObj: boolean = false, returnArrayCsv: boolean = false): Promise<any> => {
+		if (process.env.ENV) {
+			console.log(sql)
+		}
 		return new Promise((resolve, reject) => {
 			connection.query(sql, (err: mysql.MysqlError, result, fields) => {
 				if (err)
 					reject(err);
-				else
-					resolve(result)
+				else {
+					let data: any[] = selectPlainObj ? JSON.parse(JSON.stringify(result)) : result
+					// return data with array to export csv
+					if (returnArrayCsv) {
+						let dataArrCsv: any = DB.convertRowDataToArrayCsv(data)
+						data = dataArrCsv
+					}
+					resolve(data)
+				}
 			})
 		})
 	}
 
-	static selectBySql = async (sql: string): Promise<any[] | mysql.MysqlError | any> => await DB.exeQuery(sql)
-	static selectByParams = async (params: Params): Promise<any[] | mysql.MysqlError | any> => {
+	static selectBySql = async (sql: string, selectPlainObj: boolean = false, returnArrayCsv: boolean = false): Promise<any[] | mysql.MysqlError | any> => await DB.exeQuery(sql, selectPlainObj, returnArrayCsv)
+	static selectByParams = async (params: Params, selectPlainObj: boolean = false, returnArrayCsv: boolean = false): Promise<any[] | mysql.MysqlError | any> => {
 		let limit: string | number = ''
 		if (params.limit) {
 			limit = `LIMIT ${params.limit}`
 		}
-		return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${limit}`, params.where))
+		return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${limit}`, params.where), selectPlainObj, returnArrayCsv)
 	}
 	static insertItem = async (params: Params): Promise<any[] | mysql.MysqlError | any> => await DB.exeQuery(mysql.format(`INSERT INTO ${params.table} SET ${params.set}`, params.where))
 	static updateItem = async (params: Params): Promise<any[] | mysql.MysqlError | any> => await DB.exeQuery(mysql.format(`UPDATE ${params.table} SET ${params.set} WHERE ?? = ?`, params.where))

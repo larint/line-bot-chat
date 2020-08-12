@@ -20,6 +20,11 @@ class Migration {
             this.queryString += `\n${collumn} int(11) ${this.stms.uns} ${this.stms.def} ${this.stms.com} ${this.stms.inc},`;
             return this;
         };
+        this.float = (collumn) => {
+            this.setStms(collumn);
+            this.queryString += `\n${collumn} float ${this.stms.uns} ${this.stms.def} ${this.stms.com} ${this.stms.inc},`;
+            return this;
+        };
         this.tinyInteger = (collumn) => {
             this.setStms(collumn);
             this.queryString += `\n${collumn} tinyint(4) ${this.stms.def} ${this.stms.com},`;

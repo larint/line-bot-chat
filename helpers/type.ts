@@ -29,7 +29,7 @@ export interface messageStatistic {
 	sentPush?: Types.NumberOfMessagesSentResponse,
 	sentMulticast?: Types.NumberOfMessagesSentResponse,
 	sentBroadcast?: Types.NumberOfMessagesSentResponse,
-	messageDeliveries?: Types.NumberOfMessageDeliveriesResponse,
+	messageDeliveries?: Types.NumberOfMessageDeliveries,
 	messageAPIResponseBase?: Types.MessageAPIResponseBase
 }
 

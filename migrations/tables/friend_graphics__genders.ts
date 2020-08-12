@@ -10,9 +10,9 @@ class TableFriendGraphicsGenders {
         migration.create('friend_graphics__genders', (table: Migration) => {
             table.integer('id').unsigned().increment()
             table.string('date_update')
-            table.integer('unknown').default(0)
-            table.integer('male').default(0)
-            table.integer('female').default(0)
+            table.float('unknown').default(0)
+            table.float('male').default(0)
+            table.float('female').default(0)
         })
     }
 }

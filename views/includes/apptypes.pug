@@ -1,0 +1,15 @@
+h4 Percentage by OS
+table.table
+    thead
+        tr
+            th Date Update
+            th ios
+            th android
+            th others
+    tbody
+        each item in apptypes
+            tr
+                td=item.date_update
+                td=item.ios
+                td=item.android
+                td=item.others

@@ -28,6 +28,12 @@ class Migration {
         return this;
     }
 
+    float = (collumn: string) => {
+        this.setStms(collumn)
+        this.queryString += `\n${collumn} float ${this.stms.uns} ${this.stms.def} ${this.stms.com} ${this.stms.inc},`
+        return this;
+    }
+
     tinyInteger = (collumn: string) => {
         this.setStms(collumn)
         this.queryString += `\n${collumn} tinyint(4) ${this.stms.def} ${this.stms.com},`

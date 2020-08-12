@@ -1,0 +1,29 @@
+h4 Percentage per age group
+table.table
+    thead
+        tr
+            th Date Update
+            th UnKnow
+            th Age 0 ~ 14
+            th Age 15 ~ 19
+            th Age 20 ~ 24
+            th Age 25 ~ 29
+            th Age 30 ~ 34
+            th Age 35 ~ 39
+            th Age 40 ~ 44
+            th Age 45 ~ 49
+            th Over 50
+    tbody
+        each item in ages
+            tr
+                td=item.date_update
+                td=item.unknown
+                td=item.from0to14
+                td=item.from15to19
+                td=item.from20to24
+                td=item.from25to29
+                td=item.from30to34
+                td=item.from35to39
+                td=item.from40to44
+                td=item.from45to49
+                td=item.from50

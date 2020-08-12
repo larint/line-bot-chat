@@ -1,0 +1,260 @@
+{
+    "available": true,
+    "genders": [],
+    "ages": [{
+        "age": "unknown",
+        "percentage": 37.6
+    }, {
+        "age": "from50",
+        "percentage": 17.3
+    }, {
+        "age": "from45to49",
+        "percentage": 17.3
+    }, {
+        "age": "from40to44",
+        "percentage": 17.3
+    }, {
+        "age": "from35to39",
+        "percentage": 17.3
+    }, {
+        "age": "from30to34",
+        "percentage": 17.3
+    }, {
+        "age": "from25to29",
+        "percentage": 17.3
+    }, {
+        "age": "from20to24",
+        "percentage": 17.3
+    }, {
+        "age": "from15to19",
+        "percentage": 17.3
+    }, {
+        "age": "from0to14",
+        "percentage": 17.3
+    }],
+    "areas": [{
+            "area": "unknown",
+            "percentage": 73
+        },
+        {
+            "area": "北海道",
+            "percentage": 99
+        },
+        {
+            "area": "青森",
+            "percentage": 75
+        },
+        {
+            "area": "岩手",
+            "percentage": 31
+        },
+        {
+            "area": "宮城",
+            "percentage": 8
+        },
+        {
+            "area": "秋田",
+            "percentage": 69
+        },
+        {
+            "area": "山形",
+            "percentage": 46
+        },
+        {
+            "area": "福島",
+            "percentage": 62
+        },
+        {
+            "area": "茨城",
+            "percentage": 8
+        },
+        {
+            "area": "栃木",
+            "percentage": 29
+        },
+        {
+            "area": "群馬",
+            "percentage": 45
+        },
+        {
+            "area": "埼玉",
+            "percentage": 44
+        },
+        {
+            "area": "千葉",
+            "percentage": 54
+        },
+        {
+            "area": "東京",
+            "percentage": 51
+        },
+        {
+            "area": "神奈川",
+            "percentage": 16
+        },
+        {
+            "area": "新潟",
+            "percentage": 88
+        },
+        {
+            "area": "富山",
+            "percentage": 30
+        },
+        {
+            "area": "石川",
+            "percentage": 59
+        },
+        {
+            "area": "福井",
+            "percentage": 15
+        },
+        {
+            "area": "山梨",
+            "percentage": 74
+        },
+        {
+            "area": "長野",
+            "percentage": 67
+        },
+        {
+            "area": "岐阜",
+            "percentage": 95
+        },
+        {
+            "area": "静岡",
+            "percentage": 49
+        },
+        {
+            "area": "愛知",
+            "percentage": 83
+        },
+        {
+            "area": "三重",
+            "percentage": 14
+        },
+        {
+            "area": "滋賀",
+            "percentage": 14
+        },
+        {
+            "area": "京都",
+            "percentage": 54
+        },
+        {
+            "area": "大阪",
+            "percentage": 34
+        },
+        {
+            "area": "兵庫",
+            "percentage": 97
+        },
+        {
+            "area": "奈良",
+            "percentage": 50
+        },
+        {
+            "area": "和歌山",
+            "percentage": 48
+        },
+        {
+            "area": "鳥取",
+            "percentage": 95
+        },
+        {
+            "area": "島根",
+            "percentage": 91
+        },
+        {
+            "area": "岡山",
+            "percentage": 24
+        },
+        {
+            "area": "広島",
+            "percentage": 71
+        },
+        {
+            "area": "山口",
+            "percentage": 50
+        },
+        {
+            "area": "徳島",
+            "percentage": 37
+        },
+        {
+            "area": "香川",
+            "percentage": 11
+        },
+        {
+            "area": "愛媛",
+            "percentage": 3
+        },
+        {
+            "area": "高知",
+            "percentage": 68
+        },
+        {
+            "area": "福岡",
+            "percentage": 20
+        },
+        {
+            "area": "佐賀",
+            "percentage": 22
+        },
+        {
+            "area": "長崎",
+            "percentage": 29
+        },
+        {
+            "area": "熊本",
+            "percentage": 31
+        },
+        {
+            "area": "大分",
+            "percentage": 49
+        },
+        {
+            "area": "宮崎",
+            "percentage": 29
+        },
+        {
+            "area": "鹿児島",
+            "percentage": 74
+        },
+        {
+            "area": "沖縄",
+            "percentage": 11
+        }
+    ],
+    "appTypes": [{
+        "appType": "ios",
+        "percentage": 62.4
+    }, {
+        "appType": "android",
+        "percentage": 27.7
+    }, {
+        "appType": "others",
+        "percentage": 9.9
+    }],
+    "subscriptionPeriods": [{
+        "subscriptionPeriod": "over365days",
+        "percentage": 96.4
+    }, {
+        "subscriptionPeriod": "within365days",
+        "percentage": 1.9
+    }, {
+        "subscriptionPeriod": "within180days",
+        "percentage": 1.2
+    }, {
+        "subscriptionPeriod": "within90days",
+        "percentage": 0.5
+    }, {
+        "subscriptionPeriod": "within30days",
+        "percentage": 0.1
+    }, {
+        "subscriptionPeriod": "within7days",
+        "percentage": 0
+    }, {
+        "subscriptionPeriod": "unknown",
+        "percentage": 0
+    }]
+}

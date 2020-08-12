@@ -18,24 +18,47 @@ connection.connect(function (err) {
 class DB {
 }
 exports.DB = DB;
-DB.exeQuery = (sql) => {
-    console.log(sql);
+DB.convertRowDataToArrayCsv = async (rowData) => {
+    let dataArr = [];
+    rowData.forEach((row, idx) => {
+        let rowArr = [], fields = [];
+        if (idx == 0) {
+            fields = Object.keys(row);
+            dataArr.push(fields);
+        }
+        for (let column in row) {
+            rowArr.push(row[column]);
+        }
+        dataArr.push(rowArr);
+    });
+    return dataArr;
+};
+DB.exeQuery = (sql, selectPlainObj = false, returnArrayCsv = false) => {
+    if (process.env.ENV) {
+        console.log(sql);
+    }
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result, fields) => {
             if (err)
                 reject(err);
-            else
-                resolve(result);
+            else {
+                let data = selectPlainObj ? JSON.parse(JSON.stringify(result)) : result;
+                if (returnArrayCsv) {
+                    let dataArrCsv = DB.convertRowDataToArrayCsv(data);
+                    data = dataArrCsv;
+                }
+                resolve(data);
+            }
         });
     });
 };
-DB.selectBySql = async (sql) => await DB.exeQuery(sql);
-DB.selectByParams = async (params) => {
+DB.selectBySql = async (sql, selectPlainObj = false, returnArrayCsv = false) => await DB.exeQuery(sql, selectPlainObj, returnArrayCsv);
+DB.selectByParams = async (params, selectPlainObj = false, returnArrayCsv = false) => {
     let limit = '';
     if (params.limit) {
         limit = `LIMIT ${params.limit}`;
     }
-    return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${limit}`, params.where));
+    return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${limit}`, params.where), selectPlainObj, returnArrayCsv);
 };
 DB.insertItem = async (params) => await DB.exeQuery(mysql.format(`INSERT INTO ${params.table} SET ${params.set}`, params.where));
 DB.updateItem = async (params) => await DB.exeQuery(mysql.format(`UPDATE ${params.table} SET ${params.set} WHERE ?? = ?`, params.where));

@@ -1,237 +1,108 @@
 import * as express from 'express'
 import { Router, Request, Response, NextFunction } from "express"
-import * as lineTypes from "@line/bot-sdk/dist/types";
-import { messageStatistic } from '../helpers/type'
-import fetch from 'node-fetch'
+import { DB } from '../helpers/db'
+import { writeToPath } from '@fast-csv/format';
+import * as path from 'path'
+import { formatDate } from '../helpers/helper'
 
 let router = express.Router()
 
-import { Client } from '@line/bot-sdk'
-import { Types } from 'mysql'
-
 require('dotenv').config()
 
-
-const config = {
-	channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN as string,
-	channelSecret: process.env.LINE_CHANNEL_SECRET as string
-}
-
-const client = new Client(config)
-
-/* GET home page. */
 router.get('/', async (req, res, next) => {
-	let auth = 'https://access.line.me/oauth2/v2.1/authorize?scope=profile%20openid&response_type=code&state=VsLVpr5e7lm29hXKG4YKdX5zgXZgNxSp&redirect_uri=' + process.env.URI_PATH + '/webhook&client_id=' + process.env.LINE_LOGIN_ID
+    let graphicsAges = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__ages',
+        set: '?',
+        where: [1]
+    })
 
-	res.render('index', { title: 'Test', auth: auth });
-}).post('/getFriendDemographics', async (req, res, next) => {
-	let data = await client.getFriendDemographics()
-	res.send(JSON.stringify(data))
-}).get('/getStatistics/:date', async (req, res, next) => {
+    let graphicsApptypes = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__apptypes',
+        set: '?',
+        where: [1]
+    })
 
-	let result: messageStatistic = {}
+    let graphicsAreas = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__areas',
+        set: '?',
+        where: [1]
+    })
 
-	result.reply = await client.getNumberOfSentReplyMessages(req.params.date)
-	result.sentPush = await client.getNumberOfSentPushMessages(req.params.date)
-	result.sentMulticast = await client.getNumberOfSentMulticastMessages(req.params.date)
-	result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(req.params.date)
-	result.messageDeliveries = await client.getNumberOfMessageDeliveries(req.params.date)
+    let graphicsGenders = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__genders',
+        set: '?',
+        where: [1]
+    })
 
-	res.send(result)
-}).post('/sendBroadcast', async (req, res, next) => {
-	let result: messageStatistic = {}
+    let graphicsSubscriptions = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__subscriptions',
+        set: '?',
+        where: [1]
+    })
 
-	let replyObj: lineTypes.Message | lineTypes.Message[] | lineTypes.FlexBubble | lineTypes.FlexMessage
-	replyObj = {
-		"type": "flex",
-		"altText": "Q1. Which is the API to create chatbot?",
-		"contents": {
-			"type": "bubble",
-			"body": {
-				"type": "box",
-				"layout": "vertical",
-				"spacing": "md",
-				"contents": [
-					{
-						"type": "box",
-						"layout": "vertical",
-						"contents": [
-							{
-								"type": "text",
-								"text": "Covid19",
-								"align": "center",
-								"size": "xxl",
-								"weight": "bold"
-							},
-							{
-								"type": "text",
-								"text": "Thống kê dịch Covid19 ở Việt Nam",
-								"wrap": true,
-								"weight": "bold",
-								"margin": "lg"
-							}
-						]
-					},
-					{
-						"type": "separator"
-					},
-					{
-						"type": "box",
-						"layout": "vertical",
-						"margin": "lg",
-						"contents": [
-							{
-								"type": "box",
-								"layout": "baseline",
-								"contents": [
-									{
-										"type": "text",
-										"text": "Ca nhiễm: ",
-										"flex": 6,
-										"weight": "bold",
-										"color": "#666666"
-									},
-									{
-										"type": "text",
-										"text": "122",
-										"size": "lg",
-										"wrap": true,
-										"flex": 4,
-										"color": "#FF0000"
-									}
-								]
-							},
-							{
-								"type": "box",
-								"layout": "baseline",
-								"contents": [
-									{
-										"type": "text",
-										"text": "Đang điều trị: ",
-										"flex": 6,
-										"weight": "bold",
-										"color": "#666666"
-									},
-									{
-										"type": "text",
-										"text": "123",
-										"size": "lg",
-										"wrap": true,
-										"flex": 4,
-										"color": "#FF0000"
-									}
-								]
-							},
-							{
-								"type": "box",
-								"layout": "baseline",
-								"contents": [
-									{
-										"type": "text",
-										"text": "Phục hồi:",
-										"flex": 6,
-										"weight": "bold",
-										"color": "#666666"
-									},
-									{
-										"type": "text",
-										"text": "12312",
-										"size": "lg",
-										"wrap": true,
-										"flex": 4,
-										"color": "#FF0000"
-									}
-								]
-							},
-							{
-								"type": "box",
-								"layout": "baseline",
-								"contents": [
-									{
-										"type": "text",
-										"text": "Tử vong: ",
-										"flex": 6,
-										"weight": "bold",
-										"color": "#666666"
-									},
-									{
-										"type": "text",
-										"text": "123213",
-										"size": "lg",
-										"wrap": true,
-										"flex": 4,
-										"color": "#FF0000"
-									}
-								]
-							}
-						]
-					}
-				]
-			},
-			"footer": {
-				"type": "box",
-				"layout": "horizontal",
-				"spacing": "sm",
-				"contents": [
-					{
-						type: 'button',
-						action: {
-							type: 'uri',
-							label: 'Bộ  Y Tế',
-							uri: 'https://ncov.moh.gov.vn/',
-						},
-					}
-				]
-			}
-		}
-	}
+    res.render('index', {
+        ages: graphicsAges,
+        apptypes: graphicsApptypes,
+        areas: graphicsAreas,
+        genders: graphicsGenders,
+        subscriptions: graphicsSubscriptions,
+    });
+}).get('/linedata/downcsv', async (req, res, next) => {
 
-	result.messageAPIResponseBase = await client.broadcast(replyObj)
+    let graphicsAges = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__ages',
+        set: '?',
+        where: [1]
+    }, false, true)
 
-	// await client.getUserInteractionStatistics(result.MessageAPIResponseBase);
-	// let id = 'x-line-request-id';
+    let graphicsApptypes = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__apptypes',
+        set: '?',
+        where: [1]
+    }, false, true)
 
-	res.send(result.messageAPIResponseBase)
-});
+    let graphicsAreas = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__areas',
+        set: '?',
+        where: [1]
+    }, false, true)
 
-router.get('/webhook', async (req, res, next) => {
-	let params: any = {
-		grant_type: 'authorization_code',
-		code: req.query.code,
-		redirect_uri: `${process.env.URI_PATH}/webhook`,
-		client_id: process.env.LINE_LOGIN_ID,
-		client_secret: process.env.LINE_LOGIN_SECRET
-	}
+    let graphicsGenders = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__genders',
+        set: '?',
+        where: [1]
+    }, false, true)
 
-	let query = ''
-	for (let key in params) {
-		query += encodeURIComponent(key) + '=' + encodeURIComponent(params[key]) + '&'
-	}
-	query = query.substring(0, query.length - 1)
+    let graphicsSubscriptions = await DB.selectByParams({
+        select: '*',
+        table: 'friend_graphics__subscriptions',
+        set: '?',
+        where: [1]
+    }, false, true)
 
-	let data = await fetch('https://api.line.me/oauth2/v2.1/token', {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-		},
-		body: query
-	});
+    let messagesStatistic = await DB.selectByParams({
+        select: '*',
+        table: 'messages_statistic',
+        set: '?',
+        where: [1]
+    }, false, true)
 
+    let currentDate = formatDate('YYYYMMDD')
+    let file = path.join(path.dirname(__dirname), `/data_csv/${currentDate}.csv`)
 
-	let token = await data.json()
+    writeToPath(file, messagesStatistic)
+        .on('error', err => console.error(err))
+        .on('finish', () => res.download(file));
 
-	let data1 = await fetch('https://api.line.me/v2/profile', {
-		method: 'GET',
-		headers: {
-			'Authorization': `Bearer ` + token.access_token,
-		},
-	});
-
-	let token1 = await data1.json()
-
-	// await fetch('POST', 'https://api.line.me/oauth2/v2.1/token', options).getBody('utf8').then(JSON.parse)
-
-	res.render('index', { user: token1 });
-});
+})
 
 export { router }

@@ -14,6 +14,7 @@ import { router as indexRouter } from './routes/index'
 import { router as usersRouter } from './routes/users'
 import { router as webhookRouter } from './routes/webhook'
 import { router as crawlerRouter } from './routes/crawler'
+import { router as testRouter } from './routes/test'
 
 require('dotenv').config()
 
@@ -46,6 +47,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/webhook', webhookRouter);
 app.use('/crawler', crawlerRouter);
+app.use('/test', testRouter);
 
 // error handler
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
@@ -61,7 +63,5 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 nodeSchedule.scheduleJob('* * * * *', function () {
 	// LineSchedule.run()
 });
-
 LineSchedule.run()
-
 app.listen(3000, () => console.log('listening @ 3000', new Date()))

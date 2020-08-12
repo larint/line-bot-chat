@@ -76,27 +76,27 @@ class TableFriendGraphicsAreas {
         "金門縣": "kinmen_county",
         "連江縣": "lianjiang_county",
         // TH
-        "bangkok": "bangkok",
-        "pattaya": "pattaya",
-        "northern": "northern",
-        "central": "central",
-        "southern": "southern",
-        "eastern": "eastern",
-        "northeastern": "northeastern",
-        "western": "western",
+        "Bangkok": "bangkok",
+        "Pattaya": "pattaya",
+        "Northern": "northern",
+        "Central": "central",
+        "Southern": "southern",
+        "Eastern": "eastern",
+        "NorthEastern": "northeastern",
+        "Western": "western",
         // ID
-        "bali": "bali",
-        "bandung": "bandung",
-        "banjarmasin": "banjarmasin",
-        "jabodetabek": "jabodetabek",
-        "makassar": "makassar",
-        "medan": "medan",
-        "palembang": "palembang",
-        "samarinda": "samarinda",
-        "semarang": "semarang",
-        "surabaya": "surabaya",
-        "yogyakarta": "yogyakarta",
-        "lainnya": "lainnya",
+        "Bali": "bali",
+        "Bandung": "bandung",
+        "Banjarmasin": "banjarmasin",
+        "Jabodetabek": "jabodetabek",
+        "Makassar": "makassar",
+        "Medan": "medan",
+        "Palembang": "palembang",
+        "Samarinda": "samarinda",
+        "Semarang": "semarang",
+        "Surabaya": "surabaya",
+        "Yogyakarta": "yogyakarta",
+        "Lainnya": "lainnya",
     }
 
     static up = () => {
@@ -109,7 +109,7 @@ class TableFriendGraphicsAreas {
             // JP
             let citys = Object.values(TableFriendGraphicsAreas.areaTrans)
             citys.map((city) => {
-                table.integer(city).default(0)
+                table.float(city).default(0)
             })
 
         })

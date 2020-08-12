@@ -1,6 +1,7 @@
 import { Client } from '@line/bot-sdk'
 import * as Types from '@line/bot-sdk/dist/types'
 import { log, formatDate } from '../helpers/helper'
+import { Faker } from '../faker/faker'
 import { DB } from '../helpers/db'
 import { messageStatistic } from '../helpers/type'
 import { TableFriendGraphicsGenders } from '../migrations//tables/friend_graphics__genders'
@@ -22,54 +23,23 @@ const client = new Client(config)
 class LineSchedule {
 
     static run = async () => {
-        let currentDate = '20200729' //formatDate('YYYYMMDD');
 
         console.log('run getFriendDemographics ' + new Date())
-        let friend: Types.FriendDemographics = await client.getFriendDemographics()
+        // let friend: Types.FriendDemographics = await client.getFriendDemographics()
+        let friend = await Faker.getFriendGraphics('jp')
 
         // save gender
-        await LineSchedule.addGraphicsGenders(friend)
-        await LineSchedule.addGraphicsAges(friend)
-        await LineSchedule.addGraphicsAppTypes(friend)
-        await LineSchedule.addGraphicsSubscription(friend)
-        await LineSchedule.addGraphicsAreas(friend)
+        await LineSchedule.saveGraphicsGenders(friend)
+        await LineSchedule.saveGraphicsAges(friend)
+        await LineSchedule.saveGraphicsAppTypes(friend)
+        await LineSchedule.saveGraphicsSubscription(friend)
+        await LineSchedule.saveGraphicsAreas(friend)
+        // // save message statistic
+        await LineSchedule.saveMessageStatistic()
 
-        let result: messageStatistic = {}
-        result.reply = await client.getNumberOfSentReplyMessages(currentDate)
-        result.sentPush = await client.getNumberOfSentPushMessages(currentDate)
-        result.sentMulticast = await client.getNumberOfSentMulticastMessages(currentDate)
-        result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(currentDate)
-        result.messageDeliveries = await client.getNumberOfMessageDeliveries(currentDate)
-
-        await DB.insertItem({
-            table: 'messages_statistic',
-            set: '?? = ?',
-            where: [
-                'date_update', currentDate,
-                'reply_status', result.reply.status,
-                'reply_number', result.reply.success,
-                'push_status', result.sentPush.status,
-                'push_number', result.sentPush.success,
-                'multicast_status', result.sentMulticast.status,
-                'multicast_number', result.sentMulticast.success,
-                'broadcast_status', result.sentBroadcast.status,
-                'broadcast_number', result.sentBroadcast.success,
-                'deliveries_status', result.messageDeliveries.status,
-                'deliveries_broadcast', result.messageDeliveries.broadcast,
-                'deliveries_targeting', '',
-                'deliveries_auto_response', result.messageDeliveries.autoResponse,
-                'deliveries_welcome_response', result.messageDeliveries.wel,
-                'deliveries_chat', '',
-                'deliveries_api_broadcast', '',
-                'deliveries_api_push', '',
-                'deliveries_api_multicast', '',
-                'deliveries_api_narrowcast', '',
-                'deliveries_api_reply', '',
-            ]
-        })
     }
 
-    static addGraphicsGenders = async (friend: Types.FriendDemographics) => {
+    static saveGraphicsGenders = async (friend: Types.FriendDemographics) => {
 
         let currentDate = formatDate('YYYYMMDD');
 
@@ -105,7 +75,7 @@ class LineSchedule {
         })
     }
 
-    static addGraphicsAges = async (friend: Types.FriendDemographics) => {
+    static saveGraphicsAges = async (friend: Types.FriendDemographics) => {
 
         let currentDate = formatDate('YYYYMMDD');
         let exist = await DB.selectByParams({
@@ -140,7 +110,7 @@ class LineSchedule {
         })
     }
 
-    static addGraphicsAppTypes = async (friend: Types.FriendDemographics) => {
+    static saveGraphicsAppTypes = async (friend: Types.FriendDemographics) => {
 
         let currentDate = formatDate('YYYYMMDD');
         let exist = await DB.selectByParams({
@@ -175,7 +145,7 @@ class LineSchedule {
         })
     }
 
-    static addGraphicsSubscription = async (friend: Types.FriendDemographics) => {
+    static saveGraphicsSubscription = async (friend: Types.FriendDemographics) => {
 
         let currentDate = formatDate('YYYYMMDD');
         let exist = await DB.selectByParams({
@@ -210,7 +180,7 @@ class LineSchedule {
         })
     }
 
-    static addGraphicsAreas = async (friend: Types.FriendDemographics) => {
+    static saveGraphicsAreas = async (friend: Types.FriendDemographics) => {
 
         let currentDate = formatDate('YYYYMMDD');
         let exist = await DB.selectByParams({
@@ -226,10 +196,13 @@ class LineSchedule {
 
         let areasWhere = ['date_update', currentDate]
         let areaTrans: any = TableFriendGraphicsAreas.areaTrans;
+        // build set where
+        let set: string = '?? = ?,'
 
         friend.areas?.forEach((item: any) => {
             areasWhere.push(areaTrans[item.area])
             areasWhere.push(item.percentage)
+            set += '?? = ?,'
         })
 
         let citys = Object.values(areaTrans)
@@ -240,17 +213,63 @@ class LineSchedule {
             })
         }
 
-        // build set where
-        let set: string = '?? = ?,'
-        citys.map((city) => {
-            set += '?? = ?,'
-        })
-        set = set.slice(0, -1) /// remove last character ,
+        // citys.map((city) => {
+        //     set += '?? = ?,'
+        // })
+        // set = set.slice(0, -1)
 
         await DB.insertItem({
             table: 'friend_graphics__areas',
-            set: set,
+            set: set.slice(0, -1), // remove last character ,
             where: areasWhere
+        })
+    }
+
+    static saveMessageStatistic = async () => {
+        let currentDate = formatDate('YYYYMMDD')
+
+        let exist = await DB.selectByParams({
+            select: 'id',
+            table: 'messages_statistic',
+            set: '??=?',
+            where: ['date_update', currentDate]
+        })
+
+        if (exist.length > 0) {
+            return
+        }
+
+        let result: messageStatistic = {}
+        result.reply = await client.getNumberOfSentReplyMessages(currentDate)
+        result.sentPush = await client.getNumberOfSentPushMessages(currentDate)
+        result.sentMulticast = await client.getNumberOfSentMulticastMessages(currentDate)
+        result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(currentDate)
+        result.messageDeliveries = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(currentDate)
+
+        await DB.insertItem({
+            table: 'messages_statistic',
+            set: '??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?',
+            where: [
+                'date_update', currentDate,
+                'reply_status', result.reply.status,
+                'reply_number', result.reply.success!,
+                'push_status', result.sentPush.status,
+                'push_number', result.sentPush.success!,
+                'multicast_status', result.sentMulticast.status,
+                'multicast_number', result.sentMulticast.success!,
+                'broadcast_status', result.sentBroadcast.status,
+                'broadcast_number', result.sentBroadcast.success!,
+                'deliveries_status', result.messageDeliveries.status,
+                'deliveries_broadcast', result.messageDeliveries.broadcast,
+                'deliveries_targeting', result.messageDeliveries.targeting,
+                'deliveries_auto_response', result.messageDeliveries.autoResponse,
+                'deliveries_welcome_response', result.messageDeliveries.welcomeResponse,
+                'deliveries_chat', result.messageDeliveries.chat,
+                'deliveries_api_broadcast', result.messageDeliveries.apiBroadcast,
+                'deliveries_api_push', result.messageDeliveries.apiPush,
+                'deliveries_api_multicast', result.messageDeliveries.welcomeResponse,
+                'deliveries_api_reply', result.messageDeliveries.apiReply,
+            ]
         })
     }
 }

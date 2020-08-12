@@ -10,7 +10,7 @@ exports.log = log;
 function formatDate(format = 'dd-MM-YYYY', dateObj = new Date()) {
     let year = dateObj.getFullYear();
     let month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
-    let date = ("0" + (dateObj.getDate() + 1)).slice(-2);
+    let date = ("0" + dateObj.getDate()).slice(-2);
     switch (format) {
         case 'dd-MM-YYYY':
             return `${date}${month}${year}`;

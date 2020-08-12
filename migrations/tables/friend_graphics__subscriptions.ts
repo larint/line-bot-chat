@@ -10,13 +10,13 @@ class TableFriendGraphicsSubscriptions {
         migration.create('friend_graphics__subscriptions', (table: Migration) => {
             table.integer('id').unsigned().increment()
             table.string('date_update')
-            table.integer('within7days').default(0)
-            table.integer('within30days').default(0)
-            table.integer('within90days').default(0)
-            table.integer('within180days').default(0)
-            table.integer('within365days').default(0)
-            table.integer('over365days').default(0)
-            table.integer('unknown').default(0)
+            table.float('within7days').default(0)
+            table.float('within30days').default(0)
+            table.float('within90days').default(0)
+            table.float('within180days').default(0)
+            table.float('within365days').default(0)
+            table.float('over365days').default(0)
+            table.float('unknown').default(0)
         })
 
     }

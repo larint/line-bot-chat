@@ -45,12 +45,20 @@ router.get('/', async (req, res, next) => {
         where: [1]
     })
 
+    let messagesStatistics = await DB.selectByParams({
+        select: '*',
+        table: 'messages_statistic',
+        set: '?',
+        where: [1]
+    })
+
     res.render('index', {
         ages: graphicsAges,
         apptypes: graphicsApptypes,
         areas: graphicsAreas,
         genders: graphicsGenders,
         subscriptions: graphicsSubscriptions,
+        messagesStatistics: messagesStatistics
     });
 }).get('/linedata/downcsv/:data', async (req, res, next) => {
     let currentDate = formatDate('YYYYMMDD')

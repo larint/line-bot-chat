@@ -60,7 +60,7 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	res.render('error');
 });
 
-nodeSchedule.scheduleJob('* * * * *', function () {
+nodeSchedule.scheduleJob('1 * * * *', function () {
 	LineSchedule.run()
 });
 // LineSchedule.run()

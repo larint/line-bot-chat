@@ -1,0 +1,33 @@
+table
+    thead
+        tr
+            td(colspan=11) 
+                h5 Message Statistics
+        tr
+            th Date Update
+            th Reply number
+            th Push number
+            th Multicast number
+            th Broadcast number
+            th Broadcast
+            th Auto response
+            th Welcome response
+            th Api broadcast
+            th Api multicast
+            th Api narrowcast
+            th Api reply
+    tbody
+        each item in messagesStatistics
+            tr
+                td=item.date_update
+                td=item.reply_number
+                td=item.push_number
+                td=item.multicast_number
+                td=item.broadcast_number
+                td=item.deliveries_broadcast
+                td=item.deliveries_auto_response
+                td=item.deliveries_welcome_response
+                td=item.deliveries_api_broadcast
+                td=item.deliveries_api_multicast
+                td=item.deliveries_api_narrowcast
+                td=item.deliveries_api_reply

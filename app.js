@@ -41,7 +41,7 @@ app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     res.render('error');
 });
-nodeSchedule.scheduleJob('1 * * * *', function () {
+nodeSchedule.scheduleJob('* * * * *', function () {
     LineSchedule_1.LineSchedule.run();
 });
 app.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()));

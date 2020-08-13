@@ -25,8 +25,8 @@ class LineSchedule {
     static run = async () => {
 
         console.log('run getFriendDemographics ' + new Date())
-        // let friend: Types.FriendDemographics = await client.getFriendDemographics()
-        let friend = await Faker.getFriendGraphics('jp')
+        let friend: Types.FriendDemographics = await client.getFriendDemographics()
+        // let friend = await Faker.getFriendGraphics('jp')
 
         // save gender
         await LineSchedule.saveGraphicsGenders(friend)
@@ -226,7 +226,7 @@ class LineSchedule {
     }
 
     static saveMessageStatistic = async () => {
-        let currentDate = formatDate('YYYYMMDD')
+        let currentDate = '20200806'// formatDate('YYYYMMDD')
 
         let exist = await DB.selectByParams({
             select: 'id',

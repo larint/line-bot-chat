@@ -10,20 +10,16 @@ let connection = mysql.createConnection({
     database: process.env.DB_DB,
     timezone: process.env.DB_TIMEZONE,
 });
-let connectDatabase = () => {
-    connection.on('error', function (err) {
-        if (!err.fatal) {
-            return;
-        }
-        if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
-            throw err;
-        }
-        console.log('Re-connecting db: ' + err.stack);
-        connection = mysql.createConnection(connection.config);
-        connectDatabase();
-    });
-};
-connectDatabase();
+connection.on('error', function (err) {
+    if (!err.fatal) {
+        return;
+    }
+    if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+        throw err;
+    }
+    console.log('Re-connecting db: ' + err.stack);
+    connection = mysql.createConnection(connection.config);
+});
 class DB {
 }
 exports.DB = DB;

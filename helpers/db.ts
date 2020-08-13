@@ -19,25 +19,19 @@ let connection = mysql.createConnection({
 })
 
 // reconnect if lost connect database,using on heroku
-let connectDatabase = () => {
+connection.on('error', function (err) {
+	if (!err.fatal) {
+		return
+	}
+	if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
+		throw err
+	}
+	console.log('Re-connecting db: ' + err.stack)
 
-	connection.on('error', function (err) {
-		if (!err.fatal) {
-			return
-		}
-		if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
-			throw err
-		}
-		console.log('Re-connecting db: ' + err.stack)
+	connection = mysql.createConnection(connection.config);
+});
 
-		connection = mysql.createConnection(connection.config);
-		connectDatabase();
-		// connection.connect();
-	});
 
-}
-
-connectDatabase()
 
 class DB {
 	static convertRowDataToArrayCsv = async (rowData: any[]) => {

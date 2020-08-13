@@ -1,17 +1,17 @@
-.card.card-info
-    .card-header.bg-default Percentage per gender
-    .card-body
-        table.table
-            thead
-                tr
-                    th Date Update
-                    th unknown
-                    th male
-                    th female
-            tbody
-                each item in genders
-                    tr
-                        td=item.date_update
-                        td=item.unknown
-                        td=item.male
-                        td=item.female
+table
+    thead
+        tr
+            td(colspan=4) 
+                h5 Percentage per gender
+        tr
+            th Date Update
+            th unknown
+            th male
+            th female
+    tbody
+        each item in genders
+            tr
+                td=item.date_update
+                td=item.unknown
+                td=item.male
+                td=item.female

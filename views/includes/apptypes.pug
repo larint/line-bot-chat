@@ -1,17 +1,17 @@
-.card.card-info
-    .card-header.bg-default Percentage by OS
-    .card-body
-        table.table
-            thead
-                tr
-                    th Date Update
-                    th ios
-                    th android
-                    th others
-            tbody
-                each item in apptypes
-                    tr
-                        td=item.date_update
-                        td=item.ios
-                        td=item.android
-                        td=item.others
+table
+    thead
+        tr
+            td(colspan=4) 
+                h5 Percentage by OS
+        tr
+            th Date Update
+            th ios
+            th android
+            th others
+    tbody
+        each item in apptypes
+            tr
+                td=item.date_update
+                td=item.ios
+                td=item.android
+                td=item.others

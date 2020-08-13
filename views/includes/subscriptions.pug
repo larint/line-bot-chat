@@ -1,25 +1,25 @@
-.card.card-info
-    .card-header.bg-default Percentage per friendship duration
-    .card-body
-        table.table
-            thead
-                tr
-                    th Date Update
-                    th unknown
-                    th within7days
-                    th within30days
-                    th within90days
-                    th within180days
-                    th within365days
-                    th over365days
-            tbody
-                each item in subscriptions
-                    tr
-                        td=item.date_update
-                        td=item.unknown
-                        td=item.within7days
-                        td=item.within30days
-                        td=item.within90days
-                        td=item.within180days
-                        td=item.within365days
-                        td=item.over365days
+table
+    thead
+        tr
+            td(colspan=8) 
+                h5 Percentage per friendship duration
+        tr
+            th Date Update
+            th unknown
+            th within7days
+            th within30days
+            th within90days
+            th within180days
+            th within365days
+            th over365days
+    tbody
+        each item in subscriptions
+            tr
+                td=item.date_update
+                td=item.unknown
+                td=item.within7days
+                td=item.within30days
+                td=item.within90days
+                td=item.within180days
+                td=item.within365days
+                td=item.over365days

@@ -7,6 +7,11 @@ a {
     color: #00B7FF;
 }
 
+.center {
+    text-align: center;
+    width: 100%;
+}
+
 button,
 input {
     margin: 10px;
@@ -17,4 +22,26 @@ input {
     margin: 5px;
     font-size: 12px;
     padding: 3px 10px;
+}
+
+table {
+    width: 100%;
+}
+
+th {
+    height: 30px;
+}
+
+th,
+td {
+    border-bottom: 1px solid #ddd;
+    padding: 3px;
+}
+
+th {
+    background-color: #cecece;
+}
+
+h5 {
+    margin-top: 10px;
 }

@@ -61,7 +61,7 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 });
 
 nodeSchedule.scheduleJob('* * * * *', function () {
-	// LineSchedule.run()
+	LineSchedule.run()
 });
-LineSchedule.run()
+// LineSchedule.run()
 app.listen(3000, () => console.log('listening @ 3000', new Date()))

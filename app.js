@@ -42,6 +42,6 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 nodeSchedule.scheduleJob('* * * * *', function () {
+    LineSchedule_1.LineSchedule.run();
 });
-LineSchedule_1.LineSchedule.run();
 app.listen(3000, () => console.log('listening @ 3000', new Date()));

@@ -52,54 +52,74 @@ router.get('/', async (req, res, next) => {
         genders: graphicsGenders,
         subscriptions: graphicsSubscriptions,
     });
-}).get('/linedata/downcsv', async (req, res, next) => {
-
-    let graphicsAges = await DB.selectByParams({
-        select: '*',
-        table: 'friend_graphics__ages',
-        set: '?',
-        where: [1]
-    }, false, true)
-
-    let graphicsApptypes = await DB.selectByParams({
-        select: '*',
-        table: 'friend_graphics__apptypes',
-        set: '?',
-        where: [1]
-    }, false, true)
-
-    let graphicsAreas = await DB.selectByParams({
-        select: '*',
-        table: 'friend_graphics__areas',
-        set: '?',
-        where: [1]
-    }, false, true)
-
-    let graphicsGenders = await DB.selectByParams({
-        select: '*',
-        table: 'friend_graphics__genders',
-        set: '?',
-        where: [1]
-    }, false, true)
-
-    let graphicsSubscriptions = await DB.selectByParams({
-        select: '*',
-        table: 'friend_graphics__subscriptions',
-        set: '?',
-        where: [1]
-    }, false, true)
-
-    let messagesStatistic = await DB.selectByParams({
-        select: '*',
-        table: 'messages_statistic',
-        set: '?',
-        where: [1]
-    }, false, true)
-
+}).get('/linedata/downcsv/:data', async (req, res, next) => {
     let currentDate = formatDate('YYYYMMDD')
-    let file = path.join(path.dirname(__dirname), `/data_csv/${currentDate}.csv`)
+    let data: any[] = []
+    let filename: string = `${currentDate}.csv`
 
-    writeToPath(file, messagesStatistic)
+    switch (req.params.data) {
+        case "1":
+            filename = `${currentDate}_friend_graphics_ages.csv`
+            data = await DB.selectByParams({
+                select: '*',
+                table: 'friend_graphics__ages',
+                set: '?',
+                where: [1]
+            }, false, true)
+            break;
+        case "2":
+            filename = `${currentDate}_friend_graphics_apptypes.csv`
+            data = await DB.selectByParams({
+                select: '*',
+                table: 'friend_graphics__apptypes',
+                set: '?',
+                where: [1]
+            }, false, true)
+            break;
+        case "3":
+            filename = `${currentDate}_friend_graphics_areas.csv`
+            data = await DB.selectByParams({
+                select: '*',
+                table: 'friend_graphics__areas',
+                set: '?',
+                where: [1]
+            }, false, true)
+            break;
+        case "4":
+            filename = `${currentDate}_friend_graphics_genders.csv`
+            data = await DB.selectByParams({
+                select: '*',
+                table: 'friend_graphics__genders',
+                set: '?',
+                where: [1]
+            }, false, true)
+            break;
+        case "5":
+            filename = `${currentDate}_friend_graphics_subscriptions.csv`
+            data = await DB.selectByParams({
+                select: '*',
+                table: 'friend_graphics__subscriptions',
+                set: '?',
+                where: [1]
+            }, false, true)
+            break;
+        case "6":
+            filename = `${currentDate}_messages_statistic.csv`
+            data = await DB.selectByParams({
+                select: '*',
+                table: 'messages_statistic',
+                set: '?',
+                where: [1]
+            }, false, true)
+            break;
+        default:
+            break;
+    }
+
+
+    let file = path.join(path.dirname(__dirname), `/data_csv/${filename}`)
+
+    writeToPath(file, data)
         .on('error', err => console.error(err))
         .on('finish', () => res.download(file));
 

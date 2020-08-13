@@ -1,0 +1,4 @@
+id,date_update,reply_status,reply_number,push_status,push_number,multicast_status,multicast_number,broadcast_status,broadcast_number,deliveries_status,deliveries_broadcast,deliveries_targeting,deliveries_auto_response,deliveries_welcome_response,deliveries_chat,deliveries_api_broadcast,deliveries_api_push,deliveries_api_multicast,deliveries_api_narrowcast,deliveries_api_reply
+1,20200812,unready,,unready,,unready,,unready,,0,,,,,,,,,0,
+2,20200806,ready,11,ready,0,ready,0,ready,22,0,,,,,,22,,,0,11
+3,20200810,ready,61,ready,0,ready,0,ready,0,0,,,,1,,,,1,0,61

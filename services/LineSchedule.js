@@ -178,7 +178,7 @@ LineSchedule.saveGraphicsAreas = async (friend) => {
     });
 };
 LineSchedule.saveMessageStatistic = async () => {
-    let currentDate = '20200806';
+    let currentDate = helper_1.formatDate('YYYYMMDD');
     let exist = await db_1.DB.selectByParams({
         select: 'id',
         table: 'messages_statistic',

@@ -9,6 +9,7 @@ const fs = require("fs");
 const path = require("path");
 const LineSchedule_1 = require("./services/LineSchedule");
 require("./helpers/db");
+require("./services/notification");
 const index_1 = require("./routes/index");
 const users_1 = require("./routes/users");
 const webhook_1 = require("./routes/webhook");
@@ -16,6 +17,8 @@ const crawler_1 = require("./routes/crawler");
 const test_1 = require("./routes/test");
 require('dotenv').config();
 const app = express();
+let http = require("http").Server(app);
+let io = require("socket.io")(http);
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 var appLogStream = fs.createWriteStream(path.join(__dirname, 'app.log'), { flags: 'a' });
@@ -43,5 +46,9 @@ app.use((err, req, res, next) => {
 });
 nodeSchedule.scheduleJob('* * * * *', function () {
     LineSchedule_1.LineSchedule.run();
+    io.emit('schedule_get_line_data', { message: 'Updated data from LINE' });
 });
-app.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()));
+io.on("connection", (socket) => {
+    console.log('connected');
+});
+http.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()));

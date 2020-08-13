@@ -226,7 +226,7 @@ class LineSchedule {
     }
 
     static saveMessageStatistic = async () => {
-        let currentDate = '20200806'// formatDate('YYYYMMDD')
+        let currentDate = formatDate('YYYYMMDD')
 
         let exist = await DB.selectByParams({
             select: 'id',

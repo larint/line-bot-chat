@@ -7,13 +7,13 @@ const morgan = require("morgan");
 const nodeSchedule = require("node-schedule");
 const fs = require("fs");
 const path = require("path");
-const LineSchedule_1 = require("./services/LineSchedule");
 require("./helpers/db");
 require("./services/notification");
 const index_1 = require("./routes/index");
 const users_1 = require("./routes/users");
 const webhook_1 = require("./routes/webhook");
 const crawler_1 = require("./routes/crawler");
+const chart_1 = require("./routes/chart");
 const test_1 = require("./routes/test");
 require('dotenv').config();
 const app = express();
@@ -39,14 +39,13 @@ app.use('/', index_1.router);
 app.use('/users', users_1.router);
 app.use('/webhook', webhook_1.router);
 app.use('/crawler', crawler_1.router);
+app.use('/chart', chart_1.router);
 app.use('/test', test_1.router);
 app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     res.render('error');
 });
-nodeSchedule.scheduleJob('* * * * *', function () {
-    LineSchedule_1.LineSchedule.run();
-    io.emit('schedule_get_line_data', { message: 'Updated data from LINE' });
+nodeSchedule.scheduleJob('1 * * * *', function () {
 });
 io.on("connection", (socket) => {
     console.log('connected');

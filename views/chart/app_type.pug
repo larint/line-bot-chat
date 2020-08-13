@@ -1,0 +1,16 @@
+<canvas id="myChartAppType" width="400" height="400"></canvas>
+script.
+    var myChart = new Chart('myChartAppType', {
+        type: 'pie',
+        data: {
+            datasets: [{
+                data: !{dataAppType.data},
+                backgroundColor: !{dataAppType.bgcolor},
+                label: 'Dataset 1'
+            }],
+            labels: !{dataAppType.labels}
+        },
+        options: {
+            responsive: true
+        }
+    });

@@ -1,0 +1,25 @@
+extends layout
+
+block style
+  link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js")
+  script(src="javascripts/utils.js")
+block content
+  h1 
+    a(href="/") Dashboard 
+    span | 
+    span Chart
+  .row
+    .col-3
+        include chart/age.pug
+    .col-3
+        include chart/app_type.pug
+    .col-3
+        include chart/gender.pug
+    .col-3
+        include chart/subscription.pug 
+
+    script.
+        var r =' #'+'012345abcdef'.split('').map(function(v,i,a){
+            return i>5 ? null : a[Math.floor(Math.random()*12)] }).join('');
+        console.log(r)

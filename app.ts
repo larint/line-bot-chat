@@ -15,6 +15,7 @@ import { router as indexRouter } from './routes/index'
 import { router as usersRouter } from './routes/users'
 import { router as webhookRouter } from './routes/webhook'
 import { router as crawlerRouter } from './routes/crawler'
+import { router as chartRouter } from './routes/chart'
 import { router as testRouter } from './routes/test'
 
 require('dotenv').config()
@@ -53,6 +54,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/webhook', webhookRouter);
 app.use('/crawler', crawlerRouter);
+app.use('/chart', chartRouter);
 app.use('/test', testRouter);
 
 // error handler
@@ -66,9 +68,9 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	res.render('error');
 });
 
-nodeSchedule.scheduleJob('* * * * *', function () {
-	LineSchedule.run()
-	io.emit('schedule_get_line_data', { message: 'Updated data from LINE' })
+nodeSchedule.scheduleJob('1 * * * *', function () {
+	// LineSchedule.run()
+	// io.emit('schedule_get_line_data', { message: 'Updated data from LINE' })
 });
 
 io.on("connection", (socket: any) => {

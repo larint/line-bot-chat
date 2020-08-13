@@ -44,4 +44,4 @@ app.use((err, req, res, next) => {
 nodeSchedule.scheduleJob('* * * * *', function () {
     LineSchedule_1.LineSchedule.run();
 });
-app.listen(3000, () => console.log('listening @ 3000', new Date()));
+app.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()));

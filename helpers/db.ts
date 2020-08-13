@@ -39,7 +39,7 @@ let connectDatabase = () => {
 	});
 }
 
-connectDatabase()
+// connectDatabase()
 
 class DB {
 	static convertRowDataToArrayCsv = async (rowData: any[]) => {

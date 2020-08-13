@@ -11,29 +11,29 @@ const connection = mysql.createConnection({
     timezone: process.env.DB_TIMEZONE,
 });
 let connectDatabase = () => {
-    connection.connect(function(err) {
+    connection.connect(function (err) {
         if (err) {
             console.log('error when connecting to db:', err);
-            setTimeout(connectDatabase, 100);
+            setTimeout(connectDatabase, 0);
         }
     });
-    connection.on('error', function(err) {
+    connection.on('error', function (err) {
         console.log('db error', err);
         if (err.code === 'PROTOCOL_CONNECTION_LOST') {
             connectDatabase();
-        } else {
+        }
+        else {
             throw err;
         }
     });
 };
-connectDatabase();
-class DB {}
+class DB {
+}
 exports.DB = DB;
-DB.convertRowDataToArrayCsv = async(rowData) => {
+DB.convertRowDataToArrayCsv = async (rowData) => {
     let dataArr = [];
     rowData.forEach((row, idx) => {
-        let rowArr = [],
-            fields = [];
+        let rowArr = [], fields = [];
         if (idx == 0) {
             fields = Object.keys(row);
             dataArr.push(fields);
@@ -64,14 +64,14 @@ DB.exeQuery = (sql, selectPlainObj = false, returnArrayCsv = false) => {
         });
     });
 };
-DB.selectBySql = async(sql, selectPlainObj = false, returnArrayCsv = false) => await DB.exeQuery(sql, selectPlainObj, returnArrayCsv);
-DB.selectByParams = async(params, selectPlainObj = false, returnArrayCsv = false) => {
+DB.selectBySql = async (sql, selectPlainObj = false, returnArrayCsv = false) => await DB.exeQuery(sql, selectPlainObj, returnArrayCsv);
+DB.selectByParams = async (params, selectPlainObj = false, returnArrayCsv = false) => {
     let limit = '';
     if (params.limit) {
         limit = `LIMIT ${params.limit}`;
     }
     return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${limit}`, params.where), selectPlainObj, returnArrayCsv);
 };
-DB.insertItem = async(params) => await DB.exeQuery(mysql.format(`INSERT INTO ${params.table} SET ${params.set}`, params.where));
-DB.updateItem = async(params) => await DB.exeQuery(mysql.format(`UPDATE ${params.table} SET ${params.set} WHERE ?? = ?`, params.where));
-DB.deleteItem = async(params) => await DB.exeQuery(mysql.format(`DELETE FROM ${params.table} WHERE ${params.set}`, params.where));
+DB.insertItem = async (params) => await DB.exeQuery(mysql.format(`INSERT INTO ${params.table} SET ${params.set}`, params.where));
+DB.updateItem = async (params) => await DB.exeQuery(mysql.format(`UPDATE ${params.table} SET ${params.set} WHERE ?? = ?`, params.where));
+DB.deleteItem = async (params) => await DB.exeQuery(mysql.format(`DELETE FROM ${params.table} WHERE ${params.set}`, params.where));

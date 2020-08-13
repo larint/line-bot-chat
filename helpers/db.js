@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.DB = void 0;
 const mysql = require("mysql");
 require('dotenv').config();
-const connection = mysql.createConnection({
+let connection = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PW,
@@ -11,22 +11,19 @@ const connection = mysql.createConnection({
     timezone: process.env.DB_TIMEZONE,
 });
 let connectDatabase = () => {
-    connection.connect(function (err) {
-        if (err) {
-            console.log('error when connecting to db:', err);
-            setTimeout(connectDatabase, 0);
-        }
-    });
     connection.on('error', function (err) {
-        console.log('db error', err);
-        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-            connectDatabase();
+        if (!err.fatal) {
+            return;
         }
-        else {
+        if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
             throw err;
         }
+        console.log('Re-connecting db: ' + err.stack);
+        connection = mysql.createConnection(connection.config);
+        connectDatabase();
     });
 };
+connectDatabase();
 class DB {
 }
 exports.DB = DB;

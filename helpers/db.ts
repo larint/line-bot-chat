@@ -2,14 +2,6 @@ import * as mysql from 'mysql'
 
 require('dotenv').config()
 
-const connection = mysql.createConnection({
-	host: process.env.DB_HOST,
-	user: process.env.DB_USER,
-	password: process.env.DB_PW,
-	database: process.env.DB_DB,
-	timezone: process.env.DB_TIMEZONE,
-})
-
 export interface Params {
 	table: string,
 	where: (string | number | boolean | Date)[],
@@ -18,28 +10,34 @@ export interface Params {
 	limit?: string
 }
 
+let connection = mysql.createConnection({
+	host: process.env.DB_HOST,
+	user: process.env.DB_USER,
+	password: process.env.DB_PW,
+	database: process.env.DB_DB,
+	timezone: process.env.DB_TIMEZONE,
+})
+
 // reconnect if lost connect database,using on heroku
 let connectDatabase = () => {
 
-	connection.connect(function (err) {
-		if (err) {
-			console.log('error when connecting to db:', err)
-			setTimeout(connectDatabase, 0)
-		}
-	});
-
 	connection.on('error', function (err) {
-		console.log('db error', err)
-		// Connection to the MySQL server is usually
-		if (err.code === 'PROTOCOL_CONNECTION_LOST') {
-			connectDatabase()
-		} else {
+		if (!err.fatal) {
+			return
+		}
+		if (err.code !== 'PROTOCOL_CONNECTION_LOST') {
 			throw err
 		}
+		console.log('Re-connecting db: ' + err.stack)
+
+		connection = mysql.createConnection(connection.config);
+		connectDatabase();
+		// connection.connect();
 	});
+
 }
 
-// connectDatabase()
+connectDatabase()
 
 class DB {
 	static convertRowDataToArrayCsv = async (rowData: any[]) => {

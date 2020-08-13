@@ -18,6 +18,7 @@ export interface Params {
 	limit?: string
 }
 
+// reconnect if lost connect database,using on heroku
 let connectDatabase = () => {
 
 	connection.connect(function (err) {
@@ -60,7 +61,7 @@ class DB {
 	}
 
 	static exeQuery = (sql: string, selectPlainObj: boolean = false, returnArrayCsv: boolean = false): Promise<any> => {
-		if (process.env.ENV) {
+		if (process.env.ENV == 'development') {
 			console.log(sql)
 		}
 		return new Promise((resolve, reject) => {

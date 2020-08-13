@@ -19,6 +19,7 @@ class LineSchedule {
 }
 exports.LineSchedule = LineSchedule;
 LineSchedule.run = async () => {
+    await client.broadcast({ type: 'text', text: 'Updated data from LINE' });
     console.log('run getFriendDemographics ' + new Date());
     let friend = await client.getFriendDemographics();
     await LineSchedule.saveGraphicsGenders(friend);

@@ -23,6 +23,8 @@ const client = new Client(config)
 class LineSchedule {
 
     static run = async () => {
+        // send to chat bot
+        await client.broadcast({ type: 'text', text: 'Updated data from LINE' })
 
         console.log('run getFriendDemographics ' + new Date())
         let friend: Types.FriendDemographics = await client.getFriendDemographics()

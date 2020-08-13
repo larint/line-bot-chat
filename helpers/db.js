@@ -10,11 +10,24 @@ const connection = mysql.createConnection({
     database: process.env.DB_DB,
     timezone: process.env.DB_TIMEZONE,
 });
-connection.connect(function (err) {
-    if (err)
-        throw err;
-    console.log("Connected!");
-});
+let connectDatabase = () => {
+    connection.connect(function (err) {
+        if (err) {
+            console.log('error when connecting to db:', err);
+            setTimeout(connectDatabase, 0);
+        }
+    });
+    connection.on('error', function (err) {
+        console.log('db error', err);
+        if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+            connectDatabase();
+        }
+        else {
+            throw err;
+        }
+    });
+};
+connectDatabase();
 class DB {
 }
 exports.DB = DB;

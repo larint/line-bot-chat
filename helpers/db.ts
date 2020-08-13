@@ -10,11 +10,6 @@ const connection = mysql.createConnection({
 	timezone: process.env.DB_TIMEZONE,
 })
 
-connection.connect(function (err) {
-	if (err) throw err;
-	console.log("Connected!");
-});
-
 export interface Params {
 	table: string,
 	where: (string | number | boolean | Date)[],
@@ -23,6 +18,27 @@ export interface Params {
 	limit?: string
 }
 
+let connectDatabase = () => {
+
+	connection.connect(function (err) {
+		if (err) {
+			console.log('error when connecting to db:', err)
+			setTimeout(connectDatabase, 0)
+		}
+	});
+
+	connection.on('error', function (err) {
+		console.log('db error', err)
+		// Connection to the MySQL server is usually
+		if (err.code === 'PROTOCOL_CONNECTION_LOST') {
+			connectDatabase()
+		} else {
+			throw err
+		}
+	});
+}
+
+connectDatabase()
 
 class DB {
 	static convertRowDataToArrayCsv = async (rowData: any[]) => {

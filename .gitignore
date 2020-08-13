@@ -4,5 +4,3 @@ launch.json
 .vscode
 .npmrc
 *.log
-app.js
-**/services/*.js

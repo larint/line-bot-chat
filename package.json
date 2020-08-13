@@ -6,6 +6,10 @@
         "start": "node app.js",
         "build-db": "node ./migrations/create_table.js"
     },
+    "engines": {
+        "node": "12.x",
+        "npm": "6.x"
+    },
     "dependencies": {
         "@line/bot-sdk": "^7.0.0",
         "cookie-parser": "~1.4.4",

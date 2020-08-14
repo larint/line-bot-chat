@@ -7,7 +7,7 @@ export function log(msg: any, file: string = 'log.log') {
 }
 
 export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Date()): string {
-    return '20200807'
+    return '20200814'
     let year = dateObj.getFullYear()
     let month = ("0" + (dateObj.getMonth() + 1)).slice(-2)
     let date = ("0" + dateObj.getDate()).slice(-2)

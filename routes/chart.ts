@@ -25,8 +25,9 @@ router.get('/', async (req, res, next) => {
             break;
     }
     let dataChart5 = await Chart.prepareDataChartPieFromTable(table)
+    let dataChart6 = await Chart.prepareDataChartLineFromTable('messages_statistic')
 
-    res.render('chart', { dataAges: dataChart1, dataAppType: dataChart2, dataGender: dataChart3, dataSubscription: dataChart4, dataArea: dataChart5 });
+    res.render('chart', { dataAges: dataChart1, dataAppType: dataChart2, dataGender: dataChart3, dataSubscription: dataChart4, dataArea: dataChart5, dataMess: dataChart6 });
 })
 
 export { router }

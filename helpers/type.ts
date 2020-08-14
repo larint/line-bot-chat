@@ -47,3 +47,18 @@ export interface dataChartPie {
 	labels: string,
 	bgcolor: string
 }
+
+export interface datasetChartLine {
+	label: string,
+	data: number[],
+	borderColor: string,
+	backgroundColor: string,
+	fill: boolean,
+	lineTension: number
+}
+export interface dataChartLine {
+	datasets: string,
+	labels: string,
+	suggestedMin: number,
+	suggestedMax: number
+}

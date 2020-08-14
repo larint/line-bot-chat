@@ -45,3 +45,8 @@ th {
 h5 {
     margin-top: 10px;
 }
+
+.chart {
+    background: #efefef;
+    padding: 5px;
+}

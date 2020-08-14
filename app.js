@@ -7,7 +7,6 @@ const morgan = require("morgan");
 const nodeSchedule = require("node-schedule");
 const fs = require("fs");
 const path = require("path");
-const LineSchedule_1 = require("./services/LineSchedule");
 require("./helpers/db");
 const socketio = require("socket.io");
 const index_1 = require("./routes/index");
@@ -47,8 +46,6 @@ app.use((err, req, res, next) => {
     res.render('error');
 });
 nodeSchedule.scheduleJob('* * * * *', function () {
-    LineSchedule_1.LineSchedule.run();
-    io.emit('schedule_get_line_data', { message: 'Updated data from LINE' });
 });
 io.on("connection", (socket) => {
     console.log('connected');

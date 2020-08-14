@@ -1,16 +1,21 @@
-<canvas id="myChartArea" width="400" height="400"></canvas>
-script.
-    var myChart = new Chart('myChartArea', {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: !{dataArea.data},
-                backgroundColor: !{dataArea.bgcolor},
-                label: 'Dataset 1'
-            }],
-            labels: !{dataArea.labels}
-        },
-        options: {
-            responsive: true
-        }
-    });
+.chart
+    canvas(id="myChartArea", width="400", height="400")
+    script.
+        var myChart = new Chart('myChartArea', {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: !{dataArea.data},
+                    backgroundColor: !{dataArea.bgcolor},
+                    label: 'Dataset 1'
+                }],
+                labels: !{dataArea.labels}
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Percentage by area'
+                }
+            }
+        });

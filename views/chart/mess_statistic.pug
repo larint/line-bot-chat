@@ -1,0 +1,37 @@
+.chart
+    canvas(id="myChartMess", width="400", height="400")
+    script.
+        var myChart = new Chart('myChartMess', {
+            type: 'line',
+            data: {
+                labels: !{dataMess.labels},
+                datasets: !{dataMess.datasets}
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Message statistics'
+                },
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Date'
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: 'Number of messages'
+                        },
+                        ticks: {
+                            suggestedMin: !{dataMess.suggestedMin},
+                            suggestedMax: !{dataMess.suggestedMax},
+                        }
+                    }]
+                }
+            }
+        })

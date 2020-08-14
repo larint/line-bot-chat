@@ -29,11 +29,11 @@ class LineSchedule {
         // await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })
 
         console.log('run getFriendDemographics ' + new Date())
-        // let friend: Types.FriendDemographics = await client.getFriendDemographics()
-        // let friend = await Faker.getFriendGraphics('jp')
+        let friend: Types.FriendDemographics = await client.getFriendDemographics()
 
-        let friend = await Faker.getFakeJsonFriendGraphics()
+        // let friend = await Faker.getFakeJsonFriendGraphics()
         // console.log(friend)
+
         await LineSchedule.saveGraphicsGenders(friend)
         await LineSchedule.saveGraphicsAges(friend)
         await LineSchedule.saveGraphicsAppTypes(friend)

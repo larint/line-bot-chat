@@ -1,16 +1,21 @@
-<canvas id="myChartGender" width="400" height="400"></canvas>
-script.
-    var myChart = new Chart('myChartGender', {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: !{dataGender.data},
-                backgroundColor: !{dataGender.bgcolor},
-                label: 'Dataset 1'
-            }],
-            labels: !{dataGender.labels}
-        },
-        options: {
-            responsive: true
-        }
-    });
+.chart
+    canvas(id="myChartGender", width="400", height="400")
+    script.
+        var myChart = new Chart('myChartGender', {
+            type: 'pie',
+            data: {
+                datasets: [{
+                    data: !{dataGender.data},
+                    backgroundColor: !{dataGender.bgcolor},
+                    label: 'Dataset 1'
+                }],
+                labels: !{dataGender.labels}
+            },
+            options: {
+                responsive: true,
+                title: {
+                    display: true,
+                    text: 'Percentage by gender'
+                }
+            }
+        });

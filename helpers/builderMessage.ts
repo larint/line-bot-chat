@@ -9,7 +9,7 @@ class BuilderMessage {
         let patternMsg = BuilderMessage.getBotMessage();
         let answer = ''
 
-        patternMsg.forEach((item: any) => {
+        for (const item of patternMsg) {
             if (messageReceive.includes(item.key)) {
                 let text = ''
                 if (Array.isArray(item.answer)) {
@@ -19,9 +19,14 @@ class BuilderMessage {
                     text = item.answer
                 }
                 answer = text.replace(':name', profile.displayName)
-                return
+                return answer
             }
-        })
+        }
+
+        answer = 'List of syntax that you can chat with bot:\n'
+        for (const item of patternMsg) {
+            answer += item.key + '\n'
+        }
 
         return answer
     }

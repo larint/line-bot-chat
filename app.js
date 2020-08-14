@@ -9,7 +9,6 @@ const fs = require("fs");
 const path = require("path");
 const LineSchedule_1 = require("./services/LineSchedule");
 require("./helpers/db");
-require("./services/notification");
 const index_1 = require("./routes/index");
 const users_1 = require("./routes/users");
 const webhook_1 = require("./routes/webhook");

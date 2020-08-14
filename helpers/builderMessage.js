@@ -7,7 +7,7 @@ exports.BuilderMessage = BuilderMessage;
 BuilderMessage.getAnswerBot = async (messageReceive, profile) => {
     let patternMsg = BuilderMessage.getBotMessage();
     let answer = '';
-    patternMsg.forEach((item) => {
+    for (const item of patternMsg) {
         if (messageReceive.includes(item.key)) {
             let text = '';
             if (Array.isArray(item.answer)) {
@@ -18,9 +18,13 @@ BuilderMessage.getAnswerBot = async (messageReceive, profile) => {
                 text = item.answer;
             }
             answer = text.replace(':name', profile.displayName);
-            return;
+            return answer;
         }
-    });
+    }
+    answer = 'List of syntax that you can chat with bot:\n';
+    for (const item of patternMsg) {
+        answer += item.key + '\n';
+    }
     return answer;
 };
 BuilderMessage.getBotMessage = () => {

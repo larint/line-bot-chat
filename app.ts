@@ -9,7 +9,6 @@ import * as path from 'path'
 import { LineSchedule } from './services/LineSchedule'
 import './helpers/db'
 import * as socketio from "socket.io";
-import './services/notification'
 // ROUTER
 import { router as indexRouter } from './routes/index'
 import { router as usersRouter } from './routes/users'

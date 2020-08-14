@@ -1,13 +1,20 @@
 import { TableFriendGraphicsGenders } from './tables/friend_graphics__genders'
 import { TableFriendGraphicsAges } from './tables/friend_graphics__ages'
-import { TableFriendGraphicsAreas } from './tables/friend_graphics__areas'
 import { TableFriendGraphicsApptypes } from './tables/friend_graphics__apptypes'
 import { TableFriendGraphicsSubscriptions } from './tables/friend_graphics__subscriptions'
 import { TableMessagesStatistic } from './tables/messages_statistic'
+import { TableFriendGraphicsAreaJP } from './tables/friend_graphics__areas_jp'
+import { TableFriendGraphicsAreaTW } from './tables/friend_graphics__areas_tw'
+import { TableFriendGraphicsAreaTH } from './tables/friend_graphics__areas_th'
+import { TableFriendGraphicsAreaID } from './tables/friend_graphics__areas_id'
 
 TableFriendGraphicsGenders.up()
 TableFriendGraphicsAges.up()
-TableFriendGraphicsAreas.up()
 TableFriendGraphicsApptypes.up()
 TableFriendGraphicsSubscriptions.up()
 TableMessagesStatistic.up()
+
+TableFriendGraphicsAreaJP.up() // japan
+TableFriendGraphicsAreaTW.up() // taiwan
+TableFriendGraphicsAreaTH.up() // thailan
+TableFriendGraphicsAreaID.up() // indonesia

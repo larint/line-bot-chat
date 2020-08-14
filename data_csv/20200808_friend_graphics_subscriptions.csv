@@ -1,0 +1,4 @@
+id,date_update,within7days,within30days,within90days,within180days,within365days,over365days,unknown
+1,20200806,33,26.9,11.4,11.7,0.1,1.5,15.4
+2,20200807,1.9,3.6,69.5,4.2,2.5,18,0.3
+3,20200808,21.1,22.6,41.8,0.5,13.5,0.3,0.2

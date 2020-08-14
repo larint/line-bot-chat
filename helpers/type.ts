@@ -41,3 +41,9 @@ export interface token {
 	scope: string,
 	id_token: string,
 }
+
+export interface dataChartPie {
+	data: string,
+	labels: string,
+	bgcolor: string
+}

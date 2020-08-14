@@ -24,7 +24,7 @@ router.get('/', async (req, res, next) => {
     });
     let graphicsAreas = await db_1.DB.selectByParams({
         select: '*',
-        table: 'friend_graphics__areas',
+        table: 'friend_graphics__areas_jp',
         set: '?',
         where: [1]
     });
@@ -81,7 +81,7 @@ router.get('/', async (req, res, next) => {
             filename = `${currentDate}_friend_graphics_areas.csv`;
             data = await db_1.DB.selectByParams({
                 select: '*',
-                table: 'friend_graphics__areas',
+                table: 'friend_graphics__areas_jp',
                 set: '?',
                 where: [1]
             }, false, true);

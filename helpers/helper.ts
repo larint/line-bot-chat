@@ -7,6 +7,7 @@ export function log(msg: any, file: string = 'log.log') {
 }
 
 export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Date()): string {
+    return '20200806'
     let year = dateObj.getFullYear()
     let month = ("0" + (dateObj.getMonth() + 1)).slice(-2)
     let date = ("0" + dateObj.getDate()).slice(-2)
@@ -18,4 +19,41 @@ export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Da
     }
 
     return dateObj.toDateString()
+}
+
+export function randomColorHex() {
+    let cls = ["#626262", "#717171", "#818181", "#919191", "#a0a0a0", "#b0b0b0", "#c0c0c0", "#cfcfcf", "#dfdfdf", "#efefef", "#3b3b3b", "#484848", "#555555", "#6e6e6e", "#7b7b7b", "#888888", "#746053", "#68564a", "#5c4c42", "#51433a", "#453931", "#3a3029", "#2e2621", "#221c18", "#171310", "#0b0908", "#816f64", "#8f7f75", "#9d8f86", "#ab9f97", "#b9afa9", "#c7bfba", "#d5cfcb", "#e3dfdc", "#f1efed", "#7b4c47", "#885d59", "#956f6b", "#a2817e", "#af9390", "#bda5a3", "#cab7b5", "#d7c9c7", "#374053", "#4b5364", "#5e6675", "#737986", "#878c97", "#9b9fa9", "#afb2ba", "#c3c5cb", "#374053", "#31394a", "#2c3342", "#262c3a", "#283e46", "#3d5158", "#52646a", "#68777d", "#7e8b90", "#939ea2", "#a9b1b5", "#24373f", "#203138", "#1c2b31"]
+    let idx = Math.floor(Math.random() * Math.floor(cls.length));
+
+    return cls[idx]
+}
+
+export async function generateNumberProportion(max: number, segments: number) {
+    let segmentMax: number = 80,
+        tempResults: number[] = [],
+        remaining: number = max,
+        finalResults: number[] = []
+
+    //create a series of random numbers and push them into an array
+    for (let i = 1; i <= segments; i++) {
+        let r: number = Math.random() * segmentMax
+        r = Math.round(r * 10) / 10
+        if (i === segments) {
+            // the final segment is just what's left after the other randoms are added up
+            r = remaining
+        }
+        tempResults.push(r)
+        // subtract them from the total
+        remaining -= r
+        remaining = Math.round(remaining * 10) / 10
+        // no segment can be larger than what's remaining
+        segmentMax = remaining
+    }
+
+    //randomly shuffle the array into a new array
+    while (tempResults.length > 0) {
+        let index = Math.floor(Math.random() * tempResults.length)
+        finalResults = finalResults.concat(tempResults.splice(index, 1));
+    }
+    return finalResults
 }

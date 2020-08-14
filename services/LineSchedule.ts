@@ -4,12 +4,14 @@ import { log, formatDate } from '../helpers/helper'
 import { Faker } from '../faker/faker'
 import { DB } from '../helpers/db'
 import { messageStatistic } from '../helpers/type'
-import { TableFriendGraphicsGenders } from '../migrations//tables/friend_graphics__genders'
-import { TableFriendGraphicsAges } from '../migrations//tables/friend_graphics__ages'
-import { TableFriendGraphicsApptypes } from '../migrations//tables/friend_graphics__apptypes'
-import { TableFriendGraphicsSubscriptions } from '../migrations//tables/friend_graphics__subscriptions'
-import { TableFriendGraphicsAreas } from '../migrations//tables/friend_graphics__areas'
-
+import { TableFriendGraphicsGenders } from '../migrations/tables/friend_graphics__genders'
+import { TableFriendGraphicsAges } from '../migrations/tables/friend_graphics__ages'
+import { TableFriendGraphicsApptypes } from '../migrations/tables/friend_graphics__apptypes'
+import { TableFriendGraphicsSubscriptions } from '../migrations/tables/friend_graphics__subscriptions'
+import { TableFriendGraphicsAreaJP } from '../migrations/tables/friend_graphics__areas_jp'
+import { TableFriendGraphicsAreaTW } from '../migrations/tables/friend_graphics__areas_tw'
+import { TableFriendGraphicsAreaTH } from '../migrations/tables/friend_graphics__areas_th'
+import { TableFriendGraphicsAreaID } from '../migrations/tables/friend_graphics__areas_id'
 
 require('dotenv').config()
 
@@ -24,19 +26,19 @@ class LineSchedule {
 
     static run = async () => {
         // send to chat bot
-        await client.broadcast({ type: 'text', text: 'Updated data from LINE' })
+        // await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })
 
         console.log('run getFriendDemographics ' + new Date())
-        let friend: Types.FriendDemographics = await client.getFriendDemographics()
+        // let friend: Types.FriendDemographics = await client.getFriendDemographics()
         // let friend = await Faker.getFriendGraphics('jp')
 
-        // save gender
+        let friend = await Faker.getFakeJsonFriendGraphics()
+        // console.log(friend)
         await LineSchedule.saveGraphicsGenders(friend)
         await LineSchedule.saveGraphicsAges(friend)
         await LineSchedule.saveGraphicsAppTypes(friend)
         await LineSchedule.saveGraphicsSubscription(friend)
         await LineSchedule.saveGraphicsAreas(friend)
-        // // save message statistic
         await LineSchedule.saveMessageStatistic()
 
     }
@@ -183,11 +185,34 @@ class LineSchedule {
     }
 
     static saveGraphicsAreas = async (friend: Types.FriendDemographics) => {
+        let areaTrans: any, table: string = ''
+        switch (process.env.LINE_LOCATE) {
+            case 'jp':
+                areaTrans = TableFriendGraphicsAreaJP.areaTrans;
+                table = 'friend_graphics__areas_jp'
+                break;
+            case 'tw':
+                areaTrans = TableFriendGraphicsAreaTW.areaTrans;
+                table = 'friend_graphics__areas_tw'
+                break;
+            case 'th':
+                areaTrans = TableFriendGraphicsAreaTH.areaTrans;
+                table = 'friend_graphics__areas_th'
+                break;
+            case 'id':
+                areaTrans = TableFriendGraphicsAreaID.areaTrans;
+                table = 'friend_graphics__areas_id'
+                break;
+            default:
+                areaTrans = TableFriendGraphicsAreaJP.areaTrans;
+                table = 'friend_graphics__areas_jp'
+                break;
+        }
 
         let currentDate = formatDate('YYYYMMDD');
         let exist = await DB.selectByParams({
             select: 'id',
-            table: 'friend_graphics__areas',
+            table: table,
             set: '??=?',
             where: ['date_update', currentDate]
         })
@@ -197,10 +222,8 @@ class LineSchedule {
         }
 
         let areasWhere = ['date_update', currentDate]
-        let areaTrans: any = TableFriendGraphicsAreas.areaTrans;
         // build set where
         let set: string = '?? = ?,'
-
         friend.areas?.forEach((item: any) => {
             areasWhere.push(areaTrans[item.area])
             areasWhere.push(item.percentage)
@@ -209,19 +232,14 @@ class LineSchedule {
 
         let citys = Object.values(areaTrans)
         if (friend.areas?.length == 0) {
-            citys.map((city) => {
+            for (const city of citys) {
                 areasWhere.push(city as string)
                 areasWhere.push('0')
-            })
+            }
         }
 
-        // citys.map((city) => {
-        //     set += '?? = ?,'
-        // })
-        // set = set.slice(0, -1)
-
         await DB.insertItem({
-            table: 'friend_graphics__areas',
+            table: table,
             set: set.slice(0, -1), // remove last character ,
             where: areasWhere
         })

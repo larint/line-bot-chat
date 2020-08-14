@@ -60,3 +60,4 @@
 ::1 - - [13/Aug/2020:09:31:31 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://bf332debc623.ngrok.io/char" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
 ::1 - - [13/Aug/2020:09:31:41 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "-" "Mozilla/5.0 (Windows NT 6.1; WOW64) SkypeUriPreview Preview/0.5"
 ::1 - - [13/Aug/2020:09:31:51 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://bf332debc623.ngrok.io/chart" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+::1 - - [14/Aug/2020:02:27:07 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:3000/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"

@@ -8,7 +8,8 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { LineSchedule } from './services/LineSchedule'
 import './helpers/db'
-import * as socketio from "socket.io";
+import * as socketio from "socket.io"
+
 // ROUTER
 import { router as indexRouter } from './routes/index'
 import { router as usersRouter } from './routes/users'
@@ -24,7 +25,7 @@ const app = express();
 // Real-time notification updates
 let http = require("http").Server(app);
 // set up socket.io and bind it to server
-let io = require("socket.io")(http);
+let io = socketio(http);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -67,7 +68,7 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	res.render('error');
 });
 
-nodeSchedule.scheduleJob('1 * * * *', function () {
+nodeSchedule.scheduleJob('* * * * *', function () {
 	LineSchedule.run()
 	io.emit('schedule_get_line_data', { message: 'Updated data from LINE' })
 });

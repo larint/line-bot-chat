@@ -3,12 +3,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LineSchedule = void 0;
 const bot_sdk_1 = require("@line/bot-sdk");
 const helper_1 = require("../helpers/helper");
+const faker_1 = require("../faker/faker");
 const db_1 = require("../helpers/db");
-const friend_graphics__genders_1 = require("../migrations//tables/friend_graphics__genders");
-const friend_graphics__ages_1 = require("../migrations//tables/friend_graphics__ages");
-const friend_graphics__apptypes_1 = require("../migrations//tables/friend_graphics__apptypes");
-const friend_graphics__subscriptions_1 = require("../migrations//tables/friend_graphics__subscriptions");
-const friend_graphics__areas_1 = require("../migrations//tables/friend_graphics__areas");
+const friend_graphics__genders_1 = require("../migrations/tables/friend_graphics__genders");
+const friend_graphics__ages_1 = require("../migrations/tables/friend_graphics__ages");
+const friend_graphics__apptypes_1 = require("../migrations/tables/friend_graphics__apptypes");
+const friend_graphics__subscriptions_1 = require("../migrations/tables/friend_graphics__subscriptions");
+const friend_graphics__areas_jp_1 = require("../migrations/tables/friend_graphics__areas_jp");
+const friend_graphics__areas_tw_1 = require("../migrations/tables/friend_graphics__areas_tw");
+const friend_graphics__areas_th_1 = require("../migrations/tables/friend_graphics__areas_th");
+const friend_graphics__areas_id_1 = require("../migrations/tables/friend_graphics__areas_id");
 require('dotenv').config();
 const config = {
     channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
@@ -19,9 +23,8 @@ class LineSchedule {
 }
 exports.LineSchedule = LineSchedule;
 LineSchedule.run = async () => {
-    await client.broadcast({ type: 'text', text: 'Updated data from LINE' });
     console.log('run getFriendDemographics ' + new Date());
-    let friend = await client.getFriendDemographics();
+    let friend = await faker_1.Faker.getFakeJsonFriendGraphics();
     await LineSchedule.saveGraphicsGenders(friend);
     await LineSchedule.saveGraphicsAges(friend);
     await LineSchedule.saveGraphicsAppTypes(friend);
@@ -147,10 +150,33 @@ LineSchedule.saveGraphicsSubscription = async (friend) => {
 };
 LineSchedule.saveGraphicsAreas = async (friend) => {
     var _a, _b;
+    let areaTrans, table = '';
+    switch (process.env.LINE_LOCATE) {
+        case 'jp':
+            areaTrans = friend_graphics__areas_jp_1.TableFriendGraphicsAreaJP.areaTrans;
+            table = 'friend_graphics__areas_jp';
+            break;
+        case 'tw':
+            areaTrans = friend_graphics__areas_tw_1.TableFriendGraphicsAreaTW.areaTrans;
+            table = 'friend_graphics__areas_tw';
+            break;
+        case 'th':
+            areaTrans = friend_graphics__areas_th_1.TableFriendGraphicsAreaTH.areaTrans;
+            table = 'friend_graphics__areas_th';
+            break;
+        case 'id':
+            areaTrans = friend_graphics__areas_id_1.TableFriendGraphicsAreaID.areaTrans;
+            table = 'friend_graphics__areas_id';
+            break;
+        default:
+            areaTrans = friend_graphics__areas_jp_1.TableFriendGraphicsAreaJP.areaTrans;
+            table = 'friend_graphics__areas_jp';
+            break;
+    }
     let currentDate = helper_1.formatDate('YYYYMMDD');
     let exist = await db_1.DB.selectByParams({
         select: 'id',
-        table: 'friend_graphics__areas',
+        table: table,
         set: '??=?',
         where: ['date_update', currentDate]
     });
@@ -158,7 +184,6 @@ LineSchedule.saveGraphicsAreas = async (friend) => {
         return;
     }
     let areasWhere = ['date_update', currentDate];
-    let areaTrans = friend_graphics__areas_1.TableFriendGraphicsAreas.areaTrans;
     let set = '?? = ?,';
     (_a = friend.areas) === null || _a === void 0 ? void 0 : _a.forEach((item) => {
         areasWhere.push(areaTrans[item.area]);
@@ -167,13 +192,13 @@ LineSchedule.saveGraphicsAreas = async (friend) => {
     });
     let citys = Object.values(areaTrans);
     if (((_b = friend.areas) === null || _b === void 0 ? void 0 : _b.length) == 0) {
-        citys.map((city) => {
+        for (const city of citys) {
             areasWhere.push(city);
             areasWhere.push('0');
-        });
+        }
     }
     await db_1.DB.insertItem({
-        table: 'friend_graphics__areas',
+        table: table,
         set: set.slice(0, -1),
         where: areasWhere
     });

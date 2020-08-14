@@ -8,7 +8,7 @@ function log(msg, file = 'log.log') {
 }
 exports.log = log;
 function formatDate(format = 'dd-MM-YYYY', dateObj = new Date()) {
-    return '20200806';
+    return '20200807';
     let year = dateObj.getFullYear();
     let month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
     let date = ("0" + dateObj.getDate()).slice(-2);

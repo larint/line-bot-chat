@@ -37,27 +37,31 @@ class Chart {
             // reverse array by date increase
             dataTable.reverse()
 
-            let datait1 = [], datait2 = [], datait3 = []
+            let datait1 = [], datait2 = [], datait3 = [], datait4 = [], datait5 = []
             for (const item of dataTable) {
                 let date = item.date_update.substr(4, 2) + '/' + item.date_update.substr(6, 2)
                 labels.push(date)
 
                 datait1.push(item.reply_number)
                 datait2.push(item.broadcast_number)
-                datait3.push(item.deliveries_api_reply)
-                console.log(item.deliveries_api_reply)
+                datait3.push(item.multicast_number)
+                datait4.push(item.deliveries_welcome_response)
+                datait5.push(item.deliveries_api_reply)
             }
 
             let fr = []
             fr.push(datait1)
             fr.push(datait2)
             fr.push(datait3)
+            fr.push(datait4)
+            fr.push(datait5)
 
             for (let i = 0; i < fr.length; i++) {
+                let color = randomColorHex()
                 datasets.push({
                     label: 'messages ' + i,
                     data: fr[i],
-                    borderColor: '#36a2eb',
+                    borderColor: color,
                     backgroundColor: 'rgba(0, 0, 0, 0)',
                     fill: false,
                     lineTension: 0

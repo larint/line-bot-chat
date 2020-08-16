@@ -7,7 +7,8 @@ export interface Params {
 	where: (string | number | boolean | Date)[],
 	set?: string,
 	select?: string,
-	limit?: string
+	limit?: string,
+	order?: string | 'id desc'
 }
 
 let connection = mysql.createConnection({
@@ -80,11 +81,14 @@ class DB {
 
 	static selectBySql = async (sql: string, selectPlainObj: boolean = false, returnArrayCsv: boolean = false): Promise<any[] | mysql.MysqlError | any> => await DB.exeQuery(sql, selectPlainObj, returnArrayCsv)
 	static selectByParams = async (params: Params, selectPlainObj: boolean = false, returnArrayCsv: boolean = false): Promise<any[] | mysql.MysqlError | any> => {
-		let limit: string | number = ''
+		let limit: string | number = '', order: string = ''
 		if (params.limit) {
 			limit = `LIMIT ${params.limit}`
 		}
-		return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${limit}`, params.where), selectPlainObj, returnArrayCsv)
+		if (params.order) {
+			order = `ORDER BY ${params.order}`
+		}
+		return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${order} ${limit}`, params.where), selectPlainObj, returnArrayCsv)
 	}
 	static insertItem = async (params: Params): Promise<any[] | mysql.MysqlError | any> => await DB.exeQuery(mysql.format(`INSERT INTO ${params.table} SET ${params.set}`, params.where))
 	static updateItem = async (params: Params): Promise<any[] | mysql.MysqlError | any> => await DB.exeQuery(mysql.format(`UPDATE ${params.table} SET ${params.set} WHERE ?? = ?`, params.where))

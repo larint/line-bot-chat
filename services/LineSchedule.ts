@@ -29,9 +29,9 @@ class LineSchedule {
         // await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })
 
         console.log('run getFriendDemographics ' + new Date())
-        // let friend: Types.FriendDemographics = await client.getFriendDemographics()
+        let friend: Types.FriendDemographics = await client.getFriendDemographics()
 
-        let friend = await Faker.getFakeJsonFriendGraphics()
+        // let friend = await Faker.getFakeJsonFriendGraphics()
         // console.log(friend)
 
         await LineSchedule.saveGraphicsGenders(friend)
@@ -272,23 +272,23 @@ class LineSchedule {
             where: [
                 'date_update', currentDate,
                 'reply_status', result.reply.status,
-                'reply_number', result.reply.success!,
+                'reply_number', result.reply.success ?? 0,
                 'push_status', result.sentPush.status,
-                'push_number', result.sentPush.success!,
+                'push_number', result.sentPush.success ?? 0,
                 'multicast_status', result.sentMulticast.status,
-                'multicast_number', result.sentMulticast.success!,
+                'multicast_number', result.sentMulticast.success ?? 0,
                 'broadcast_status', result.sentBroadcast.status,
-                'broadcast_number', result.sentBroadcast.success!,
+                'broadcast_number', result.sentBroadcast.success ?? 0,
                 'deliveries_status', result.messageDeliveries.status,
-                'deliveries_broadcast', result.messageDeliveries.broadcast,
-                'deliveries_targeting', result.messageDeliveries.targeting,
-                'deliveries_auto_response', result.messageDeliveries.autoResponse,
-                'deliveries_welcome_response', result.messageDeliveries.welcomeResponse,
-                'deliveries_chat', result.messageDeliveries.chat,
-                'deliveries_api_broadcast', result.messageDeliveries.apiBroadcast,
-                'deliveries_api_push', result.messageDeliveries.apiPush,
-                'deliveries_api_multicast', result.messageDeliveries.welcomeResponse,
-                'deliveries_api_reply', result.messageDeliveries.apiReply,
+                'deliveries_broadcast', result.messageDeliveries.broadcast ??0,
+                'deliveries_targeting', result.messageDeliveries.targeting ?? 0,
+                'deliveries_auto_response', result.messageDeliveries.autoResponse ??0,
+                'deliveries_welcome_response', result.messageDeliveries.welcomeResponse ??0,
+                'deliveries_chat', result.messageDeliveries.chat ??0,
+                'deliveries_api_broadcast', result.messageDeliveries.apiBroadcast ??0,
+                'deliveries_api_push', result.messageDeliveries.apiPush ??0,
+                'deliveries_api_multicast', result.messageDeliveries.welcomeResponse ??0,
+                'deliveries_api_reply', result.messageDeliveries.apiReply ??0,
             ]
         })
     }

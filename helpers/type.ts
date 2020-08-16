@@ -62,3 +62,8 @@ export interface dataChartLine {
 	suggestedMin: number,
 	suggestedMax: number
 }
+
+export interface dataChartLineItem {
+	label: string,
+	data: number[]
+}

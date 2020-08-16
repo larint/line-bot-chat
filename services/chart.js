@@ -26,8 +26,8 @@ Chart.prepareDataChartPieFromTable = async (table) => {
     return dataChart;
 };
 Chart.prepareDataChartLineFromTable = async (table) => {
-    let dataTable = await db_1.DB.selectBySql(`select * from ${table} order by date_update desc limit 30`, true);
-    let dataChart = { datasets: '', labels: '', suggestedMin: 0, suggestedMax: 30 };
+    let dataTable = await db_1.DB.selectBySql(`select * from ${table} order by date_update desc limit 10`, true);
+    let dataChart = { datasets: '', labels: '', suggestedMin: 0, suggestedMax: 0 };
     if (dataTable.length > 0) {
         let labels = [];
         let datasets = [];
@@ -42,17 +42,17 @@ Chart.prepareDataChartLineFromTable = async (table) => {
             datait4.push(item.deliveries_welcome_response);
             datait5.push(item.deliveries_api_reply);
         }
-        let fr = [];
-        fr.push(datait1);
-        fr.push(datait2);
-        fr.push(datait3);
-        fr.push(datait4);
-        fr.push(datait5);
-        for (let i = 0; i < fr.length; i++) {
+        let datasetItem = [];
+        datasetItem.push({ label: 'reply number', data: datait1 });
+        datasetItem.push({ label: 'broadcast number', data: datait2 });
+        datasetItem.push({ label: 'multicast number', data: datait3 });
+        datasetItem.push({ label: 'welcome response', data: datait4 });
+        datasetItem.push({ label: 'api reply', data: datait5 });
+        for (const it of datasetItem) {
             let color = helper_1.randomColorHex();
             datasets.push({
-                label: 'messages ' + i,
-                data: fr[i],
+                label: it.label,
+                data: it.data,
                 borderColor: color,
                 backgroundColor: 'rgba(0, 0, 0, 0)',
                 fill: false,
@@ -61,7 +61,6 @@ Chart.prepareDataChartLineFromTable = async (table) => {
         }
         dataChart.labels = JSON.stringify(labels);
         dataChart.datasets = JSON.stringify(datasets);
-        console.log(dataChart);
     }
     return dataChart;
 };

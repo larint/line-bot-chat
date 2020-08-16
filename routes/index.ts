@@ -49,7 +49,8 @@ router.get('/', async (req, res, next) => {
         select: '*',
         table: 'messages_statistic',
         set: '?',
-        where: [1]
+        where: [1],
+        order: 'date_update desc'
     })
 
     res.render('index', {

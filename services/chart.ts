@@ -1,6 +1,6 @@
 import { DB } from '../helpers/db'
 import { randomColorHex, formatDate } from '../helpers/helper'
-import { dataChartPie, dataChartLine, datasetChartLine } from '../helpers/type'
+import { dataChartPie, dataChartLine, datasetChartLine, dataChartLineItem } from '../helpers/type'
 
 class Chart {
 
@@ -28,8 +28,8 @@ class Chart {
         return dataChart
     }
     static prepareDataChartLineFromTable = async (table: string) => {
-        let dataTable = await DB.selectBySql(`select * from ${table} order by date_update desc limit 30`, true)
-        let dataChart: dataChartLine = { datasets: '', labels: '', suggestedMin: 0, suggestedMax: 30 }
+        let dataTable = await DB.selectBySql(`select * from ${table} order by date_update desc limit 10`, true)
+        let dataChart: dataChartLine = { datasets: '', labels: '', suggestedMin: 0, suggestedMax: 0 }
 
         if (dataTable.length > 0) {
             let labels: string[] = []
@@ -41,7 +41,6 @@ class Chart {
             for (const item of dataTable) {
                 let date = item.date_update.substr(4, 2) + '/' + item.date_update.substr(6, 2)
                 labels.push(date)
-
                 datait1.push(item.reply_number)
                 datait2.push(item.broadcast_number)
                 datait3.push(item.multicast_number)
@@ -49,18 +48,18 @@ class Chart {
                 datait5.push(item.deliveries_api_reply)
             }
 
-            let fr = []
-            fr.push(datait1)
-            fr.push(datait2)
-            fr.push(datait3)
-            fr.push(datait4)
-            fr.push(datait5)
+            let datasetItem: dataChartLineItem[] = []
+            datasetItem.push({ label: 'reply number', data: datait1 })
+            datasetItem.push({ label: 'broadcast number', data: datait2 })
+            datasetItem.push({ label: 'multicast number', data: datait3 })
+            datasetItem.push({ label: 'welcome response', data: datait4 })
+            datasetItem.push({ label: 'api reply', data: datait5 })
 
-            for (let i = 0; i < fr.length; i++) {
+            for (const it of datasetItem) {
                 let color = randomColorHex()
                 datasets.push({
-                    label: 'messages ' + i,
-                    data: fr[i],
+                    label: it.label,
+                    data: it.data,
                     borderColor: color,
                     backgroundColor: 'rgba(0, 0, 0, 0)',
                     fill: false,
@@ -70,7 +69,6 @@ class Chart {
 
             dataChart.labels = JSON.stringify(labels)
             dataChart.datasets = JSON.stringify(datasets)
-            console.log(dataChart)
         }
 
 

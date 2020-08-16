@@ -65,3 +65,4 @@
 ::1 - - [15/Aug/2020:14:24:59 +0000] "GET //linedata/downcsv/2 HTTP/1.1" 404 158 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
 ::1 - - [16/Aug/2020:06:34:16 +0000] "GET /getStatistics/20200729 HTTP/1.1" 404 161 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
 ::1 - - [16/Aug/2020:06:34:19 +0000] "GET /getStatistics/20200729 HTTP/1.1" 404 161 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"
+::1 - - [16/Aug/2020:15:25:31 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:3000/" "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/84.0.4147.125 Safari/537.36"

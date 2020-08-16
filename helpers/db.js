@@ -63,11 +63,14 @@ DB.exeQuery = (sql, selectPlainObj = false, returnArrayCsv = false) => {
 };
 DB.selectBySql = async (sql, selectPlainObj = false, returnArrayCsv = false) => await DB.exeQuery(sql, selectPlainObj, returnArrayCsv);
 DB.selectByParams = async (params, selectPlainObj = false, returnArrayCsv = false) => {
-    let limit = '';
+    let limit = '', order = '';
     if (params.limit) {
         limit = `LIMIT ${params.limit}`;
     }
-    return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${limit}`, params.where), selectPlainObj, returnArrayCsv);
+    if (params.order) {
+        order = `ORDER BY ${params.order}`;
+    }
+    return await DB.exeQuery(mysql.format(`SELECT ${params.select} FROM ${params.table} WHERE ${params.set} ${order} ${limit}`, params.where), selectPlainObj, returnArrayCsv);
 };
 DB.insertItem = async (params) => await DB.exeQuery(mysql.format(`INSERT INTO ${params.table} SET ${params.set}`, params.where));
 DB.updateItem = async (params) => await DB.exeQuery(mysql.format(`UPDATE ${params.table} SET ${params.set} WHERE ?? = ?`, params.where));

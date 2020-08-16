@@ -3,7 +3,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LineSchedule = void 0;
 const bot_sdk_1 = require("@line/bot-sdk");
 const helper_1 = require("../helpers/helper");
-const faker_1 = require("../faker/faker");
 const db_1 = require("../helpers/db");
 const friend_graphics__genders_1 = require("../migrations/tables/friend_graphics__genders");
 const friend_graphics__ages_1 = require("../migrations/tables/friend_graphics__ages");
@@ -24,7 +23,7 @@ class LineSchedule {
 exports.LineSchedule = LineSchedule;
 LineSchedule.run = async () => {
     console.log('run getFriendDemographics ' + new Date());
-    let friend = await faker_1.Faker.getFakeJsonFriendGraphics();
+    let friend = await client.getFriendDemographics();
     await LineSchedule.saveGraphicsGenders(friend);
     await LineSchedule.saveGraphicsAges(friend);
     await LineSchedule.saveGraphicsAppTypes(friend);
@@ -204,6 +203,7 @@ LineSchedule.saveGraphicsAreas = async (friend) => {
     });
 };
 LineSchedule.saveMessageStatistic = async () => {
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o;
     let currentDate = helper_1.formatDate('YYYYMMDD');
     let exist = await db_1.DB.selectByParams({
         select: 'id',
@@ -227,26 +227,35 @@ LineSchedule.saveMessageStatistic = async () => {
             'date_update', currentDate,
             'reply_status', result.reply.status,
             'reply_number',
-            result.reply.success,
+            (_a = result.reply.success) !== null && _a !== void 0 ? _a : 0,
             'push_status', result.sentPush.status,
             'push_number',
-            result.sentPush.success,
+            (_b = result.sentPush.success) !== null && _b !== void 0 ? _b : 0,
             'multicast_status', result.sentMulticast.status,
             'multicast_number',
-            result.sentMulticast.success,
+            (_c = result.sentMulticast.success) !== null && _c !== void 0 ? _c : 0,
             'broadcast_status', result.sentBroadcast.status,
             'broadcast_number',
-            result.sentBroadcast.success,
+            (_d = result.sentBroadcast.success) !== null && _d !== void 0 ? _d : 0,
             'deliveries_status', result.messageDeliveries.status,
-            'deliveries_broadcast', result.messageDeliveries.broadcast,
-            'deliveries_targeting', result.messageDeliveries.targeting,
-            'deliveries_auto_response', result.messageDeliveries.autoResponse,
-            'deliveries_welcome_response', result.messageDeliveries.welcomeResponse,
-            'deliveries_chat', result.messageDeliveries.chat,
-            'deliveries_api_broadcast', result.messageDeliveries.apiBroadcast,
-            'deliveries_api_push', result.messageDeliveries.apiPush,
-            'deliveries_api_multicast', result.messageDeliveries.welcomeResponse,
-            'deliveries_api_reply', result.messageDeliveries.apiReply,
+            'deliveries_broadcast',
+            (_e = result.messageDeliveries.broadcast) !== null && _e !== void 0 ? _e : 0,
+            'deliveries_targeting',
+            (_f = result.messageDeliveries.targeting) !== null && _f !== void 0 ? _f : 0,
+            'deliveries_auto_response',
+            (_g = result.messageDeliveries.autoResponse) !== null && _g !== void 0 ? _g : 0,
+            'deliveries_welcome_response',
+            (_h = result.messageDeliveries.welcomeResponse) !== null && _h !== void 0 ? _h : 0,
+            'deliveries_chat',
+            (_j = result.messageDeliveries.chat) !== null && _j !== void 0 ? _j : 0,
+            'deliveries_api_broadcast',
+            (_k = result.messageDeliveries.apiBroadcast) !== null && _k !== void 0 ? _k : 0,
+            'deliveries_api_push',
+            (_l = result.messageDeliveries.apiPush) !== null && _l !== void 0 ? _l : 0,
+            'deliveries_api_multicast',
+            (_m = result.messageDeliveries.welcomeResponse) !== null && _m !== void 0 ? _m : 0,
+            'deliveries_api_reply',
+            (_o = result.messageDeliveries.apiReply) !== null && _o !== void 0 ? _o : 0,
         ]
     });
 };

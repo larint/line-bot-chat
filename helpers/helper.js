@@ -29,7 +29,7 @@ function randomColorHex() {
 }
 exports.randomColorHex = randomColorHex;
 async function generateNumberProportion(max, segments) {
-    let segmentMax = 80, tempResults = [], remaining = max, finalResults = [];
+    let segmentMax = 60, tempResults = [], remaining = max, finalResults = [];
     for (let i = 1; i <= segments; i++) {
         let r = Math.random() * segmentMax;
         r = Math.round(r * 10) / 10;

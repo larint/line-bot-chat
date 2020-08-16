@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.LineSchedule = void 0;
 const bot_sdk_1 = require("@line/bot-sdk");
 const helper_1 = require("../helpers/helper");
+const faker_1 = require("../faker/faker");
 const db_1 = require("../helpers/db");
 const friend_graphics__genders_1 = require("../migrations/tables/friend_graphics__genders");
 const friend_graphics__ages_1 = require("../migrations/tables/friend_graphics__ages");
@@ -23,7 +24,7 @@ class LineSchedule {
 exports.LineSchedule = LineSchedule;
 LineSchedule.run = async () => {
     console.log('run getFriendDemographics ' + new Date());
-    let friend = await client.getFriendDemographics();
+    let friend = await faker_1.Faker.getFakeJsonFriendGraphics();
     await LineSchedule.saveGraphicsGenders(friend);
     await LineSchedule.saveGraphicsAges(friend);
     await LineSchedule.saveGraphicsAppTypes(friend);

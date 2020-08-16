@@ -30,7 +30,7 @@ export function randomColorHex() {
 }
 
 export async function generateNumberProportion(max: number, segments: number) {
-    let segmentMax: number = 80,
+    let segmentMax: number = 60,
         tempResults: number[] = [],
         remaining: number = max,
         finalResults: number[] = []

@@ -20,7 +20,7 @@ TableMessagesStatistic.up = () => {
         table.integer('multicast_number').default(0);
         table.string('broadcast_status').default('NULL');
         table.integer('broadcast_number').default(0);
-        table.integer('deliveries_status').default(0);
+        table.string('deliveries_status').default(0);
         table.integer('deliveries_broadcast').default(0);
         table.integer('deliveries_targeting').default(0);
         table.integer('deliveries_auto_response').default(0);

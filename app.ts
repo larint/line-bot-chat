@@ -68,9 +68,9 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	res.render('error');
 });
 
-nodeSchedule.scheduleJob('* * * * *', function () {
-	// LineSchedule.run()
-	// io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' })
+nodeSchedule.scheduleJob('1 * * * *', function () {
+	LineSchedule.run()
+	io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' })
 });
 
 io.on("connection", (socket: any) => {

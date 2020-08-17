@@ -68,6 +68,7 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	res.render('error');
 });
 
+// run the schedule once an hour
 nodeSchedule.scheduleJob('1 * * * *', function () {
 	LineSchedule.run()
 	io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' })
@@ -76,6 +77,5 @@ nodeSchedule.scheduleJob('1 * * * *', function () {
 io.on("connection", (socket: any) => {
 	console.log('connected')
 });
-
 
 http.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()))

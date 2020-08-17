@@ -5,3 +5,4 @@ launch.json
 .npmrc
 *.log
 .env-heroku
+.env

@@ -4,3 +4,4 @@ launch.json
 .vscode
 .npmrc
 *.log
+.env-heroku

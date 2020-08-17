@@ -25,7 +25,7 @@ const client = new Client(config)
 class LineSchedule {
 
     static run = async () => {
-        // send a notification to the chat bot
+        // send notification to chat bot
         await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })
 
         console.log('run getFriendDemographics ' + new Date())

@@ -6,9 +6,8 @@ block style
   script(src="javascripts/utils.js")
 block content
   h1 
-    a(href="/") Dashboard 
-    span | 
-    span Chart
+    -var active_menu = 2
+    include partials/top_menu.pug
   .row
     .col-3
         include chart/age.pug

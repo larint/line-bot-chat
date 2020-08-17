@@ -29,6 +29,7 @@ router.get('/', (req, res) => {
 });
 let handleEvent = (event) => {
     let typeEvent = event.type;
+    console.log(event);
     switch (typeEvent) {
         case 'message':
             return chatbot_1.ChatBot.handleMessageEvent(event);

@@ -15,6 +15,7 @@ const users_1 = require("./routes/users");
 const webhook_1 = require("./routes/webhook");
 const crawler_1 = require("./routes/crawler");
 const chart_1 = require("./routes/chart");
+const channel_accounts_1 = require("./routes/channel_accounts");
 const test_1 = require("./routes/test");
 require('dotenv').config();
 const app = express();
@@ -41,6 +42,7 @@ app.use('/users', users_1.router);
 app.use('/webhook', webhook_1.router);
 app.use('/crawler', crawler_1.router);
 app.use('/chart', chart_1.router);
+app.use('/channel-account', channel_accounts_1.router);
 app.use('/test', test_1.router);
 app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};

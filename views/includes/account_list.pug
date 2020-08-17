@@ -1,0 +1,30 @@
+form(action="/channel-account/add", method="POST")
+  .row
+    label.col-2.col-form-label(for="name") Channel name
+    .col-5
+      input.form-control#name(type="text",name="name",value=old_data ? old_data.name : '')
+  .row
+    label.col-2.col-form-label(for="access_token") Channel access token
+    .col-5
+      input.form-control#access_token(type="text",name="access_token",value=old_data ? old_data.access_token : '')
+  .row
+    label.col-2.col-form-label(for="secret") Channel secret
+    .col-5
+      input.form-control#secret(type="text",name="secret",value=old_data ? old_data.secret : '')
+  p.red=error
+  p.green=success
+  button.btn.btn-primary(type="submit") Add account
+
+if accounts
+  div
+    h3 Accounts
+    table.table
+      tr
+        th Account name
+        th Create at
+      each item in accounts
+        tr
+          td
+            span=item.name
+          td
+            span=item.create_at

@@ -16,6 +16,7 @@ import { router as usersRouter } from './routes/users'
 import { router as webhookRouter } from './routes/webhook'
 import { router as crawlerRouter } from './routes/crawler'
 import { router as chartRouter } from './routes/chart'
+import { router as channelAccountRouter } from './routes/channel_accounts'
 import { router as testRouter } from './routes/test'
 
 require('dotenv').config()
@@ -55,6 +56,7 @@ app.use('/users', usersRouter);
 app.use('/webhook', webhookRouter);
 app.use('/crawler', crawlerRouter);
 app.use('/chart', chartRouter);
+app.use('/channel-account', channelAccountRouter);
 app.use('/test', testRouter);
 
 // error handler

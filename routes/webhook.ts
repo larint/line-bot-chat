@@ -4,9 +4,6 @@ import { Router, Request, Response, NextFunction } from "express"
 import { log } from '../helpers/helper'
 import { ChatBot } from '../services/chatbot'
 
-import * as path from 'path'
-import * as Types from "@line/bot-sdk/dist/types"
-
 let router = express.Router();
 
 // webhook callback
@@ -43,6 +40,7 @@ router.get('/', (req: Request, res: Response) => {
 let handleEvent = (event: any) => {
   // event include: Message, Follow, Un Follow, Join...
   let typeEvent = event.type
+  console.log(event)
   // if event is Message
   switch (typeEvent) {
     case 'message':

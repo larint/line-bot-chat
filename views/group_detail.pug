@@ -1,0 +1,27 @@
+extends layout
+
+block style
+  link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js")
+  script(src="javascripts/utils.js")
+block content
+  h1 
+    -var active_menu = 3
+    include partials/top_menu.pug
+  .row
+    .col-12
+      div
+        h4 
+      if accounts
+        div
+          h4 Accounts
+          table.table
+            tr
+              th Account name
+              th Create at
+            each item in accounts
+              tr
+                td
+                  b=item.name
+                td
+                  span #{formatDate(item.created_at)}

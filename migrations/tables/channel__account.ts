@@ -1,13 +1,13 @@
 import { Migration } from '../migration'
 
 class TableChannelAccount {
-    static column = ['id', 'name', 'access_token', 'secret', 'create_at']
+    static column = ['id', 'group_id', 'name', 'access_token', 'secret']
 
     static up = () => {
         let migration = new Migration()
 
-        migration.drop('channel_accounts')
-        migration.create('channel_accounts', (table: Migration) => {
+        migration.drop('channel__accounts')
+        migration.create('channel__accounts', (table: Migration) => {
             table.integer('id').unsigned().increment()
             table.string('name').default('NULL')
             table.string('access_token', 500)

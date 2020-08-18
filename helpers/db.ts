@@ -19,7 +19,7 @@ let connection = mysql.createConnection({
 	timezone: process.env.DB_TIMEZONE,
 })
 
-// reconnect if lost connect database,using on heroku
+// reconnect if lost connect database, using on heroku
 let connectDatabase = () => {
 
 	connection.on('error', function (err) {

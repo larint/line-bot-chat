@@ -7,16 +7,14 @@ const morgan = require("morgan");
 const nodeSchedule = require("node-schedule");
 const fs = require("fs");
 const path = require("path");
+const socketio = require("socket.io");
+const methodOverride = require("method-override");
 const LineSchedule_1 = require("./services/LineSchedule");
 require("./helpers/db");
-const socketio = require("socket.io");
 const index_1 = require("./routes/index");
-const users_1 = require("./routes/users");
 const webhook_1 = require("./routes/webhook");
-const crawler_1 = require("./routes/crawler");
 const chart_1 = require("./routes/chart");
-const channel_accounts_1 = require("./routes/channel_accounts");
-const test_1 = require("./routes/test");
+const channel_1 = require("./routes/channel");
 require('dotenv').config();
 const app = express();
 let http = require("http").Server(app);
@@ -28,6 +26,7 @@ app.use(morgan('combined', { stream: appLogStream, skip: (req, res) => { return 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 app.use(session({ secret: "bjhbahsbdjabwdhjbwjdh", resave: true, saveUninitialized: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use((req, res, next) => {
@@ -38,12 +37,9 @@ app.use(/\/(app.js|package.json)/, (req, res, next) => {
     res.sendStatus(404);
 });
 app.use('/', index_1.router);
-app.use('/users', users_1.router);
 app.use('/webhook', webhook_1.router);
-app.use('/crawler', crawler_1.router);
 app.use('/chart', chart_1.router);
-app.use('/channel-account', channel_accounts_1.router);
-app.use('/test', test_1.router);
+app.use('/channel', channel_1.router);
 app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     res.render('error');

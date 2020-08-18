@@ -5,11 +5,11 @@ const migration_1 = require("../migration");
 class TableChannelAccount {
 }
 exports.TableChannelAccount = TableChannelAccount;
-TableChannelAccount.column = ['id', 'name', 'access_token', 'secret', 'create_at'];
+TableChannelAccount.column = ['id', 'group_id', 'name', 'access_token', 'secret'];
 TableChannelAccount.up = () => {
     let migration = new migration_1.Migration();
-    migration.drop('channel_accounts');
-    migration.create('channel_accounts', (table) => {
+    migration.drop('channel__accounts');
+    migration.create('channel__accounts', (table) => {
         table.integer('id').unsigned().increment();
         table.string('name').default('NULL');
         table.string('access_token', 500);

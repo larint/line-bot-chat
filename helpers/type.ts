@@ -73,3 +73,8 @@ export interface ChannelConfig {
 	access_token: string,
 	secret: string
 }
+
+export interface DataColumn {
+	field: string,
+	data: string | number | boolean | any[]
+}

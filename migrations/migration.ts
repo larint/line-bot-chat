@@ -154,8 +154,3 @@ class Migration {
 }
 
 export { Migration }
-
-// CREATE TABLE `friend_graphics__genders` (
-//     id_friend_graphics int(11) :id_friend_graphicsUNSIGNED :id_friend_graphicsDEFAULT :id_friend_graphicsCOMMENT ,
-//     unknown int(11) :unknownUNSIGNED DEFAULT 0 :unknownCOMMENT ,
-//     thumbnail varchar(255) DEFAULT NULL :thumbnailCOMMENT,

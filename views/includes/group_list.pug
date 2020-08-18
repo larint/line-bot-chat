@@ -1,0 +1,24 @@
+br
+if groups
+  div
+    h4 Groups (#{groups.length})
+    table.table
+        tr
+            th Group name
+            th Account
+            th Create at
+            th Action
+        each item in groups
+            tr
+                td
+                    a(href="/channel/group/detail/"+item.id)
+                        b=item.name
+                td
+                    span=item.account_number
+                td
+                    span #{formatDate(item.created_at)}
+                td
+                    a(href="/channel/group/delete/"+item.id, onclick="return confirm('Are you sure you want to destroy this item?')")
+                        button.btn.btn-danger.btn-xs Remove
+                    a(href="/channel/group/export")
+                        button.btn.btn-info.btn-xs Export CSV

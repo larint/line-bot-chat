@@ -12,9 +12,10 @@ block content
     .col-12
         nav
           .nav.nav-tabs#nav-tab
-            a.nav-item.nav-link.active#nav-home-tab(href="#nav-home", data-toggle="tab") Home
-            a.nav-item.nav-link#nav-profile-tab(href="#nav-profile", data-toggle="tab") Profile
+            a.nav-item.nav-link.active#nav-home-tab(href="#nav-home", data-toggle="tab") Accounts
+            a.nav-item.nav-link#nav-profile-tab(href="#nav-profile", data-toggle="tab") Groups
         .tab-content#nav-tabContent
           .tab-pane.fade.show.active#nav-home 
             include includes/account_list.pug
-          .tab-pane.fade#nav-profile bbbbbbbbb
+          .tab-pane.fade#nav-profile
+            include includes/group_list.pug

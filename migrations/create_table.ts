@@ -7,7 +7,9 @@ import { TableFriendGraphicsAreaJP } from './tables/friend_graphics__areas_jp'
 import { TableFriendGraphicsAreaTW } from './tables/friend_graphics__areas_tw'
 import { TableFriendGraphicsAreaTH } from './tables/friend_graphics__areas_th'
 import { TableFriendGraphicsAreaID } from './tables/friend_graphics__areas_id'
-import { TableChannelAccount } from './tables/channel_account'
+import { TableChannelAccount } from './tables/channel__account'
+import { TableChannelGroup } from './tables/channel__groups.js'
+import { TableChannelGroupAccount } from './tables/channel__groups_accounts.js'
 
 // TableFriendGraphicsGenders.up()
 // TableFriendGraphicsAges.up()
@@ -21,3 +23,5 @@ import { TableChannelAccount } from './tables/channel_account'
 // TableFriendGraphicsAreaID.up() // indonesia
 
 TableChannelAccount.up()
+TableChannelGroup.up()
+TableChannelGroupAccount.up()

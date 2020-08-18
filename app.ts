@@ -6,18 +6,16 @@ import * as morgan from 'morgan'
 import * as nodeSchedule from 'node-schedule'
 import * as fs from 'fs'
 import * as path from 'path'
+import * as socketio from "socket.io"
+import * as methodOverride from 'method-override'
 import { LineSchedule } from './services/LineSchedule'
 import './helpers/db'
-import * as socketio from "socket.io"
 
 // ROUTER
 import { router as indexRouter } from './routes/index'
-import { router as usersRouter } from './routes/users'
 import { router as webhookRouter } from './routes/webhook'
-import { router as crawlerRouter } from './routes/crawler'
 import { router as chartRouter } from './routes/chart'
-import { router as channelAccountRouter } from './routes/channel_accounts'
-import { router as testRouter } from './routes/test'
+import { router as channelRouter } from './routes/channel'
 
 require('dotenv').config()
 
@@ -37,6 +35,7 @@ app.use(morgan('combined', { stream: appLogStream, skip: (req, res) => { return 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(methodOverride('_method'));
 app.use(session({ secret: "bjhbahsbdjabwdhjbwjdh", resave: true, saveUninitialized: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -52,12 +51,9 @@ app.use(/\/(app.js|package.json)/, (req: Request, res: Response, next: NextFunct
 });
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/webhook', webhookRouter);
-app.use('/crawler', crawlerRouter);
 app.use('/chart', chartRouter);
-app.use('/channel-account', channelAccountRouter);
-app.use('/test', testRouter);
+app.use('/channel', channelRouter);
 
 // error handler
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {

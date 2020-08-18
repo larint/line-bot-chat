@@ -1,0 +1,14 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.router = void 0;
+const express = require("express");
+const channel_controller_1 = require("../controllers/channel_controller");
+let router = express.Router();
+exports.router = router;
+router.get('/', channel_controller_1.ChannelController.index);
+router.post('/account/add', channel_controller_1.ChannelController.addAccount);
+router.get('/account/delete/:id', channel_controller_1.ChannelController.deleteAccount);
+router.post('/group/add', channel_controller_1.ChannelController.createGroup);
+router.get('/group/delete/:id', channel_controller_1.ChannelController.deleteGroup);
+router.get('/group/export', channel_controller_1.ChannelController.exportDataInGroup);
+router.get('/group/detail/:id', channel_controller_1.ChannelController.groupDetail);

@@ -6,26 +6,32 @@ import { ChannelGroupsAccounts } from '../models/channel_groups_accounts'
 import { ChannelAccounts } from '../models/channel_accounts'
 
 class ChannelController {
+    channelAccounts: ChannelAccounts
+    channelGroups: ChannelGroups
+    channelGroupsAccounts: ChannelGroupsAccounts
 
-    static index = async (req: Request, res: Response) => {
-        let channelAccounts = new ChannelAccounts()
-        let channelGroups = new ChannelGroups()
+    constructor() {
+        this.channelAccounts = new ChannelAccounts()
+        this.channelGroups = new ChannelGroups()
+        this.channelGroupsAccounts = new ChannelGroupsAccounts()
+    }
 
-        let accounts = await channelAccounts.selectAll()
-        let groups = await channelGroups.selectAll()
+    index = async (req: Request, res: Response) => {
+
+        let accounts = await this.channelAccounts.selectAll()
+        let groups = await this.channelGroups.selectAll()
 
         return res.render('channel', { accounts: accounts, groups: groups })
     }
 
-    static addAccount = async (req: Request, res: Response) => {
+    addAccount = async (req: Request, res: Response) => {
         let channelConfig: ChannelConfig = req.body
 
         if (!channelConfig.name || !channelConfig.access_token || !channelConfig.secret) {
 
         } else {
-            let channelAccounts = new ChannelAccounts()
 
-            await channelAccounts.save([
+            await this.channelAccounts.save([
                 { field: 'name', data: channelConfig.name },
                 { field: 'access_token', data: channelConfig.access_token },
                 { field: 'secret', data: channelConfig.secret }
@@ -36,31 +42,28 @@ class ChannelController {
         return res.redirect('back')
     }
 
-    static deleteAccount = async (req: Request, res: Response) => {
+    deleteAccount = async (req: Request, res: Response) => {
         let id = req.params.id
-        let channelAccounts = new ChannelAccounts()
 
-        await channelAccounts.destroy([
+        await this.channelAccounts.destroy([
             { field: 'id', data: id }
         ])
 
         return res.redirect('back')
     }
 
-    static createGroup = async (req: Request, res: Response) => {
+    createGroup = async (req: Request, res: Response) => {
         let ids = req.body.id
         let name_group = req.body.name_group
-        let channelGroups = new ChannelGroups()
-        let channelGroupsAccounts = new ChannelGroupsAccounts()
 
-        let group = await channelGroups.save([
+        let group = await this.channelGroups.save([
             { field: 'name', data: name_group },
             { field: 'account_number', data: ids.length }
         ])
 
         if (group) {
             for (const id of ids) {
-                await channelGroupsAccounts.save([
+                await this.channelGroupsAccounts.save([
                     { field: 'group_id', data: group.insertId },
                     { field: 'account_id', data: id }
                 ])
@@ -70,7 +73,7 @@ class ChannelController {
         return res.redirect('channel')
     }
 
-    static deleteGroup = async (req: Request, res: Response) => {
+    deleteGroup = async (req: Request, res: Response) => {
         let id = req.params.id
         let channelGroups = new ChannelGroups()
         let channelGroupsAccounts = new ChannelGroupsAccounts()
@@ -86,24 +89,24 @@ class ChannelController {
         return res.redirect('back')
     }
 
-    static groupDetail = async (req: Request, res: Response) => {
+    groupDetail = async (req: Request, res: Response) => {
         let id = req.params.id
-        let channelGroupsAccounts = new ChannelGroupsAccounts()
-        let channelAccounts = new ChannelAccounts()
 
-        let groups = await channelGroupsAccounts.select([
+        let group = await this.channelGroups.find({ field: 'id', data: id })
+
+        let groups = await this.channelGroupsAccounts.select([
             { field: 'group_id', data: id }
         ])
 
-        let accounts = await channelAccounts.selectIn([
+        let accounts = await this.channelAccounts.selectIn([
             { field: 'id', data: [1, 2] }
         ])
 
 
-        return res.render('group_detail', { accounts: accounts })
+        return res.render('group_detail', { accounts: accounts, group: group })
     }
 
-    static exportDataInGroup = async (req: Request, res: Response) => {
+    exportDataInGroup = async (req: Request, res: Response) => {
         return res.redirect('back')
     }
 }

@@ -5,6 +5,13 @@ const db_1 = require("../helpers/db");
 class BaseModel {
     constructor() {
         this.table = '';
+        this.find = async (attrs) => {
+            let res = await this.select([attrs]);
+            if (res) {
+                return res[0];
+            }
+            return false;
+        };
         this.select = async (attrs) => {
             let buildSet = await this.buildSet(attrs);
             return await db_1.DB.selectByParams({

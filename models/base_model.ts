@@ -4,6 +4,14 @@ import { DataColumn } from '../helpers/type'
 class BaseModel {
     protected table: string = ''
 
+    find = async (attrs: DataColumn) => {
+        let res = await this.select([attrs])
+        if(res) {
+            return res[0]
+        }
+        return false
+    }
+
     select = async (attrs: DataColumn[]) => {
         let buildSet = await this.buildSet(attrs)
 
@@ -19,7 +27,6 @@ class BaseModel {
         let buildSet = await this.buildSet(attrs)
 
         return await DB.selectBySql(`select * from ${this.table} where  ${attrs[0].field} in (${attrs[0].data})`)
-
     }
 
     selectAll = async () => {

@@ -1,10 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
-const express = require("express");
-const index_controller_1 = require("../controllers/index_controller");
-let router = express.Router();
+const express_1 = require("express");
+const home_controller_1 = require("../controllers/home_controller");
+let router = express_1.Router();
 exports.router = router;
-require('dotenv').config();
-router.get('/', index_controller_1.IndexController.index);
-router.get('/linedata/downcsv/:data', index_controller_1.IndexController.downCsv);
+let homeController = new home_controller_1.HomeController();
+router.get('/', homeController.index);
+router.get('/linedata/downcsv/:data', homeController.downCsv);

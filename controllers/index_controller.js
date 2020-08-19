@@ -46,7 +46,7 @@ IndexController.index = async (req, res) => {
         where: [1],
         order: 'date_update desc'
     });
-    return res.render('index', {
+    return res.render('homes/index', {
         ages: graphicsAges,
         apptypes: graphicsApptypes,
         areas: graphicsAreas,

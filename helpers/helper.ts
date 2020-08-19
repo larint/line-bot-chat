@@ -2,8 +2,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 
 export function log(msg: any, file: string = 'log.log') {
-    fs.readFileSync(file, { encoding: 'utf-8', flag: 'w+' })
-    fs.writeFile(file, msg + '\n', { encoding: 'utf-8', flag: 'w+' }, console.warn)
+    let pathFile = path.join(path.dirname(__dirname), file)
+    let stream = fs.createWriteStream(pathFile, { flags: 'a' })
+    stream.write(msg + '\n');
 }
 
 export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Date()): string {

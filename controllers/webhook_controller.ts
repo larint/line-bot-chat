@@ -3,8 +3,8 @@ import { log } from '../helpers/helper'
 import { ChatBot } from '../services/chatbot'
 
 class WebhookController {
-    static receiveEvent = (req: Request, res: Response) => {
-        log(JSON.stringify(req.body.events))
+    receiveEvent = (req: Request, res: Response) => {
+        log(JSON.stringify(req.body.events), 'event.log')
 
         // req.body.events should be an array of events
         if (!Array.isArray(req.body.events)) {
@@ -17,7 +17,7 @@ class WebhookController {
             if (event.replyToken === '00000000000000000000000000000000' || event.replyToken === 'ffffffffffffffffffffffffffffffff') {
                 return
             }
-            return WebhookController.handleEvent(event);
+            return this.handleEvent(event);
         }))
             .then(() => res.end())
             .catch((err) => {
@@ -27,7 +27,7 @@ class WebhookController {
     }
 
     // callback function to handle a single event
-    static handleEvent = (event: any) => {
+    handleEvent = (event: any) => {
         // event include: Message, Follow, Un Follow, Join...
         let typeEvent = event.type
         console.log(event)

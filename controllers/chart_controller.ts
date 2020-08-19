@@ -2,7 +2,7 @@ import { Request, Response, } from 'express'
 import { Chart } from '../services/chart'
 
 class ChartController {
-    static index = async (req: Request, res: Response) => {
+    index = async (req: Request, res: Response) => {
         let dataChart1 = await Chart.prepareDataChartPieFromTable('friend_graphics__ages')
         let dataChart2 = await Chart.prepareDataChartPieFromTable('friend_graphics__apptypes')
         let dataChart3 = await Chart.prepareDataChartPieFromTable('friend_graphics__genders')
@@ -26,7 +26,7 @@ class ChartController {
         let dataChart5 = await Chart.prepareDataChartPieFromTable(table)
         let dataChart6 = await Chart.prepareDataChartLineFromTable('messages_statistic')
 
-        return res.render('chart', { dataAges: dataChart1, dataAppType: dataChart2, dataGender: dataChart3, dataSubscription: dataChart4, dataArea: dataChart5, dataMess: dataChart6 });
+        return res.render('charts/index', { dataAges: dataChart1, dataAppType: dataChart2, dataGender: dataChart3, dataSubscription: dataChart4, dataArea: dataChart5, dataMess: dataChart6 });
     }
 }
 

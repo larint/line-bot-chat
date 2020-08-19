@@ -9,7 +9,7 @@ class ChannelController {
         this.index = async (req, res) => {
             let accounts = await this.channelAccounts.selectAll();
             let groups = await this.channelGroups.selectAll();
-            return res.render('channel', { accounts: accounts, groups: groups });
+            return res.render('channels/index', { accounts: accounts, groups: groups });
         };
         this.addAccount = async (req, res) => {
             let channelConfig = req.body;
@@ -50,12 +50,10 @@ class ChannelController {
         };
         this.deleteGroup = async (req, res) => {
             let id = req.params.id;
-            let channelGroups = new channel_groups_1.ChannelGroups();
-            let channelGroupsAccounts = new channel_groups_accounts_1.ChannelGroupsAccounts();
-            await channelGroupsAccounts.destroy([
+            await this.channelGroupsAccounts.destroy([
                 { field: 'group_id', data: id }
             ]);
-            await channelGroups.destroy([
+            await this.channelGroups.destroy([
                 { field: 'id', data: id }
             ]);
             return res.redirect('back');
@@ -69,7 +67,7 @@ class ChannelController {
             let accounts = await this.channelAccounts.selectIn([
                 { field: 'id', data: [1, 2] }
             ]);
-            return res.render('group_detail', { accounts: accounts, group: group });
+            return res.render('channels/group_detail', { accounts: accounts, group: group });
         };
         this.exportDataInGroup = async (req, res) => {
             return res.redirect('back');

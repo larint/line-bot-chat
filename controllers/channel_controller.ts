@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { DB } from '../helpers/db'
 import { ChannelConfig } from '../helpers/type'
 import { ChannelGroups } from '../models/channel_groups'
 import { ChannelGroupsAccounts } from '../models/channel_groups_accounts'
@@ -17,11 +16,10 @@ class ChannelController {
     }
 
     index = async (req: Request, res: Response) => {
-
         let accounts = await this.channelAccounts.selectAll()
         let groups = await this.channelGroups.selectAll()
 
-        return res.render('channel', { accounts: accounts, groups: groups })
+        return res.render('channels/index', { accounts: accounts, groups: groups })
     }
 
     addAccount = async (req: Request, res: Response) => {
@@ -75,14 +73,12 @@ class ChannelController {
 
     deleteGroup = async (req: Request, res: Response) => {
         let id = req.params.id
-        let channelGroups = new ChannelGroups()
-        let channelGroupsAccounts = new ChannelGroupsAccounts()
 
-        await channelGroupsAccounts.destroy([
+        await this.channelGroupsAccounts.destroy([
             { field: 'group_id', data: id }
         ])
 
-        await channelGroups.destroy([
+        await this.channelGroups.destroy([
             { field: 'id', data: id }
         ])
 
@@ -103,12 +99,13 @@ class ChannelController {
         ])
 
 
-        return res.render('group_detail', { accounts: accounts, group: group })
+        return res.render('channels/group_detail', { accounts: accounts, group: group })
     }
 
     exportDataInGroup = async (req: Request, res: Response) => {
         return res.redirect('back')
     }
+
 }
 
 export { ChannelController }

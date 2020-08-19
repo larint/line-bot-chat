@@ -1,7 +1,5 @@
 import * as mysql from 'mysql'
 
-require('dotenv').config()
-
 export interface Params {
 	table: string,
 	where: (string | number | boolean | Date)[],

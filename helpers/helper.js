@@ -2,9 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateNumberProportion = exports.randomColorHex = exports.formatDate = exports.log = void 0;
 const fs = require("fs");
+const path = require("path");
 function log(msg, file = 'log.log') {
-    fs.readFileSync(file, { encoding: 'utf-8', flag: 'w+' });
-    fs.writeFile(file, msg + '\n', { encoding: 'utf-8', flag: 'w+' }, console.warn);
+    let pathFile = path.join(path.dirname(__dirname), file);
+    let stream = fs.createWriteStream(pathFile, { flags: 'a' });
+    stream.write(msg + '\n');
 }
 exports.log = log;
 function formatDate(format = 'dd-MM-YYYY', dateObj = new Date()) {

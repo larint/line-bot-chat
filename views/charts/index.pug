@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 block style
   link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
@@ -7,19 +7,19 @@ block style
 block content
   h1 
     -var active_menu = 2
-    include partials/top_menu.pug
+    include ../partials/top_menu.pug
   .row
     .col-3
-        include chart/age.pug
+        include age.pug
     .col-3
-        include chart/app_type.pug
+        include app_type.pug
     .col-3
-        include chart/gender.pug
+        include gender.pug
     .col-3
-        include chart/subscription.pug
+        include subscription.pug
   br
   .row
     .col-5
-        include chart/area.pug 
+        include area.pug 
     .col-5
-        include chart/mess_statistic.pug 
+        include mess_statistic.pug 

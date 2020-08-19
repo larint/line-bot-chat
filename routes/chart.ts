@@ -1,8 +1,9 @@
-import * as express from 'express'
+import { Router } from 'express'
 import { ChartController } from '../controllers/chart_controller'
 
-let router = express.Router();
+let router = Router();
+let chartController = new ChartController()
 
-router.get('/', ChartController.index)
+router.get('/', chartController.index)
 
 export { router }

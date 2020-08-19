@@ -1,4 +1,4 @@
-extends layout
+extends ../layout
 
 block style
   link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
@@ -7,7 +7,7 @@ block style
 block content
   h1 
     -var active_menu = 3
-    include partials/top_menu.pug
+    include ../partials/top_menu.pug
   .row
     .col-12
       div

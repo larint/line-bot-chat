@@ -1,11 +1,10 @@
-import * as express from 'express'
-import { IndexController } from '../controllers/index_controller'
+import { Router } from 'express'
+import { HomeController } from '../controllers/home_controller'
 
-let router = express.Router()
+let router = Router()
+let homeController = new HomeController()
 
-require('dotenv').config()
-
-router.get('/', IndexController.index)
-router.get('/linedata/downcsv/:data', IndexController.downCsv)
+router.get('/', homeController.index)
+router.get('/linedata/downcsv/:data', homeController.downCsv)
 
 export { router }

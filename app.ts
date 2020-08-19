@@ -8,6 +8,9 @@ import * as fs from 'fs'
 import * as path from 'path'
 import * as socketio from "socket.io"
 import * as methodOverride from 'method-override'
+
+require('dotenv').config()
+
 import { LineSchedule } from './services/LineSchedule'
 import './helpers/db'
 
@@ -17,7 +20,6 @@ import { router as webhookRouter } from './routes/webhook'
 import { router as chartRouter } from './routes/chart'
 import { router as channelRouter } from './routes/channel'
 
-require('dotenv').config()
 
 const app = express();
 

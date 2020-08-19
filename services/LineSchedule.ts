@@ -23,7 +23,6 @@ const config = {
 const client = new Client(config)
 
 class LineSchedule {
-
     static run = async () => {
         // send notification to chat bot
         await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })

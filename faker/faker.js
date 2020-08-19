@@ -10,7 +10,6 @@ const friend_graphics__areas_jp_1 = require("../migrations/tables/friend_graphic
 const friend_graphics__areas_tw_1 = require("../migrations/tables/friend_graphics__areas_tw");
 const friend_graphics__areas_th_1 = require("../migrations/tables/friend_graphics__areas_th");
 const friend_graphics__areas_id_1 = require("../migrations/tables/friend_graphics__areas_id");
-require('dotenv').config();
 class Faker {
 }
 exports.Faker = Faker;

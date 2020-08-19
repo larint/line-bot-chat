@@ -9,8 +9,6 @@ import { TableFriendGraphicsAreaTW } from '../migrations/tables/friend_graphics_
 import { TableFriendGraphicsAreaTH } from '../migrations/tables/friend_graphics__areas_th'
 import { TableFriendGraphicsAreaID } from '../migrations/tables/friend_graphics__areas_id'
 
-require('dotenv').config()
-
 class Faker {
 
     static getFakeJsonFriendGraphics = async () => {

@@ -1,9 +1,9 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.router = void 0;
-const express = require("express");
+const express_1 = require("express");
 const channel_controller_1 = require("../controllers/channel_controller");
-let router = express.Router();
+let router = express_1.Router();
 exports.router = router;
 let channelController = new channel_controller_1.ChannelController();
 router.get('/', channelController.index);

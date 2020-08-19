@@ -4,9 +4,9 @@ import { writeToPath } from '@fast-csv/format';
 import * as path from 'path'
 import { formatDate } from '../helpers/helper'
 
-class IndexController {
+class HomeController {
 
-    static index = async (req: Request, res: Response) => {
+    index = async (req: Request, res: Response) => {
         let graphicsAges = await DB.selectByParams({
             select: '*',
             table: 'friend_graphics__ages',
@@ -50,7 +50,7 @@ class IndexController {
             order: 'date_update desc'
         })
 
-        return res.render('index', {
+        return res.render('homes/index', {
             ages: graphicsAges,
             apptypes: graphicsApptypes,
             areas: graphicsAreas,
@@ -61,7 +61,7 @@ class IndexController {
 
     }
 
-    static downCsv = async (req: Request, res: Response) => {
+    downCsv = async (req: Request, res: Response) => {
         let currentDate = formatDate('YYYYMMDD')
         let data: any[] = []
         let filename: string = `${currentDate}.csv`
@@ -134,4 +134,4 @@ class IndexController {
     }
 }
 
-export { IndexController }
+export { HomeController }

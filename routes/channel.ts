@@ -1,7 +1,7 @@
-import * as express from 'express'
+import { Router } from 'express'
 import { ChannelController } from '../controllers/channel_controller'
 
-let router = express.Router();
+let router = Router()
 let channelController = new ChannelController()
 
 router.get('/', channelController.index)

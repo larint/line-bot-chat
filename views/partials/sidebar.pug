@@ -1,0 +1,33 @@
+.sidebar-header
+  h3 Dashboard
+ul.menu1
+  li
+    a(href="/", class=isActiveMenu(active_menu, 'home'))
+      i.fas.fa-home
+      span Home
+  li
+    a(href="/chart", class=isActiveMenu(active_menu, 'chart'))
+      i.fas.fa-chart-bar
+      span LINE統計チャート
+  li
+    a(href="", class=isActiveMenu(active_menu, 'statistic'))
+      i.fas.fa-user
+      span LINE統計表
+  li
+    a(href="", class=isActiveMenu(active_menu, 'account_group'))
+      i.fas.fa-envelope
+      span LINEアカウントグループ
+ul.menu2
+  li
+    a(href="", class=isActiveMenu(active_menu, 'calendar'))
+      i.far.fa-calendar-alt
+      span Calendar
+ul.menu3
+  li
+    a(href="", class=isActiveMenu(active_menu, 'helper'))
+      i.far.fa-life-ring
+      span Help Center
+  li
+    a(href="", class=isActiveMenu(active_menu, 'setting'))
+      i.fas.fa-cog
+      span Settings

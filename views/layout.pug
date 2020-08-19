@@ -1,32 +1,24 @@
 doctype html
 html
   head
-    title= title
-    link(rel='stylesheet', href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.1/css/bootstrap.min.css')
+    title Line App
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.1.0/css/vex.min.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.1.0/css/vex-theme-default.min.css")
-    link(rel='stylesheet', href='/stylesheets/jquery.notify.css')
-    link(rel='stylesheet', href='/stylesheets/jquery.notify.fonts.css')
-    link(rel='stylesheet', href='/stylesheets/style.css')
+    link(rel="stylesheet", href="stylesheets/style.css")
 
     script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.1.0/js/vex.combined.min.js")
-    script(src="javascripts/jquery.notify.js")
-
     script.
       vex.defaultOptions.className = 'vex-theme-default'
-    
     block style
-  body
-    block content
     include helpers/func.pug
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js")
-    script(src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.1/js/bootstrap.min.js")
-    script.
-      var socket = io('!{site_url}')
-
-      socket.on('schedule_get_line_data', function(msg){
-          $.notify(msg.message);
-      });
-
-      
+  body
+    .wrapper
+      .sidebar
+        include partials/sidebar.pug
+      .main
+        .main-title
+          block main_title
+        .main-content
+          block content

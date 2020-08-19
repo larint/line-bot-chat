@@ -1,3 +1,9 @@
 - function formatDate(dateStr) {
 -   return new Date(dateStr).toLocaleString('en-US', { minute: 'numeric', hour: 'numeric', year: 'numeric', month: 'numeric', day: 'numeric' })
 - }
+- function isActiveMenu(active, menu) {
+-   if(active == menu){
+-       return 'active'
+-   } 
+-   return ''
+- }

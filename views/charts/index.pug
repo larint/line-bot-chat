@@ -4,22 +4,26 @@ block style
   link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js")
   script(src="javascripts/utils.js")
+  -var active_menu = 'chart'
+
+block main_title
+  p LINE統計チャート
+
 block content
-  h1 
-    -var active_menu = 2
-    include ../partials/top_menu.pug
-  .row
-    .col-3
-        include age.pug
-    .col-3
-        include app_type.pug
-    .col-3
-        include gender.pug
-    .col-3
-        include subscription.pug
-  br
-  .row
-    .col-5
-        include area.pug 
-    .col-5
-        include mess_statistic.pug 
+  .box-action
+      div
+        p 日付
+        input.date-range(name="dates")
+      div
+        button.btn PDFダウンロード
+  .box-view
+    .bv-left
+      .row1
+        span LINE統計チャート#1
+        select
+          option グループ　１
+          option グループ　2
+      .row2 aaaa
+    .bv-right
+      .row1
+        span LINE統計チャート#2

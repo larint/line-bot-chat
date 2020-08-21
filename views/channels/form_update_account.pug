@@ -1,0 +1,26 @@
+form(action="/channel/account/update", method="POST")
+    input(type="hidden", name="id", value=account?account.id : 0)
+    .form-row
+        .form-group.col-2
+            label(for="name") Account name  
+                span.red *
+            input.form-control.form-control-sm#name(type="text", name="name", value=account?account.name : '')
+        .form-group.col-2
+            label(for="line_account") Line Account
+                span.red *
+            input.form-control.form-control-sm#line_account(type="text", name="line_account", value=account?account.line_account : '')
+        .form-group.col-2
+            label(for="account_id") Account id 
+                span.red *
+            input.form-control.form-control-sm#account_id(type="text", name="account_id", value=account?account.account_id : '') 
+    .form-row
+        .form-group.col-6
+            label(for="access_token") Channel access token 
+                span.red *
+            textarea.form-control#access_token(name="access_token", cols="30", rows="3")=account?account.access_token : ''
+        .form-group.col-3
+            label(for="secret") Channel secret 
+                span.red *
+            input.form-control.form-control-sm#secret(type="text", name="secret", value=account?account.secret : '')
+            .a-right
+                button.btn.btn-primary.btn-sm(type="submit", style="margin-top:23px") Update

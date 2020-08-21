@@ -4,16 +4,26 @@ block style
   -var active_menu = 'channel'
 
 block main_title
-  h3 Dashboard
+  h3 LINEアカウントグループ
 
 block content
   ul.nav.nav-tabs
     li.nav-item
       a.nav-link.active(data-toggle="tab", href="#tab1") Accounts
-    li
-      a.nav-link(data-toggle="tab", href="#tab2") Groups
+    //- if is page create account
+    if !account
+      li
+        a.nav-link(data-toggle="tab", href="#tab2") Groups
   .tab-content
     .tab-pane.fade.show.active#tab1
-      include account_list.pug
+      //- if is page update account
+      if account
+        include form_update_account.pug
+      else
+        include form_add_account.pug
+        include account_list.pug
     .tab-pane.fade#tab2
-      include group_list.pug
+      if groupList
+        include group_list.pug
+      else
+        p Group not found

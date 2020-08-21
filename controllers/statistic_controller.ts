@@ -2,7 +2,7 @@ import { Request, Response, } from 'express'
 import { DB } from '../helpers/db'
 import { writeToPath } from '@fast-csv/format';
 import * as path from 'path'
-import { formatDate } from '../helpers/helper'
+import { formatDate, round } from '../helpers/helper'
 import { ChannelGroups } from '../models/channel_groups'
 import { ChannelGroupsAccounts } from '../models/channel_groups_accounts'
 import { ChannelAccounts } from '../models/channel_accounts'
@@ -20,35 +20,59 @@ class StatisticController {
     }
 
     index = async (req: Request, res: Response) => {
-        let groups = await this.channelGroups.selectAll()
+        let groupAll = await this.channelGroups.selectAll()
+        return res.render('statistics/index', { groupAll: groupAll })
+    }
 
-        let data = []
-        if (groups) {
-            for (const item of groups) {
-                let groupAccount = await this.channelGroupsAccounts.select([
-                    { field: 'group_id', data: item.id }
-                ])
+    getGroupStatistic = async (req: Request, res: Response) => {
+        let groupId = parseInt(req.body.id)
+        let group = await this.channelGroups.find(groupId)
 
-                let ids = []
-                for (const it of groupAccount) {
-                    ids.push(it.account_id)
-                }
+        let groupAccount = await this.channelGroupsAccounts.select([
+            { field: 'group_id', data: group.id }
+        ])
 
-                let accounts = await this.channelAccounts.selectIn([
-                    { field: 'id', data: ids }
-                ])
-
-                data.push({
-                    group: item,
-                    account: accounts
-                })
-            }
+        // get all account_id in group
+        let ids = []
+        for (const it of groupAccount) {
+            ids.push(it.account_id)
         }
 
-        return res.render('statistics/index', {
-            data: data
-        })
+        let accounts = await this.channelAccounts.selectIn([
+            { field: 'id', data: ids }
+        ])
 
+        let friend = 0, target_reach = 0, block = 0, broadcast = 0, delivery_count = 0, max = accounts.length
+        for (const account of accounts) {
+            friend += account.friends
+            target_reach += account.target_reach
+            block += account.block
+            broadcast += account.broadcast
+            delivery_count += account.delivery_count
+        }
+
+        group.accounts = accounts
+        group.total = {
+            friend: friend,
+            target_reach: target_reach,
+            block: block,
+            block_rate: Math.ceil(block / friend),
+            broadcast: broadcast,
+            delivery_count: delivery_count
+        }
+
+        let blockAverage = Math.ceil(block / max)
+        let friendAverage = Math.ceil(friend / max)
+        group.average = {
+            friend: friendAverage,
+            target_reach: Math.ceil(target_reach / max),
+            block: blockAverage,
+            block_rate: Math.ceil(blockAverage / friendAverage),
+            broadcast: Math.ceil(broadcast / max),
+            delivery_count: Math.ceil(delivery_count / max)
+        }
+
+        return res.render('statistics/group_table', { group: group })
     }
 
     downCsv = async (req: Request, res: Response) => {
@@ -116,7 +140,7 @@ class StatisticController {
         }
 
 
-        let file = path.join(path.dirname(__dirname), `/data_csv/${filename}`)
+        let file = path.join(path.dirname(__dirname), `/data/${filename}`)
 
         writeToPath(file, data)
             .on('error', err => console.error(err))

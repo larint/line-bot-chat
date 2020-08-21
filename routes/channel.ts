@@ -7,6 +7,8 @@ let channelController = new ChannelController()
 router.get('/', channelController.index)
 router.post('/account/add', channelController.addAccount)
 router.get('/account/delete/:id', channelController.deleteAccount)
+router.get('/account/edit/:id', channelController.editAccount)
+router.post('/account/update', channelController.updateAccount)
 
 router.post('/group/add', channelController.createGroup)
 router.get('/group/delete/:id', channelController.deleteGroup)

@@ -11,6 +11,16 @@ export interface Params {
 	order?: string | 'id desc'
 }
 
+export interface DataWhere {
+	field?: string | number,
+	data?: string | number | boolean | any[]
+}
+
+export interface DataUpdate extends DataWhere {
+
+}
+
+
 let connection = mysql.createConnection({
 	host: process.env.DB_HOST,
 	user: process.env.DB_USER,

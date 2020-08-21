@@ -14,6 +14,18 @@ body {
     width: 50%;
 }
 
+.mt-10 {
+    margin-top: 10px;
+}
+
+.red {
+    color: red;
+}
+
+.tab-pane {
+    margin-top: 10px;
+}
+
 select {
     padding: 5px;
     outline: none;
@@ -167,15 +179,23 @@ input.date-range {
     outline: none;
     border-radius: 5px;
     border: 1px solid #999999;
+    padding-left: 25px;
+    width: 240px;
 }
 
-input.date-range::before {
+.date-wrap {
+    position: relative;
+}
+
+.date-wrap::before {
     font-family: "Font Awesome 5 Free";
     font-weight: 900;
-    content: "\f007";
-    color: red;
+    content: "\f073";
+    color: rgb(155, 155, 155);
     position: absolute;
-    left: -5px;
+    left: 10px;
+    top: 10px;
+    font-size: 12px;
 }
 
 .tb-statistic a {
@@ -188,6 +208,10 @@ input.date-range::before {
 
 .btn1:hover {
     background: #666585
+}
+
+.tb-statistic {
+    width: 100%;
 }
 
 .tb-statistic thead th {
@@ -207,7 +231,7 @@ input.date-range::before {
 
 .tb-statistic td,
 .tb-statistic th {
-    padding: 2px;
+    padding: 2px 5px;
 }
 
 .date-range {

@@ -67,14 +67,3 @@ export interface dataChartLineItem {
 	label: string,
 	data: number[]
 }
-
-export interface ChannelConfig {
-	name: string,
-	access_token: string,
-	secret: string
-}
-
-export interface DataColumn {
-	field: string,
-	data: string | number | boolean | any[]
-}

@@ -1,48 +1,59 @@
-br
-form(action="/channel/account/add", method="POST")
-  .row
-    label.col-2.col-form-label(for="name") Channel name *
-    .col-5
-      input.form-control.form-control-sm#name(type="text",name="name",value=old_data ? old_data.name : '')
-  .row
-    label.col-2.col-form-label(for="access_token") Channel access token *
-    .col-5
-      input.form-control.form-control-sm#access_token(type="text",name="access_token",value=old_data ? old_data.access_token : '')
-  .row
-    label.col-2.col-form-label(for="secret") Channel secret *
-    .col-5
-      input.form-control.form-control-sm#secret(type="text",name="secret",value=old_data ? old_data.secret : '')
-    .col-2
-      button.btn.btn-primary.btn-sm(type="submit") Add account
-  p.red=error
-  p.green=success
-hr
-if accounts
-  div
-    form#form(action="")
-      input(type="hidden", name="name_group", value="")
-      button.btn.btn-info.btn-sm#btnSave(type="button") Create new account group
-      br
-      br
-      table.table
+div
+  form#form(action="")
+    input(type="hidden", name="name_group", value="")
+    button.btn.btn-info.btn-sm#btn-create-group(type="button") Create new account group
+    br
+    br
+    table.tb-statistic
+      thead
         tr
+          th Global #
           th(style="width: 10px")
           th Account name
-          th Create at
-          th Action
-        each item in accounts
-          tr
-            td
-              input(type="checkbox", value=item.id, name="id", id=item.id)
-            td
-              label(for=item.id)
-                b=item.name
-            td
-              span #{formatDate(item.created_at)}
-            td
-              a.remove-link(href="/channel/account/delete/"+item.id, onclick="return confirm('Are you sure you want to destroy this item?')") remove
+          th Line account name
+          th Account ID
+          th Start date
+          th Duration
+          th Friends
+          th Target reach
+          th Block
+          th Block rate
+          th Broadcasts
+          th Delivery count
+          th
+      each account, i in accountList
+        tr
+          td
+            span=i+1
+          td
+            input(type="checkbox", value=account.id, name="id", id=account.id)
+          td
+            a(href="/channel/account/edit/"+account.id)
+              b=account.name
+          td
+            span=account.line_account
+          td
+            span=account.account_id
+          td
+            span #{formatDate(account.start_date)}
+          td
+            span=account.duration
+          td.a-center
+            span=account.friends
+          td.a-center
+            span=account.target_reach
+          td.a-center
+            span=account.block
+          td.a-center
+            span #{account.block_rate}%
+          td.a-center
+            span=account.broadcast
+          td.a-center
+            span=account.delivery_count
+          td
+             a.remove-link(href="/channel/account/delete/"+account.id, onclick="return confirm('Are you sure you want to remove this item?')") remove
 script.
-  $('#btnSave').click(function() {
+  $('#btn-create-group').click(function() {
     if($('input[name=id]:checked').length == 0) {
       vex.dialog.alert('Please choose account name!')
     } else {

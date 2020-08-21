@@ -16,71 +16,38 @@ block content
     .w50
       span 日付
       .d-flex.flex-row.justify-content-between
-        div
+        .date-wrap
           input.form-control.date-range(name="dates")
         div
-          select.form-control
-            each item in data
-              option(value=item.group.id)=item.group.name
+          select.form-control#js-select-group
+            each item in groupAll
+              option(value=item.id)=item.name
+            option(value="全体") 全体
     div
       button.btn.btn-info.btn1 PDFダウンロード
   br
-  div
-    each item in data
-      h4='Group ('+item.group.name+')'
-      table.table.tb-statistic
-        thead
-          tr
-            th Global #
-            th Local #
-            th Account Name
-            th Line Account Name
-            th Account ID
-            th Start Date
-            th Duration
-            th Friends
-            th Target Reach
-            th Block
-            th Block Rate
-            th Broadcasts
-            th Delivery Count
-        each account, i in item.account
-          tr
-            td=i+1
-            td=account.id
-            td=account.name
-            td=account.line_account
-            td=account.account_id
-            td #{formatDate(account.start_date)}
-            td=account.duration
-            td=account.friends
-            td=account.target_reach
-            td=account.block
-            td 0
-            td=account.broadcast
-            td=account.delivery_count
-        tfoot.tb-footer
-          tr
-            td.a-right(colspan="7") Total
-            td=0
-            td=0
-            td=0
-            td=0
-            td=0
-            td=0
-          tr
-            td.a-right(colspan="7") Average
-            td=0
-            td=0
-            td=0
-            td=0
-            td=0
-            td=0
-      br
+  div.group-table
   script.
     $('input[name="dates"]').daterangepicker({
        "locale": {
         "format": "YYYY/MM/DD"
        }
     });
+
+    $('#js-select-group').change(function() {
+      let id = $(this).val();
+       $.ajax({
+          type : 'POST',
+          url : '/statistic/get-group-statistic',
+          data: { id : id },
+          success: function(res) {
+            $('.group-table').html(res)
+          },
+          complete: function() {
+            
+          }
+        })
+    })
+    
+    $('#js-select-group').trigger('change')
 

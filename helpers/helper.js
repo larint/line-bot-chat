@@ -1,15 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateNumberProportion = exports.randomColorHex = exports.formatDate = exports.log = void 0;
+exports.generateNumberProportion = exports.randomColorHex = exports.formatDate = exports.log = exports.round = void 0;
 const fs = require("fs");
 const path = require("path");
+function round(num, pad = 10) {
+    return Math.round(num * pad) / pad;
+}
+exports.round = round;
 function log(msg, file = 'log.log') {
     let pathFile = path.join(path.dirname(__dirname), file);
     let stream = fs.createWriteStream(pathFile, { flags: 'a' });
     stream.write(msg + '\n');
 }
 exports.log = log;
-function formatDate(format = 'dd-MM-YYYY', dateObj = new Date()) {
+function formatDate(format = 'dd-MM-YYYY', dateObj = new Date(), moreDate = 0) {
+    dateObj.setDate(dateObj.getDate() + moreDate);
     let year = dateObj.getFullYear();
     let month = ("0" + (dateObj.getMonth() + 1)).slice(-2);
     let date = ("0" + dateObj.getDate()).slice(-2);

@@ -4,23 +4,25 @@ block style
   -var active_menu = 'channel'
 
 block main_title
-  h3 Dashboard
+  h3 LINEアカウントグループ
 
 block content
-  .row
-    .col-12
-      a(href="/channel")
-        button.btn.btn-info.btn-sm back
-      if accounts
-        div
-          h4 Accounts (#{group.name})
-          table.table
-            tr
-              th Account name
-              th Create at
-            each item in accounts
-              tr
-                td
-                  b=item.name
-                td
-                  span #{formatDate(item.created_at)}
+  a(href="/channel")
+    button.btn.btn-info.btn-sm back
+  if accounts
+    .mt-10
+      h4 Group (#{group.name})
+      table.tb-statistic
+        thead
+          tr
+            th Global #
+            th Account name
+            th Account ID
+            //- th
+        each account, i in accounts
+          tr
+            td=i+1
+            td=account.name
+            td=account.account_id
+            //- td
+            //-   a.remove-link(href="/channel/group/delete/account/"+account.id, onclick="return confirm('Are you sure you want to remove this item?')") remove

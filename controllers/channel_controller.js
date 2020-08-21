@@ -1,34 +1,85 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.ChannelController = void 0;
+const bot_sdk_1 = require("@line/bot-sdk");
+const helper_1 = require("../helpers/helper");
 const channel_groups_1 = require("../models/channel_groups");
 const channel_groups_accounts_1 = require("../models/channel_groups_accounts");
 const channel_accounts_1 = require("../models/channel_accounts");
 class ChannelController {
     constructor() {
         this.index = async (req, res) => {
-            let accounts = await this.channelAccounts.selectAll();
-            let groups = await this.channelGroups.selectAll();
-            return res.render('channels/index', { accounts: accounts, groups: groups });
+            let accountList = await this.channelAccounts.selectAll();
+            let groupList = await this.channelGroups.selectAll();
+            return res.render('channels/index', { accountList: accountList, groupList: groupList });
         };
         this.addAccount = async (req, res) => {
-            let channelConfig = req.body;
-            if (!channelConfig.name || !channelConfig.access_token || !channelConfig.secret) {
+            var _a;
+            let data = req.body;
+            if (!data.name || !data.access_token || !data.secret) {
             }
             else {
+                let client = new bot_sdk_1.Client({
+                    channelAccessToken: data.access_token,
+                    channelSecret: data.secret
+                });
+                let currentDate = helper_1.formatDate('YYYYMMDD', new Date(), -1);
+                let follower = await client.getNumberOfFollowers(currentDate);
+                let messageDelivery = await client.getNumberOfMessageDeliveries(currentDate);
+                let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
                 await this.channelAccounts.save([
-                    { field: 'name', data: channelConfig.name },
-                    { field: 'access_token', data: channelConfig.access_token },
-                    { field: 'secret', data: channelConfig.secret }
+                    { field: 'name', data: data.name },
+                    { field: 'line_account', data: data.line_account },
+                    { field: 'account_id', data: data.account_id },
+                    { field: 'friends', data: follower.followers },
+                    { field: 'target_reach', data: follower.targetedReaches },
+                    { field: 'block', data: follower.blocks },
+                    { field: 'block_rate', data: block_rate },
+                    { field: 'broadcast', data: (_a = messageDelivery.apiBroadcast) !== null && _a !== void 0 ? _a : 0 },
+                    { field: 'delivery_count', data: 0 },
+                    { field: 'access_token', data: data.access_token },
+                    { field: 'secret', data: data.secret }
                 ]);
             }
             return res.redirect('back');
         };
-        this.deleteAccount = async (req, res) => {
-            let id = req.params.id;
-            await this.channelAccounts.destroy([
-                { field: 'id', data: id }
+        this.editAccount = async (req, res) => {
+            let id = parseInt(req.params.id);
+            let account = await this.channelAccounts.find(id);
+            let accountList = await this.channelAccounts.selectAll();
+            let groupList = await this.channelGroups.selectAll();
+            return res.render('channels/index', { account: account, accountList: accountList, groupList: groupList });
+        };
+        this.updateAccount = async (req, res) => {
+            var _a;
+            let data = req.body;
+            let client = new bot_sdk_1.Client({
+                channelAccessToken: data.access_token,
+                channelSecret: data.secret
+            });
+            let currentDate = helper_1.formatDate('YYYYMMDD', new Date(), -1);
+            let follower = await client.getNumberOfFollowers(currentDate);
+            let messageDelivery = await client.getNumberOfMessageDeliveries(currentDate);
+            let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
+            await this.channelAccounts.update([
+                { field: 'id', data: data.id },
+                { field: 'name', data: data.name },
+                { field: 'line_account', data: data.line_account },
+                { field: 'account_id', data: data.account_id },
+                { field: 'friends', data: follower.followers },
+                { field: 'target_reach', data: follower.targetedReaches },
+                { field: 'block', data: follower.blocks },
+                { field: 'block_rate', data: block_rate },
+                { field: 'broadcast', data: (_a = messageDelivery.apiBroadcast) !== null && _a !== void 0 ? _a : 0 },
+                { field: 'delivery_count', data: 0 },
+                { field: 'access_token', data: data.access_token },
+                { field: 'secret', data: data.secret }
             ]);
+            return res.redirect('/channel');
+        };
+        this.deleteAccount = async (req, res) => {
+            let id = parseInt(req.params.id);
+            await this.channelAccounts.destroy(id);
             return res.redirect('back');
         };
         this.createGroup = async (req, res) => {
@@ -46,21 +97,19 @@ class ChannelController {
                     ]);
                 }
             }
-            return res.redirect('channel');
+            return res.send(true);
         };
         this.deleteGroup = async (req, res) => {
-            let id = req.params.id;
+            let id = parseInt(req.params.id);
             await this.channelGroupsAccounts.destroy([
                 { field: 'group_id', data: id }
             ]);
-            await this.channelGroups.destroy([
-                { field: 'id', data: id }
-            ]);
+            await this.channelGroups.destroy(id);
             return res.redirect('back');
         };
         this.groupDetail = async (req, res) => {
-            let id = req.params.id;
-            let group = await this.channelGroups.find({ field: 'id', data: id });
+            let id = parseInt(req.params.id);
+            let group = await this.channelGroups.find(id);
             let groups = await this.channelGroupsAccounts.select([
                 { field: 'group_id', data: id }
             ]);

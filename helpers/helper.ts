@@ -1,13 +1,20 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+export function round(num: number, pad: number = 10) {
+    return Math.round(num * pad) / pad
+}
+
 export function log(msg: any, file: string = 'log.log') {
     let pathFile = path.join(path.dirname(__dirname), file)
     let stream = fs.createWriteStream(pathFile, { flags: 'a' })
     stream.write(msg + '\n');
 }
+// sub or add more date
+// ex: +1, -2
+export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Date(), moreDate: number = 0): string {
+    dateObj.setDate(dateObj.getDate() + moreDate)
 
-export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Date()): string {
     let year = dateObj.getFullYear()
     let month = ("0" + (dateObj.getMonth() + 1)).slice(-2)
     let date = ("0" + dateObj.getDate()).slice(-2)

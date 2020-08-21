@@ -1,0 +1,73 @@
+include ../helpers/func.pug
+div
+  h4 Group (#{group.name})
+  table.tb-statistic
+    thead
+      tr
+        th Global #
+        th Local #
+        th Account Name
+        th Line Account Name
+        th Account ID
+        th Start Date
+        th Duration
+        th Friends
+        th Target Reach
+        th Block
+        th Block Rate
+        th Broadcasts
+        th Delivery Count
+    each account, i in group.accounts
+      tr
+        td=i+1
+        td=account.id
+        td=account.name
+        td
+          span=account.line_account
+        td
+          span=account.account_id
+        td
+          span #{formatDate(account.start_date)}
+        td
+          span=account.duration
+        td.a-center
+          span=account.friends
+        td.a-center
+          span=account.target_reach
+        td.a-center
+          span=account.block
+        td.a-center
+          span #{account.block_rate}%
+        td.a-center
+          span=account.broadcast
+        td.a-center
+          span=account.delivery_count
+    tfoot.tb-footer
+      tr
+        td.a-right(colspan="7") Total
+        td.a-center
+          span=group.total.friend
+        td.a-center
+          span=group.total.target_reach
+        td.a-center
+          span=group.total.block
+        td.a-center
+          span #{group.total.block_rate}%
+        td.a-center
+          span=group.total.broadcast
+        td.a-center
+          span=group.total.delivery_count
+      tr
+        td.a-right(colspan="7") Average
+        td.a-center
+          span=group.average.friend
+        td.a-center
+          span=group.average.target_reach
+        td.a-center
+          span=group.average.block
+        td.a-center
+          span #{group.average.block_rate}%
+        td.a-center
+          span=group.average.broadcast
+        td.a-center
+          span=group.average.delivery_count

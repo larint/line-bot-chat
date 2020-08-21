@@ -56,6 +56,9 @@ DB.exeQuery = (sql, selectPlainObj = false, returnArrayCsv = false) => {
                     let dataArrCsv = DB.convertRowDataToArrayCsv(data);
                     data = dataArrCsv;
                 }
+                if (data.length == 0) {
+                    return resolve(false);
+                }
                 resolve(data);
             }
         });

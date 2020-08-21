@@ -2,13 +2,16 @@ doctype html
 html
   head
     title Line App
+    link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.min.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.1.0/css/vex.min.css")
     link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.1.0/css/vex-theme-default.min.css")
     link(rel="stylesheet", href="stylesheets/style.css")
 
     script(src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js")
+    script(src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/js/bootstrap.min.js")
     script(src="https://cdnjs.cloudflare.com/ajax/libs/vex-js/4.1.0/js/vex.combined.min.js")
+   
     script.
       vex.defaultOptions.className = 'vex-theme-default'
     block style
@@ -22,3 +25,5 @@ html
           block main_title
         .main-content
           block content
+        
+    script(src="javascripts/app.js")

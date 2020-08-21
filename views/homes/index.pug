@@ -4,21 +4,9 @@ block style
   -var active_menu = 'home'
 
 block main_title
-  p Dashboard
+  h3 Dashboard
 
 block content
-  a.btn.btn-primary(href=site_url+"/linedata/downcsv/1") Export statistics by age
-  a.btn.btn-primary(href=site_url+"/linedata/downcsv/2") Export statistics by OS
-  a.btn.btn-primary(href=site_url+"/linedata/downcsv/3") Export statistics by area
-  a.btn.btn-primary(href=site_url+"/linedata/downcsv/4") Export statistics by gender
-  a.btn.btn-primary(href=site_url+"/linedata/downcsv/5") Export statistics by subscriptions
-  a.btn.btn-primary(href=site_url+"/linedata/downcsv/6") Export message statistics
-
-  include ages.pug
-  include apptypes.pug
-  include genders.pug
-  include subscriptions.pug
-  include messages_statistics.pug
-  include areas.pug
+  h1 Dashboard
 
 

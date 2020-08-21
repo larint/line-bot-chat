@@ -1,17 +1,16 @@
 extends ../layout
 
 block style
-  link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js")
-  script(src="javascripts/utils.js")
+  -var active_menu = 'channel'
+
+block main_title
+  h3 Dashboard
+
 block content
-  h1 
-    -var active_menu = 3
-    include ../partials/top_menu.pug
   .row
     .col-12
-      div
-        h4 
+      a(href="/channel")
+        button.btn.btn-info.btn-sm back
       if accounts
         div
           h4 Accounts (#{group.name})

@@ -5,6 +5,5 @@ let router = Router()
 let homeController = new HomeController()
 
 router.get('/', homeController.index)
-router.get('/linedata/downcsv/:data', homeController.downCsv)
 
 export { router }

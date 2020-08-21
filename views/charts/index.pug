@@ -3,27 +3,35 @@ extends ../layout
 block style
   link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
   script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js")
+  script(src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js")
+  script(src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js")
+  script(src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js")
+
+  link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css")
   script(src="javascripts/utils.js")
   -var active_menu = 'chart'
 
 block main_title
-  p LINE統計チャート
+  h3 LINE統計チャート
 
 block content
-  .box-action
-      div
-        p 日付
-        input.date-range(name="dates")
-      div
-        button.btn PDFダウンロード
-  .box-view
-    .bv-left
-      .row1
+  .d-flex.flex-row.justify-content-between
+    .w50
+      span 日付
+      .d-flex.flex-row.justify-content-between
+        div
+          input.form-control.date-range(name="dates")
+    div
+      button.btn.btn-info.btn1 PDFダウンロード
+  br
+  .d-flex.flex-row
+    .d-flex.flex-row.justify-content-between.w50
+      .w50
         span LINE統計チャート#1
-        select
-          option グループ　１
-          option グループ　2
-      .row2 aaaa
-    .bv-right
-      .row1
-        span LINE統計チャート#2
+      select
+        option グループ　１
+        option グループ　2
+    .d-flex.flex-row
+      span LINE統計チャート#2
+  script.
+    $('input[name="dates"]').daterangepicker();

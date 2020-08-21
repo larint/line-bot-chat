@@ -64,8 +64,12 @@ class ChannelController {
             let groups = await this.channelGroupsAccounts.select([
                 { field: 'group_id', data: id }
             ]);
+            let ids = [];
+            for (const it of groups) {
+                ids.push(it.account_id);
+            }
             let accounts = await this.channelAccounts.selectIn([
-                { field: 'id', data: [1, 2] }
+                { field: 'id', data: ids }
             ]);
             return res.render('channels/group_detail', { accounts: accounts, group: group });
         };

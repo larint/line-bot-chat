@@ -11,17 +11,17 @@ import { TableChannelAccount } from './tables/channel__account'
 import { TableChannelGroup } from './tables/channel__groups.js'
 import { TableChannelGroupAccount } from './tables/channel__groups_accounts.js'
 
-TableFriendGraphicsGenders.up()
-TableFriendGraphicsAges.up()
-TableFriendGraphicsApptypes.up()
-TableFriendGraphicsSubscriptions.up()
-TableMessagesStatistic.up()
+// TableFriendGraphicsGenders.up()
+// TableFriendGraphicsAges.up()
+// TableFriendGraphicsApptypes.up()
+// TableFriendGraphicsSubscriptions.up()
+// TableMessagesStatistic.up()
 
-TableFriendGraphicsAreaJP.up() // japan
-TableFriendGraphicsAreaTW.up() // taiwan
-TableFriendGraphicsAreaTH.up() // thailan
-TableFriendGraphicsAreaID.up() // indonesia
+// TableFriendGraphicsAreaJP.up() // japan
+// TableFriendGraphicsAreaTW.up() // taiwan
+// TableFriendGraphicsAreaTH.up() // thailan
+// TableFriendGraphicsAreaID.up() // indonesia
 
 TableChannelAccount.up()
-TableChannelGroup.up()
-TableChannelGroupAccount.up()
+// TableChannelGroup.up()
+// TableChannelGroupAccount.up()

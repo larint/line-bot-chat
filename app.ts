@@ -18,6 +18,7 @@ import './helpers/db'
 import { router as indexRouter } from './routes/index'
 import { router as webhookRouter } from './routes/webhook'
 import { router as chartRouter } from './routes/chart'
+import { router as statisticRouter } from './routes/statistic'
 import { router as channelRouter } from './routes/channel'
 
 
@@ -55,6 +56,7 @@ app.use(/\/(app.js|package.json)/, (req: Request, res: Response, next: NextFunct
 app.use('/', indexRouter);
 app.use('/webhook', webhookRouter);
 app.use('/chart', chartRouter);
+app.use('/statistic', statisticRouter)
 app.use('/channel', channelRouter);
 
 // error handler
@@ -67,6 +69,7 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 	// res.status(err.status || 500);
 	res.render('error');
 });
+
 
 // run the schedule once an hour
 nodeSchedule.scheduleJob('1 * * * *', function () {

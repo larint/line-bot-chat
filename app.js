@@ -15,6 +15,7 @@ require("./helpers/db");
 const index_1 = require("./routes/index");
 const webhook_1 = require("./routes/webhook");
 const chart_1 = require("./routes/chart");
+const statistic_1 = require("./routes/statistic");
 const channel_1 = require("./routes/channel");
 const app = express();
 let http = require("http").Server(app);
@@ -39,6 +40,7 @@ app.use(/\/(app.js|package.json)/, (req, res, next) => {
 app.use('/', index_1.router);
 app.use('/webhook', webhook_1.router);
 app.use('/chart', chart_1.router);
+app.use('/statistic', statistic_1.router);
 app.use('/channel', channel_1.router);
 app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};

@@ -7,4 +7,3 @@ let router = express_1.Router();
 exports.router = router;
 let homeController = new home_controller_1.HomeController();
 router.get('/', homeController.index);
-router.get('/linedata/downcsv/:data', homeController.downCsv);

@@ -1,3 +1,4 @@
+br
 form(action="/channel/account/add", method="POST")
   .row
     label.col-2.col-form-label(for="name") Channel name *
@@ -11,17 +12,18 @@ form(action="/channel/account/add", method="POST")
     label.col-2.col-form-label(for="secret") Channel secret *
     .col-5
       input.form-control.form-control-sm#secret(type="text",name="secret",value=old_data ? old_data.secret : '')
+    .col-2
+      button.btn.btn-primary.btn-sm(type="submit") Add account
   p.red=error
   p.green=success
-  button.btn.btn-primary(type="submit") Add account
 hr
-
 if accounts
   div
-    h4 Accounts
     form#form(action="")
       input(type="hidden", name="name_group", value="")
-      button.btn.btn-info#btnSave(type="button") Create new account group
+      button.btn.btn-info.btn-sm#btnSave(type="button") Create new account group
+      br
+      br
       table.table
         tr
           th(style="width: 10px")
@@ -38,8 +40,7 @@ if accounts
             td
               span #{formatDate(item.created_at)}
             td
-              a(href="/channel/account/delete/"+item.id, onclick="return confirm('Are you sure you want to destroy this item?')")
-                button.btn.btn-danger.btn-xs(type="button") Remove
+              a.remove-link(href="/channel/account/delete/"+item.id, onclick="return confirm('Are you sure you want to destroy this item?')") remove
 script.
   $('#btnSave').click(function() {
     if($('input[name=id]:checked').length == 0) {
@@ -67,5 +68,3 @@ script.
       })
     }
   })
-
- 

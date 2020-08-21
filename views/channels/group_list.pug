@@ -18,7 +18,6 @@ if groups
                 td
                     span #{formatDate(item.created_at)}
                 td
-                    a(href="/channel/group/delete/"+item.id, onclick="return confirm('Are you sure you want to destroy this item?')")
-                        button.btn.btn-danger.btn-xs Remove
-                    a(href="/channel/group/export")
-                        button.btn.btn-info.btn-xs Export CSV
+                    a.remove-link(href="/channel/group/delete/"+item.id, onclick="return confirm('Are you sure you want to destroy this item?')") remove
+                    span  | 
+                    a.export-link(href="/channel/group/export") export

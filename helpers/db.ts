@@ -73,6 +73,9 @@ class DB {
 						let dataArrCsv: any = DB.convertRowDataToArrayCsv(data)
 						data = dataArrCsv
 					}
+					if (data.length == 0) {
+						return resolve(false)
+					}
 					resolve(data)
 				}
 			})

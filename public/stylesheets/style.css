@@ -1,8 +1,17 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+html,
 body {
     font-family: 'Poppins', sans-serif;
     background: #fafafa;
     margin: 0;
+}
+
+.w30 {
+    width: 30%;
+}
+
+.w50 {
+    width: 50%;
 }
 
 select {
@@ -10,11 +19,18 @@ select {
     outline: none;
 }
 
+.a-right {
+    text-align: right;
+}
+
+.a-center {
+    text-align: center;
+}
+
 a,
 a:hover,
 a:focus {
     color: inherit;
-    text-decoration: none;
     -webkit-transition: all 0.3s;
     -o-transition: all 0.3s;
     transition: all 0.3s;
@@ -58,8 +74,12 @@ a:focus {
     font-size: 20px;
 }
 
-.sidebar .menu1 {
-    margin-bottom: 100px;
+.sidebar ul.menu1 {
+    margin: 10px 0px;
+}
+
+.sidebar ul.menu2 {
+    margin-top: 100px;
 }
 
 .sidebar ul {
@@ -75,6 +95,7 @@ a:focus {
     font-size: 15px;
     display: block;
     color: #cecece;
+    text-decoration: none;
 }
 
 .sidebar ul li a:hover,
@@ -96,7 +117,7 @@ a:focus {
     width: 100%;
 }
 
-.main-title p {
+.main-title h3 {
     margin: 20px;
 }
 
@@ -104,28 +125,14 @@ a:focus {
     margin: 20px;
 }
 
-.btn {
-    padding: 5px 10px;
-    color: #fff;
-    background: #3B3B53;
-    border-radius: 5px;
-    outline: none;
-    border: 0;
-    font-size: 15px;
+.remove-link {
+    color: red;
+    text-decoration: underline;
 }
 
-.btn:hover {
-    cursor: pointer;
-    background: #3f3f57;
-}
-
-.box-action {
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
+.export-link {
+    color: rgb(46, 3, 236);
+    text-decoration: underline;
 }
 
 .box-view {
@@ -167,6 +174,42 @@ input.date-range::before {
     font-weight: 900;
     content: "\f007";
     color: red;
-    position: relative;
+    position: absolute;
     left: -5px;
+}
+
+.tb-statistic a {
+    text-decoration: underline
+}
+
+.btn1 {
+    background: #43425D
+}
+
+.btn1:hover {
+    background: #666585
+}
+
+.tb-statistic thead th {
+    background: #4F82BD;
+    color: #fff;
+}
+
+.tb-statistic tfoot tr:nth-child(1) {
+    background: #C5D9F1;
+    font-weight: bold;
+}
+
+.tb-statistic tfoot tr:nth-child(2) {
+    background: #DCE6F1;
+    font-weight: bold;
+}
+
+.tb-statistic td,
+.tb-statistic th {
+    padding: 2px;
+}
+
+.date-range {
+    width: 210px;
 }

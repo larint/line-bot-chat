@@ -21,7 +21,8 @@ block content
         include form_update_account.pug
       else
         include form_add_account.pug
-        include account_list.pug
+        if accountList
+          include account_list.pug
     .tab-pane.fade#tab2
       if groupList
         include group_list.pug

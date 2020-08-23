@@ -1,0 +1,60 @@
+table.tb-statistic
+    thead
+      tr
+        th.a-center(colspan="2", rowspan="2") Group Name
+        th.a-center(rowspan="2") Number of Accounts
+        th.a-center(rowspan="2") col1
+        th.a-center(rowspan="2") col2
+        th.a-center(colspan="2") Friends
+        th.a-center(colspan="2") Target Reach
+        th.a-center(colspan="2") Block
+        th.a-center(rowspan="2") Block Rate
+        th.a-center(colspan="2") Broadcasts
+        th.a-center(colspan="2") Delivery Count
+      tr
+        th.a-center Total
+        th.a-center Average
+        th.a-center Total
+        th.a-center Average
+        th.a-center Total
+        th.a-center Average
+        th.a-center Total
+        th.a-center Average
+        th.a-center Total
+        th.a-center Average
+    tbody
+      each group, index in groupAll
+        tr
+          td 
+            span=index+1
+          td
+            span=group.name
+          td.a-right
+            span=group.account_number
+          td.a-right
+            span 0
+          td.a-right
+            span 0
+          td.a-right
+            span=group.total.friend
+          td.a-right
+            span=group.average.friend
+          td.a-right
+            span=group.total.target_reach
+          td.a-right
+            span=group.average.target_reach
+          td.a-right
+            span=group.total.block
+          td.a-right
+            span=group.average.block
+          td.a-right
+            span #{group.total.block_rate}%
+          td.a-right
+            span=group.total.broadcast 
+          td.a-right
+            span=group.average.broadcast
+          td.a-right
+            span=group.total.delivery_count
+          td.a-right
+            span=group.average.delivery_count
+    

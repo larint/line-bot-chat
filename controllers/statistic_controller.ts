@@ -21,58 +21,75 @@ class StatisticController {
 
     index = async (req: Request, res: Response) => {
         let groupAll = await this.channelGroups.selectAll()
+
         return res.render('statistics/index', { groupAll: groupAll })
     }
 
+    /**
+     * return table html
+     * @param req 
+     * @param res 
+     */
     getGroupStatistic = async (req: Request, res: Response) => {
-        let groupId = parseInt(req.body.id)
-        let group = await this.channelGroups.find(groupId)
+        let groupId = parseInt(req.body.id),
+            groupAll = [], template = ''
+        if (groupId == 0) {
+            groupAll = await this.channelGroups.selectAll()
+            template = 'statistics/table_group_all'
+        } else {
+            groupAll = await this.channelGroups.select([
+                { field: 'id', data: groupId }
+            ])
+            template = 'statistics/table_group'
+        }
+        for (const group of groupAll) {
 
-        let groupAccount = await this.channelGroupsAccounts.select([
-            { field: 'group_id', data: group.id }
-        ])
+            let groupAccount = await this.channelGroupsAccounts.select([
+                { field: 'group_id', data: group.id }
+            ])
 
-        // get all account_id in group
-        let ids = []
-        for (const it of groupAccount) {
-            ids.push(it.account_id)
+            // get all account_id in group
+            let ids = []
+            for (const it of groupAccount) {
+                ids.push(it.account_id)
+            }
+
+            let accounts = await this.channelAccounts.selectIn([
+                { field: 'id', data: ids }
+            ])
+
+            let friend = 0, target_reach = 0, block = 0, broadcast = 0, delivery_count = 0, max = accounts.length
+            for (const account of accounts) {
+                friend += account.friends
+                target_reach += account.target_reach
+                block += account.block
+                broadcast += account.broadcast
+                delivery_count += account.delivery_count
+            }
+
+            group.accounts = accounts
+            group.total = {
+                friend: friend,
+                target_reach: target_reach,
+                block: block,
+                block_rate: round((block / friend) * 100),
+                broadcast: broadcast,
+                delivery_count: delivery_count
+            }
+
+            let blockAverage = Math.ceil(block / max)
+            let friendAverage = Math.ceil(friend / max)
+            group.average = {
+                friend: friendAverage,
+                target_reach: Math.ceil(target_reach / max),
+                block: blockAverage,
+                block_rate: round((blockAverage / friendAverage) * 100),
+                broadcast: Math.ceil(broadcast / max),
+                delivery_count: Math.ceil(delivery_count / max)
+            }
         }
 
-        let accounts = await this.channelAccounts.selectIn([
-            { field: 'id', data: ids }
-        ])
-
-        let friend = 0, target_reach = 0, block = 0, broadcast = 0, delivery_count = 0, max = accounts.length
-        for (const account of accounts) {
-            friend += account.friends
-            target_reach += account.target_reach
-            block += account.block
-            broadcast += account.broadcast
-            delivery_count += account.delivery_count
-        }
-
-        group.accounts = accounts
-        group.total = {
-            friend: friend,
-            target_reach: target_reach,
-            block: block,
-            block_rate: Math.ceil(block / friend),
-            broadcast: broadcast,
-            delivery_count: delivery_count
-        }
-
-        let blockAverage = Math.ceil(block / max)
-        let friendAverage = Math.ceil(friend / max)
-        group.average = {
-            friend: friendAverage,
-            target_reach: Math.ceil(target_reach / max),
-            block: blockAverage,
-            block_rate: Math.ceil(blockAverage / friendAverage),
-            broadcast: Math.ceil(broadcast / max),
-            delivery_count: Math.ceil(delivery_count / max)
-        }
-
-        return res.render('statistics/group_table', { group: group })
+        return res.render(template, { groupAll: groupAll })
     }
 
     downCsv = async (req: Request, res: Response) => {

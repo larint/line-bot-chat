@@ -1,4 +1,5 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+
 html,
 body {
     font-family: 'Poppins', sans-serif;
@@ -212,6 +213,12 @@ input.date-range {
 
 .tb-statistic {
     width: 100%;
+    font-size: 14px;
+}
+
+.tb-statistic th,
+.tb-statistic td {
+    border: 1px solid #ababab;
 }
 
 .tb-statistic thead th {

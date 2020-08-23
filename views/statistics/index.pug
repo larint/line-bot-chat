@@ -22,11 +22,11 @@ block content
           select.form-control#js-select-group
             each item in groupAll
               option(value=item.id)=item.name
-            option(value="全体") 全体
+            option(value="0") 全体
     div
       button.btn.btn-info.btn1 PDFダウンロード
   br
-  div.group-table
+  div.table-statistic
   script.
     $('input[name="dates"]').daterangepicker({
        "locale": {
@@ -41,7 +41,7 @@ block content
           url : '/statistic/get-group-statistic',
           data: { id : id },
           success: function(res) {
-            $('.group-table').html(res)
+            $('.table-statistic').html(res)
           },
           complete: function() {
             

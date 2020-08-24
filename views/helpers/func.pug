@@ -1,3 +1,27 @@
-- function formatDate(dateStr) {
+- function formatDate(dateStr, format) {
+-   let dateObj = new Date(dateStr)
+-   let year = dateObj.getFullYear()
+-   let month = ("0" + (dateObj.getMonth() + 1)).slice(-2)
+-   let date = ("0" + dateObj.getDate()).slice(-2)
+-   if(format == 'YYYY年MM月') {
+-       return `${year}年${month}月`
+-   } else if(format == 'YYYY年MM月DD日') {
+-       return `${year}年${month}月${date}日`
+-   } else if(format == 'dd-MM-YYYY') {
+-       return `${date}${month}${year}`
+-   } else if(format == 'YYYYMMDD') {
+-       return `${year}${month}${date}`
+-   } else if(format == 'YYYY/MM/DD') {
+-       return `${year}/${month}/${date}`
+-   } else if(format == 'MMDD') {
+-       return `${month}${date}`
+-   }
 -   return new Date(dateStr).toLocaleString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })
 - }
+- function monthDiff(d1, d2) {
+-    var months;
+-    months = (d2.getFullYear() - d1.getFullYear()) * 12;
+-    months -= d1.getMonth();
+-    months += d2.getMonth();
+-    return months <= 0 ? 1 : months;
+-  }

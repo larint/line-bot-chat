@@ -7,19 +7,19 @@ div
     table.tb-statistic
       thead
         tr
-          th Global #
-          th(style="width: 10px")
-          th Account name
-          th Line account name
-          th Account ID
-          th Start date
-          th Duration
-          th Friends
-          th Target reach
-          th Block
-          th Block rate
-          th Broadcasts
-          th Delivery count
+          th.a-center Global #
+          th.a-center(style="width: 10px")
+          th.a-center Account name
+          th.a-center Line account name
+          th.a-center Account ID
+          th.a-center Start date
+          th.a-center Duration
+          th.a-center Friends
+          th.a-center Target reach
+          th.a-center Block
+          th.a-center Block rate
+          th.a-center Broadcasts
+          th.a-center Delivery count
           th
       each account, i in accountList
         tr
@@ -35,22 +35,22 @@ div
           td
             span=account.account_id
           td
-            span #{formatDate(account.start_date)}
-          td
-            span=account.duration
-          td.a-center
+            span #{formatDate(account.start_date, 'YYYY年MM月DD日')}
+          td.a-right
+            span #{monthDiff(new Date(account.start_date), new Date())} months
+          td.a-right
             span=account.friends
-          td.a-center
+          td.a-right
             span=account.target_reach
-          td.a-center
+          td.a-right
             span=account.block
-          td.a-center
+          td.a-right
             span #{account.block_rate}%
-          td.a-center
+          td.a-right
             span=account.broadcast
-          td.a-center
+          td.a-right
             span=account.delivery_count
-          td
+          td.a-right
              a.remove-link(href="/channel/account/delete/"+account.id, onclick="return confirm('Are you sure you want to remove this item?')") remove
 script.
   $('#btn-create-group').click(function() {

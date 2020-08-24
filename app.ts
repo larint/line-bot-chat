@@ -71,8 +71,9 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 });
 
 
-// run the schedule once an hour
-nodeSchedule.scheduleJob('1 * * * *', function () {
+// Run the schedule once at 23pm every day
+nodeSchedule.scheduleJob('23 * * *', function () {
+	console.log('run scheduleJob ' + new Date())
 	LineSchedule.run()
 	io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' })
 });

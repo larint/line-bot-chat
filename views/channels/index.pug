@@ -1,12 +1,16 @@
 extends ../layout
 
 block style
+  link(rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js")
+  script(src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ja.min.js")
   -var active_menu = 'channel'
 
 block main_title
   h3 LINEアカウントグループ
 
 block content
+  include ../helpers/func.pug
   ul.nav.nav-tabs
     li.nav-item
       a.nav-link.active(data-toggle="tab", href="#tab1") Accounts

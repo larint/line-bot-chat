@@ -1,10 +1,9 @@
-import { Migration } from '../migration'
+import { BaseModel } from './base_model'
 
-class TableFriendGraphicsAreaTW {
-    static table: string = 'friend_graphics__areas_tw'
-    static column = []
-    static areaTrans = {
-        // TW
+class FriendGraphicsAreasTW extends BaseModel {
+    protected table: string = 'friend_graphics__areas_tw'
+    column = []
+    areaTrans = {
         "unknown": "unknown",
         "台北市": "taipei_city",
         "新北市": "new_taipei",
@@ -30,23 +29,6 @@ class TableFriendGraphicsAreaTW {
         "連江縣": "lianjiang_county",
     }
 
-    static up = () => {
-        let migration = new Migration()
-
-        migration.drop(TableFriendGraphicsAreaTW.table)
-        migration.create(TableFriendGraphicsAreaTW.table, (table: Migration) => {
-            table.integer('id').unsigned().increment()
-            table.integer('account_id')
-            table.string('date_update')
-            // JP
-            let citys = Object.values(TableFriendGraphicsAreaTW.areaTrans)
-            citys.map((city) => {
-                table.float(city).default(0)
-            })
-
-        })
-
-    }
 }
 
-export { TableFriendGraphicsAreaTW }
+export { FriendGraphicsAreasTW }

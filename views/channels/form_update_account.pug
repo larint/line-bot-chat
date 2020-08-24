@@ -13,6 +13,10 @@ form(action="/channel/account/update", method="POST")
             label(for="account_id") Account id 
                 span.red *
             input.form-control.form-control-sm#account_id(type="text", name="account_id", value=account?account.account_id : '') 
+        .form-group.col-2
+            label(for="start_date") Start Date 
+                span.red *
+            input.form-control.form-control-sm#start_date(type="text", name="start_date", value=account?formatDate(account.start_date, 'YYYY/MM/DD') : '', autocomplete='off') 
     .form-row
         .form-group.col-6
             label(for="access_token") Channel access token 
@@ -24,3 +28,9 @@ form(action="/channel/account/update", method="POST")
             input.form-control.form-control-sm#secret(type="text", name="secret", value=account?account.secret : '')
             .a-right
                 button.btn.btn-primary.btn-sm(type="submit", style="margin-top:23px") Update
+script.
+    $('#start_date').datepicker({
+        autoclose: true,
+        language: 'ja',
+        format: "yyyy/mm/dd"
+    });

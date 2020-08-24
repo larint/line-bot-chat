@@ -25,6 +25,8 @@ function formatDate(format = 'dd-MM-YYYY', dateObj = new Date(), moreDate = 0) {
             return `${year}${month}${date}`;
         case 'MMDD':
             return `${month}${date}`;
+        case 'YYYY-MM-DD':
+            return `${year}-${month}-${date}`;
     }
     return dateObj.toDateString();
 }

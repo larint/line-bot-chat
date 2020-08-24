@@ -36,10 +36,13 @@ block content
 
     $('#js-select-group').change(function() {
       let id = $(this).val();
+      var start_date = $('input[name="dates"]').data('daterangepicker').startDate._d;
+      var end_date = $('input[name="dates"]').data('daterangepicker').endDate._d;
+
        $.ajax({
           type : 'POST',
           url : '/statistic/get-group-statistic',
-          data: { id : id },
+          data: { id : id, start_date : start_date, end_date : end_date },
           success: function(res) {
             $('.table-statistic').html(res)
           },
@@ -47,6 +50,8 @@ block content
             
           }
         })
+
+
     })
     
     $('#js-select-group').trigger('change')

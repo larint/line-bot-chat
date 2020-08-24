@@ -1,17 +1,20 @@
 import { Client } from '@line/bot-sdk'
 import * as Types from '@line/bot-sdk/dist/types'
-import { log, formatDate } from '../helpers/helper'
+import { formatDate } from '../helpers/helper'
 import { Faker } from '../faker/faker'
-import { DB } from '../helpers/db'
-import { messageStatistic } from '../helpers/type'
-import { TableFriendGraphicsGenders } from '../migrations/tables/friend_graphics__genders'
-import { TableFriendGraphicsAges } from '../migrations/tables/friend_graphics__ages'
-import { TableFriendGraphicsApptypes } from '../migrations/tables/friend_graphics__apptypes'
-import { TableFriendGraphicsSubscriptions } from '../migrations/tables/friend_graphics__subscriptions'
-import { TableFriendGraphicsAreaJP } from '../migrations/tables/friend_graphics__areas_jp'
-import { TableFriendGraphicsAreaTW } from '../migrations/tables/friend_graphics__areas_tw'
-import { TableFriendGraphicsAreaTH } from '../migrations/tables/friend_graphics__areas_th'
-import { TableFriendGraphicsAreaID } from '../migrations/tables/friend_graphics__areas_id'
+import { DataWhere } from '../helpers/db'
+import { messageStatistic as TypeMessageStatistic } from '../helpers/type'
+import { MessageStatistic } from '../models/messages_statistic'
+import { ChannelAccounts } from '../models/channel_accounts'
+import { FriendGraphicsAges } from '../models/friend_graphics_ages'
+import { FriendGraphicsApptypes } from '../models/friend_graphics_apptypes'
+import { FriendGraphicsGenders } from '../models/friend_graphics_genders'
+import { FriendGraphicsSubscriptions } from '../models/friend_graphics_subscriptions'
+import { FriendGraphicsAreasJP } from '../models/friend_graphics_areas_jp'
+import { FriendGraphicsAreasTH } from '../models/friend_graphics_areas_th'
+import { FriendGraphicsAreasTW } from '../models/friend_graphics_areas_tw'
+import { FriendGraphicsAreasID } from '../models/friend_graphics_areas_id'
+
 
 require('dotenv').config()
 
@@ -23,273 +26,346 @@ const config = {
 const client = new Client(config)
 
 class LineSchedule {
+    /**
+     * Get statistical information for all accounts at the current date 
+     */
     static run = async () => {
         // send notification to chat bot
-        await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })
+        // await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })
 
-        console.log('run getFriendDemographics ' + new Date())
-        let friend: Types.FriendDemographics = await client.getFriendDemographics()
+        // Updates for all accounts by date
+        let channelAccounts = new ChannelAccounts()
+        let accountList = await channelAccounts.selectAll()
 
-        // let friend = await Faker.getFakeJsonFriendGraphics()
-        // console.log(friend)
+        for (const account of accountList) {
+            let client = new Client({
+                channelAccessToken: account.access_token,
+                channelSecret: account.secret
+            })
 
-        await LineSchedule.saveGraphicsGenders(friend)
-        await LineSchedule.saveGraphicsAges(friend)
-        await LineSchedule.saveGraphicsAppTypes(friend)
-        await LineSchedule.saveGraphicsSubscription(friend)
-        await LineSchedule.saveGraphicsAreas(friend)
-        await LineSchedule.saveMessageStatistic()
+            // Only get information from the previous day
+            let date = formatDate('YYYYMMDD', new Date(), -1)
+            let friend: Types.FriendDemographics = await client.getFriendDemographics()
+            // let friend = await Faker.getFakeJsonFriendGraphics()
+
+            await LineSchedule.saveGraphicsGenders(friend, account.id, date)
+            await LineSchedule.saveGraphicsAges(friend, account.id, date)
+            await LineSchedule.saveGraphicsAppTypes(friend, account.id, date)
+            await LineSchedule.saveGraphicsSubscription(friend, account.id, date)
+            await LineSchedule.saveGraphicsAreas(friend, account.id, date)
+
+            await LineSchedule.saveMessageStatistic(client, account.id, date)
+        }
 
     }
 
-    static saveGraphicsGenders = async (friend: Types.FriendDemographics) => {
-
-        let currentDate = formatDate('YYYYMMDD');
-
-        let exist = await DB.selectByParams({
-            select: 'id',
-            table: 'friend_graphics__genders',
-            set: '??=?',
-            where: ['date_update', currentDate]
-        })
-
-        if (exist.length > 0) {
-            return
-        }
-
-        let gendersWhere = ['date_update', currentDate]
-
-        friend.genders?.forEach((item: any) => {
-            gendersWhere.push(item.gender)
-            gendersWhere.push(item.percentage)
-        })
+    static saveGraphicsGenders = async (friend: Types.FriendDemographics, accountId: number, dateUpdate: string) => {
+        let friendGraphicsGenders = new FriendGraphicsGenders()
+        let isExist = await friendGraphicsGenders.find([
+            { field: 'date_update', data: dateUpdate },
+            { field: 'account_id', data: accountId },
+        ])
 
         if (friend.genders?.length == 0) {
-            TableFriendGraphicsGenders.column.slice(2).forEach((column, idx) => {
-                gendersWhere.push(column)
-                gendersWhere.push('0')
-            })
-        }
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
 
-        await DB.insertItem({
-            table: 'friend_graphics__genders',
-            set: '?? = ?,?? = ?,?? = ?,?? = ?',
-            where: gendersWhere
-        })
+                friendGraphicsGenders.column.slice(3).forEach((column, idx) => {
+                    fields.push({ field: column, data: 0 })
+                })
+
+                await friendGraphicsGenders.save(fields)
+            }
+        } else {
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
+
+                friend.genders?.forEach((item: any) => {
+                    fields.push({ field: item.gender, data: item.percentage })
+                })
+
+                await friendGraphicsGenders.save(fields)
+            } else {
+                let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
+
+                friend.genders?.forEach((item: any) => {
+                    fields.push({ field: item.gender, data: item.percentage })
+                })
+
+                await friendGraphicsGenders.update(fields)
+            }
+        }
     }
 
-    static saveGraphicsAges = async (friend: Types.FriendDemographics) => {
-
-        let currentDate = formatDate('YYYYMMDD');
-        let exist = await DB.selectByParams({
-            select: 'id',
-            table: 'friend_graphics__ages',
-            set: '??=?',
-            where: ['date_update', currentDate]
-        })
-
-        if (exist.length > 0) {
-            return
-        }
-
-        let agesWhere = ['date_update', currentDate]
-
-        friend.ages?.forEach((item: any) => {
-            agesWhere.push(item.age)
-            agesWhere.push(item.percentage)
-        })
+    static saveGraphicsAges = async (friend: Types.FriendDemographics, accountId: number, dateUpdate: string) => {
+        let friendGraphicsAges = new FriendGraphicsAges()
+        let isExist = await friendGraphicsAges.find([
+            { field: 'date_update', data: dateUpdate },
+            { field: 'account_id', data: accountId },
+        ])
 
         if (friend.ages?.length == 0) {
-            TableFriendGraphicsAges.column.slice(2).forEach((column, idx) => {
-                agesWhere.push(column)
-                agesWhere.push('0')
-            })
-        }
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
 
-        await DB.insertItem({
-            table: 'friend_graphics__ages',
-            set: '?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?',
-            where: agesWhere
-        })
+                friendGraphicsAges.column.slice(3).forEach((column, idx) => {
+                    fields.push({ field: column, data: 0 })
+                })
+
+                await friendGraphicsAges.save(fields)
+            }
+        } else {
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
+
+                friend.ages?.forEach((item: any) => {
+                    fields.push({ field: item.age, data: item.percentage })
+                })
+
+                await friendGraphicsAges.save(fields)
+            } else {
+                let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
+
+                friend.ages?.forEach((item: any) => {
+                    fields.push({ field: item.age, data: item.percentage })
+                })
+
+                await friendGraphicsAges.update(fields)
+            }
+        }
     }
 
-    static saveGraphicsAppTypes = async (friend: Types.FriendDemographics) => {
-
-        let currentDate = formatDate('YYYYMMDD');
-        let exist = await DB.selectByParams({
-            select: 'id',
-            table: 'friend_graphics__apptypes',
-            set: '??=?',
-            where: ['date_update', currentDate]
-        })
-
-        if (exist.length > 0) {
-            return
-        }
-
-        let appTypesWhere = ['date_update', currentDate]
-
-        friend.appTypes?.forEach((item: any) => {
-            appTypesWhere.push(item.appType)
-            appTypesWhere.push(item.percentage)
-        })
+    static saveGraphicsAppTypes = async (friend: Types.FriendDemographics, accountId: number, dateUpdate: string) => {
+        let friendGraphicsApptypes = new FriendGraphicsApptypes()
+        let isExist = await friendGraphicsApptypes.find([
+            { field: 'date_update', data: dateUpdate },
+            { field: 'account_id', data: accountId },
+        ])
 
         if (friend.appTypes?.length == 0) {
-            TableFriendGraphicsApptypes.column.slice(2).forEach((column, idx) => {
-                appTypesWhere.push(column)
-                appTypesWhere.push('0')
-            })
-        }
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
 
-        await DB.insertItem({
-            table: 'friend_graphics__apptypes',
-            set: '?? = ?,?? = ?,?? = ?,?? = ?',
-            where: appTypesWhere
-        })
+                friendGraphicsApptypes.column.slice(3).forEach((column, idx) => {
+                    fields.push({ field: column, data: 0 })
+                })
+
+                await friendGraphicsApptypes.save(fields)
+            }
+        } else {
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
+
+                friend.appTypes?.forEach((item: any) => {
+                    fields.push({ field: item.appType, data: item.percentage })
+                })
+
+                await friendGraphicsApptypes.save(fields)
+            } else {
+                let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
+
+                friend.appTypes?.forEach((item: any) => {
+                    fields.push({ field: item.appType, data: item.percentage })
+                })
+
+                await friendGraphicsApptypes.update(fields)
+            }
+        }
     }
 
-    static saveGraphicsSubscription = async (friend: Types.FriendDemographics) => {
-
-        let currentDate = formatDate('YYYYMMDD');
-        let exist = await DB.selectByParams({
-            select: 'id',
-            table: 'friend_graphics__subscriptions',
-            set: '??=?',
-            where: ['date_update', currentDate]
-        })
-
-        if (exist.length > 0) {
-            return
-        }
-
-        let subscriptionWhere = ['date_update', currentDate]
-
-        friend.subscriptionPeriods?.forEach((item: any) => {
-            subscriptionWhere.push(item.subscriptionPeriod)
-            subscriptionWhere.push(item.percentage)
-        })
+    static saveGraphicsSubscription = async (friend: Types.FriendDemographics, accountId: number, dateUpdate: string) => {
+        let friendGraphicsSubscriptions = new FriendGraphicsSubscriptions()
+        let isExist = await friendGraphicsSubscriptions.find([
+            { field: 'date_update', data: dateUpdate },
+            { field: 'account_id', data: accountId },
+        ])
 
         if (friend.subscriptionPeriods?.length == 0) {
-            TableFriendGraphicsSubscriptions.column.slice(2).forEach((column, idx) => {
-                subscriptionWhere.push(column)
-                subscriptionWhere.push('0')
-            })
-        }
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
 
-        await DB.insertItem({
-            table: 'friend_graphics__subscriptions',
-            set: '?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?,?? = ?',
-            where: subscriptionWhere
-        })
+                friendGraphicsSubscriptions.column.slice(3).forEach((column, idx) => {
+                    fields.push({ field: column, data: 0 })
+                })
+
+                await friendGraphicsSubscriptions.save(fields)
+            }
+        } else {
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
+
+                friend.subscriptionPeriods?.forEach((item: any) => {
+                    fields.push({ field: item.subscriptionPeriod, data: item.percentage })
+                })
+
+                await friendGraphicsSubscriptions.save(fields)
+            } else {
+                let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
+
+                friend.subscriptionPeriods?.forEach((item: any) => {
+                    fields.push({ field: item.subscriptionPeriod, data: item.percentage })
+                })
+
+                await friendGraphicsSubscriptions.update(fields)
+            }
+        }
     }
 
-    static saveGraphicsAreas = async (friend: Types.FriendDemographics) => {
-        let areaTrans: any, table: string = ''
+    static saveGraphicsAreas = async (friend: Types.FriendDemographics, accountId: number, dateUpdate: string) => {
+        let friendGraphicsArea: any = {}
         switch (process.env.LINE_LOCATE) {
             case 'jp':
-                areaTrans = TableFriendGraphicsAreaJP.areaTrans;
-                table = 'friend_graphics__areas_jp'
+                friendGraphicsArea = new FriendGraphicsAreasJP()
                 break;
             case 'tw':
-                areaTrans = TableFriendGraphicsAreaTW.areaTrans;
-                table = 'friend_graphics__areas_tw'
+                friendGraphicsArea = new FriendGraphicsAreasTW()
                 break;
             case 'th':
-                areaTrans = TableFriendGraphicsAreaTH.areaTrans;
-                table = 'friend_graphics__areas_th'
+                friendGraphicsArea = new FriendGraphicsAreasTH()
                 break;
             case 'id':
-                areaTrans = TableFriendGraphicsAreaID.areaTrans;
-                table = 'friend_graphics__areas_id'
+                friendGraphicsArea = new FriendGraphicsAreasID()
                 break;
             default:
-                areaTrans = TableFriendGraphicsAreaJP.areaTrans;
-                table = 'friend_graphics__areas_jp'
+                friendGraphicsArea = new FriendGraphicsAreasJP()
                 break;
         }
 
-        let currentDate = formatDate('YYYYMMDD');
-        let exist = await DB.selectByParams({
-            select: 'id',
-            table: table,
-            set: '??=?',
-            where: ['date_update', currentDate]
-        })
+        let areaTrans: any[] = friendGraphicsArea.areaTrans
+        let isExist = await friendGraphicsArea.find([
+            { field: 'date_update', data: dateUpdate },
+            { field: 'account_id', data: accountId },
+        ])
 
-        if (exist.length > 0) {
-            return
-        }
-
-        let areasWhere = ['date_update', currentDate]
-        // build set where
-        let set: string = '?? = ?,'
-        friend.areas?.forEach((item: any) => {
-            areasWhere.push(areaTrans[item.area])
-            areasWhere.push(item.percentage)
-            set += '?? = ?,'
-        })
-
-        let citys = Object.values(areaTrans)
         if (friend.areas?.length == 0) {
-            for (const city of citys) {
-                areasWhere.push(city as string)
-                areasWhere.push('0')
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
+
+                let citys = Object.values(areaTrans)
+                for (const city of citys) {
+                    fields.push({ field: city as string, data: 0 })
+                }
+
+                await friendGraphicsArea.save(fields)
+            }
+        } else {
+            if (!isExist) {
+                let fields: DataWhere[] = [
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate }
+                ]
+
+                friend.areas?.forEach((item: any) => {
+                    fields.push({ field: areaTrans[item.area], data: item.percentage })
+                })
+
+                await friendGraphicsArea.save(fields)
+            } else {
+                let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
+
+                friend.areas?.forEach((item: any) => {
+                    fields.push({ field: areaTrans[item.area], data: item.percentage })
+                })
+
+                await friendGraphicsArea.update(fields)
             }
         }
 
-        await DB.insertItem({
-            table: table,
-            set: set.slice(0, -1), // remove last character ,
-            where: areasWhere
-        })
     }
 
-    static saveMessageStatistic = async () => {
-        let currentDate = formatDate('YYYYMMDD')
+    /**
+     * update statistic for each account by date
+     * @param accountId 
+     * @param date 
+     */
+    static saveMessageStatistic = async (client: Client, accountId: number, dateUpdate: string) => {
+        let messageStatistic = new MessageStatistic()
+        let result: TypeMessageStatistic = {}
+        result.reply = await client.getNumberOfSentReplyMessages(dateUpdate)
+        result.sentPush = await client.getNumberOfSentPushMessages(dateUpdate)
+        result.sentMulticast = await client.getNumberOfSentMulticastMessages(dateUpdate)
+        result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(dateUpdate)
+        result.messageDeliveries = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(dateUpdate)
 
-        let exist = await DB.selectByParams({
-            select: 'id',
-            table: 'messages_statistic',
-            set: '??=?',
-            where: ['date_update', currentDate]
-        })
+        let isExist = await messageStatistic.find([
+            { field: 'account_id', data: accountId },
+            { field: 'date_update', data: dateUpdate }
+        ])
 
-        if (exist.length > 0) {
-            return
+        if (isExist) {
+            messageStatistic.update([
+                { field: 'id', data: isExist.id },
+                { field: 'reply_status', data: result.reply.status },
+                { field: 'reply_number', data: result.reply.success ?? 0 },
+                { field: 'push_status', data: result.sentPush.status },
+                { field: 'push_number', data: result.sentPush.success ?? 0 },
+                { field: 'multicast_status', data: result.sentMulticast.status },
+                { field: 'multicast_number', data: result.sentMulticast.success ?? 0 },
+                { field: 'broadcast_status', data: result.sentBroadcast.status },
+                { field: 'broadcast_number', data: result.sentBroadcast.success ?? 0 },
+                { field: 'deliveries_status', data: result.messageDeliveries.status },
+                { field: 'deliveries_broadcast', data: result.messageDeliveries.broadcast ?? 0 },
+                { field: 'deliveries_targeting', data: result.messageDeliveries.targeting ?? 0 },
+                { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
+                { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
+                { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
+                { field: 'deliveries_api_broadcast', data: result.messageDeliveries.apiBroadcast ?? 0 },
+                { field: 'deliveries_api_push', data: result.messageDeliveries.apiPush ?? 0 },
+                { field: 'deliveries_api_multicast', data: result.messageDeliveries.apiMulticast ?? 0 },
+                { field: 'deliveries_api_reply', data: result.messageDeliveries.apiReply ?? 0 }
+            ])
+        } else {
+            messageStatistic.save([
+                { field: 'account_id', data: accountId },
+                { field: 'date_update', data: dateUpdate },
+                { field: 'reply_status', data: result.reply.status },
+                { field: 'reply_number', data: result.reply.success ?? 0 },
+                { field: 'push_status', data: result.sentPush.status },
+                { field: 'push_number', data: result.sentPush.success ?? 0 },
+                { field: 'multicast_status', data: result.sentMulticast.status },
+                { field: 'multicast_number', data: result.sentMulticast.success ?? 0 },
+                { field: 'broadcast_status', data: result.sentBroadcast.status },
+                { field: 'broadcast_number', data: result.sentBroadcast.success ?? 0 },
+                { field: 'deliveries_status', data: result.messageDeliveries.status },
+                { field: 'deliveries_broadcast', data: result.messageDeliveries.broadcast ?? 0 },
+                { field: 'deliveries_targeting', data: result.messageDeliveries.targeting ?? 0 },
+                { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
+                { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
+                { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
+                { field: 'deliveries_api_broadcast', data: result.messageDeliveries.apiBroadcast ?? 0 },
+                { field: 'deliveries_api_push', data: result.messageDeliveries.apiPush ?? 0 },
+                { field: 'deliveries_api_multicast', data: result.messageDeliveries.apiMulticast ?? 0 },
+                { field: 'deliveries_api_reply', data: result.messageDeliveries.apiReply ?? 0 }
+            ])
         }
 
-        let result: messageStatistic = {}
-        result.reply = await client.getNumberOfSentReplyMessages(currentDate)
-        result.sentPush = await client.getNumberOfSentPushMessages(currentDate)
-        result.sentMulticast = await client.getNumberOfSentMulticastMessages(currentDate)
-        result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(currentDate)
-        result.messageDeliveries = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(currentDate)
-
-        await DB.insertItem({
-            table: 'messages_statistic',
-            set: '??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?,??=?',
-            where: [
-                'date_update', currentDate,
-                'reply_status', result.reply.status,
-                'reply_number', result.reply.success ?? 0,
-                'push_status', result.sentPush.status,
-                'push_number', result.sentPush.success ?? 0,
-                'multicast_status', result.sentMulticast.status,
-                'multicast_number', result.sentMulticast.success ?? 0,
-                'broadcast_status', result.sentBroadcast.status,
-                'broadcast_number', result.sentBroadcast.success ?? 0,
-                'deliveries_status', result.messageDeliveries.status,
-                'deliveries_broadcast', result.messageDeliveries.broadcast ?? 0,
-                'deliveries_targeting', result.messageDeliveries.targeting ?? 0,
-                'deliveries_auto_response', result.messageDeliveries.autoResponse ?? 0,
-                'deliveries_welcome_response', result.messageDeliveries.welcomeResponse ?? 0,
-                'deliveries_chat', result.messageDeliveries.chat ?? 0,
-                'deliveries_api_broadcast', result.messageDeliveries.apiBroadcast ?? 0,
-                'deliveries_api_push', result.messageDeliveries.apiPush ?? 0,
-                'deliveries_api_multicast', result.messageDeliveries.welcomeResponse ?? 0,
-                'deliveries_api_reply', result.messageDeliveries.apiReply ?? 0,
-            ]
-        })
     }
 }
 

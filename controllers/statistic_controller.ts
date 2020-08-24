@@ -33,6 +33,7 @@ class StatisticController {
     getGroupStatistic = async (req: Request, res: Response) => {
         let groupId = parseInt(req.body.id),
             groupAll = [], template = ''
+
         if (groupId == 0) {
             groupAll = await this.channelGroups.selectAll()
             template = 'statistics/table_group_all'
@@ -54,9 +55,7 @@ class StatisticController {
                 ids.push(it.account_id)
             }
 
-            let accounts = await this.channelAccounts.selectIn([
-                { field: 'id', data: ids }
-            ])
+            let accounts = await this.channelAccounts.selectBetweenDate(ids, req.body.start_date, req.body.end_date)
 
             let friend = 0, target_reach = 0, block = 0, broadcast = 0, delivery_count = 0, max = accounts.length
             for (const account of accounts) {

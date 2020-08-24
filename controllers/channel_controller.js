@@ -35,10 +35,11 @@ class ChannelController {
                     { field: 'target_reach', data: follower.targetedReaches },
                     { field: 'block', data: follower.blocks },
                     { field: 'block_rate', data: block_rate },
-                    { field: 'broadcast', data: (_a = messageDelivery.apiBroadcast) !== null && _a !== void 0 ? _a : 0 },
+                    { field: 'broadcast', data: (_a = messageDelivery.broadcast) !== null && _a !== void 0 ? _a : 0 },
                     { field: 'delivery_count', data: 0 },
                     { field: 'access_token', data: data.access_token },
-                    { field: 'secret', data: data.secret }
+                    { field: 'secret', data: data.secret },
+                    { field: 'start_date', data: data.start_date }
                 ]);
             }
             return res.redirect('back');
@@ -70,10 +71,11 @@ class ChannelController {
                 { field: 'target_reach', data: follower.targetedReaches },
                 { field: 'block', data: follower.blocks },
                 { field: 'block_rate', data: block_rate },
-                { field: 'broadcast', data: (_a = messageDelivery.apiBroadcast) !== null && _a !== void 0 ? _a : 0 },
+                { field: 'broadcast', data: (_a = messageDelivery.broadcast) !== null && _a !== void 0 ? _a : 0 },
                 { field: 'delivery_count', data: 0 },
                 { field: 'access_token', data: data.access_token },
-                { field: 'secret', data: data.secret }
+                { field: 'secret', data: data.secret },
+                { field: 'start_date', data: data.start_date }
             ]);
             return res.redirect('/channel');
         };

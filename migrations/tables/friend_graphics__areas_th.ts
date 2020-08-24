@@ -22,6 +22,7 @@ class TableFriendGraphicsAreaTH {
         migration.drop(TableFriendGraphicsAreaTH.table)
         migration.create(TableFriendGraphicsAreaTH.table, (table: Migration) => {
             table.integer('id').unsigned().increment()
+            table.integer('account_id')
             table.string('date_update')
             // JP
             let citys = Object.values(TableFriendGraphicsAreaTH.areaTrans)

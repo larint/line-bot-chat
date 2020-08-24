@@ -23,7 +23,7 @@ class BaseModel {
             });
         };
         this.selectIn = async (attrs) => {
-            return await db_1.DB.selectBySql(`select * from ${this.table} where  ${attrs[0].field} in (${attrs[0].data})`);
+            return await this.executeQuery(`select * from ${this.table} where  ${attrs[0].field} in (${attrs[0].data})`);
         };
         this.selectAll = async () => {
             return await db_1.DB.selectByParams({
@@ -80,6 +80,9 @@ class BaseModel {
                 sets.push('?? = ?');
             }
             return { where: wheres, set: sets.join() };
+        };
+        this.executeQuery = (sql) => {
+            return db_1.DB.selectBySql(sql);
         };
     }
 }

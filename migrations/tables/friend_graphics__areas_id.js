@@ -27,6 +27,7 @@ TableFriendGraphicsAreaID.up = () => {
     migration.drop(TableFriendGraphicsAreaID.table);
     migration.create(TableFriendGraphicsAreaID.table, (table) => {
         table.integer('id').unsigned().increment();
+        table.integer('account_id');
         table.string('date_update');
         let citys = Object.values(TableFriendGraphicsAreaID.areaTrans);
         citys.map((city) => {

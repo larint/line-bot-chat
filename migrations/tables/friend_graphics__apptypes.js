@@ -11,6 +11,7 @@ TableFriendGraphicsApptypes.up = () => {
     migration.drop('friend_graphics__apptypes');
     migration.create('friend_graphics__apptypes', (table) => {
         table.integer('id').unsigned().increment();
+        table.integer('account_id');
         table.string('date_update');
         table.float('ios').default(0);
         table.float('android').default(0);

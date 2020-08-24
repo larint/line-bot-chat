@@ -9,6 +9,7 @@ class TableFriendGraphicsAges {
         migration.drop('friend_graphics__ages')
         migration.create('friend_graphics__ages', (table: Migration) => {
             table.integer('id').unsigned().increment()
+            table.integer('account_id')
             table.string('date_update')
             table.float('unknown').default(0)
             table.float('from0to14').default(0)

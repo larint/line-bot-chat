@@ -11,6 +11,7 @@ TableMessagesStatistic.up = () => {
     migration.drop('messages_statistic');
     migration.create('messages_statistic', (table) => {
         table.integer('id').unsigned().increment();
+        table.integer('account_id');
         table.string('date_update');
         table.string('reply_status').default('NULL');
         table.integer('reply_number').default(0);

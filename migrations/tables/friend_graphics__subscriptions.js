@@ -11,6 +11,7 @@ TableFriendGraphicsSubscriptions.up = () => {
     migration.drop('friend_graphics__subscriptions');
     migration.create('friend_graphics__subscriptions', (table) => {
         table.integer('id').unsigned().increment();
+        table.integer('account_id');
         table.string('date_update');
         table.float('within7days').default(0);
         table.float('within30days').default(0);

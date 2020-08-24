@@ -34,9 +34,7 @@ class StatisticController {
                 for (const it of groupAccount) {
                     ids.push(it.account_id);
                 }
-                let accounts = await this.channelAccounts.selectIn([
-                    { field: 'id', data: ids }
-                ]);
+                let accounts = await this.channelAccounts.selectBetweenDate(ids, req.body.start_date, req.body.end_date);
                 let friend = 0, target_reach = 0, block = 0, broadcast = 0, delivery_count = 0, max = accounts.length;
                 for (const account of accounts) {
                     friend += account.friends;

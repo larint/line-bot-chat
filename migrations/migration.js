@@ -55,6 +55,16 @@ class Migration {
             }
             return this;
         };
+        this.date = (collumn, current = true) => {
+            this.setStms(collumn);
+            if (current) {
+                this.queryString += `\n${collumn} date NOT NULL DEFAULT CURRENT_TIMESTAMP,`;
+            }
+            else {
+                this.queryString += `\n${collumn} date DEFAULT NULL,`;
+            }
+            return this;
+        };
         this.timestamp = (collumn, current = true, onUpdate = false) => {
             this.setStms(collumn);
             if (current) {

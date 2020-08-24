@@ -68,6 +68,16 @@ class Migration {
         return this
     }
 
+    date = (collumn: string, current: boolean = true) => {
+        this.setStms(collumn)
+        if (current) {
+            this.queryString += `\n${collumn} date NOT NULL DEFAULT CURRENT_TIMESTAMP,`
+        } else {
+            this.queryString += `\n${collumn} date DEFAULT NULL,`
+        }
+        return this
+    }
+
     timestamp = (collumn: string, current: boolean = true, onUpdate: boolean = false) => {
         this.setStms(collumn)
         if (current) {

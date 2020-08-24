@@ -25,6 +25,8 @@ export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Da
             return `${year}${month}${date}`
         case 'MMDD':
             return `${month}${date}`
+        case 'YYYY-MM-DD':
+            return `${year}-${month}-${date}`
     }
 
     return dateObj.toDateString()

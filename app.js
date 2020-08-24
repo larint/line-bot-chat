@@ -46,7 +46,8 @@ app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     res.render('error');
 });
-nodeSchedule.scheduleJob('1 * * * *', function () {
+nodeSchedule.scheduleJob('23 * * *', function () {
+    console.log('run scheduleJob ' + new Date());
     LineSchedule_1.LineSchedule.run();
     io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' });
 });

@@ -45,6 +45,7 @@ DB.convertRowDataToArrayCsv = async (rowData) => {
 DB.exeQuery = (sql, selectPlainObj = false, returnArrayCsv = false) => {
     if (process.env.ENV == 'development') {
         console.log(sql);
+        console.log('-------------------------------------------------------------');
     }
     return new Promise((resolve, reject) => {
         connection.query(sql, (err, result, fields) => {

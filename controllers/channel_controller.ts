@@ -36,7 +36,6 @@ class ChannelController {
 
             let currentDate = formatDate('YYYYMMDD', new Date(), -1)
             let follower: any = <Types.NumberOfFollowers>await client.getNumberOfFollowers(currentDate)
-            let messageDelivery = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(currentDate)
 
             let block_rate = round(follower.blocks / follower.targetedReaches * 100)
 
@@ -48,8 +47,6 @@ class ChannelController {
                 { field: 'target_reach', data: follower.targetedReaches },
                 { field: 'block', data: follower.blocks },
                 { field: 'block_rate', data: block_rate },
-                { field: 'broadcast', data: messageDelivery.broadcast ?? 0 },
-                { field: 'delivery_count', data: 0 },
                 { field: 'access_token', data: data.access_token },
                 { field: 'secret', data: data.secret },
                 { field: 'start_date', data: data.start_date }
@@ -80,7 +77,6 @@ class ChannelController {
 
         let currentDate = formatDate('YYYYMMDD', new Date(), -1)
         let follower: any = <Types.NumberOfFollowers>await client.getNumberOfFollowers(currentDate)
-        let messageDelivery = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(currentDate)
 
         let block_rate = round(follower.blocks / follower.targetedReaches * 100)
         await this.channelAccounts.update([
@@ -92,8 +88,6 @@ class ChannelController {
             { field: 'target_reach', data: follower.targetedReaches },
             { field: 'block', data: follower.blocks },
             { field: 'block_rate', data: block_rate },
-            { field: 'broadcast', data: messageDelivery.broadcast ?? 0 },
-            { field: 'delivery_count', data: 0 },
             { field: 'access_token', data: data.access_token },
             { field: 'secret', data: data.secret },
             { field: 'start_date', data: data.start_date }

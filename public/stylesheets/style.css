@@ -1,10 +1,14 @@
 @import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
-
 html,
 body {
     font-family: 'Poppins', sans-serif;
     background: #fafafa;
     margin: 0;
+}
+
+.loading {
+    display: none;
+    height: 20px;
 }
 
 .w30 {
@@ -214,6 +218,7 @@ input.date-range {
 .tb-statistic {
     width: 100%;
     font-size: 14px;
+    margin-bottom: 15px;
 }
 
 .tb-statistic th,
@@ -226,11 +231,13 @@ input.date-range {
     color: #fff;
 }
 
+.tb-statistic .tb-footer1,
 .tb-statistic tfoot tr:nth-child(1) {
     background: #C5D9F1;
     font-weight: bold;
 }
 
+.tb-statistic .tb-footer2,
 .tb-statistic tfoot tr:nth-child(2) {
     background: #DCE6F1;
     font-weight: bold;
@@ -243,4 +250,9 @@ input.date-range {
 
 .date-range {
     width: 210px;
+}
+
+.tb-head {
+    background: #EEECE1;
+    font-weight: bold;
 }

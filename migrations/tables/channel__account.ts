@@ -17,8 +17,6 @@ class TableChannelAccount {
             table.integer('target_reach').default(0)
             table.integer('block').default(0)
             table.float('block_rate').default(0)
-            table.integer('broadcast').default(0)
-            table.integer('delivery_count').default(0)
             table.string('access_token', 500)
             table.string('secret')
             table.date('start_date', false)

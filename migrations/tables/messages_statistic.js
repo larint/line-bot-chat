@@ -27,10 +27,8 @@ TableMessagesStatistic.up = () => {
         table.integer('deliveries_auto_response').default(0);
         table.integer('deliveries_welcome_response').default(0);
         table.integer('deliveries_chat').default(0);
-        table.integer('deliveries_api_broadcast').default(0);
-        table.integer('deliveries_api_push').default(0);
-        table.integer('deliveries_api_multicast').default(0);
-        table.integer('deliveries_api_narrowcast').default(0);
-        table.integer('deliveries_api_reply').default(0);
+        table.integer('friends').default(0);
+        table.integer('target_reach').default(0);
+        table.integer('block').default(0);
     });
 };

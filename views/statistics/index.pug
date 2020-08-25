@@ -26,32 +26,39 @@ block content
     div
       button.btn.btn-info.btn1 PDFダウンロード
   br
+  img.loading(src="images/loading.gif")
   div.table-statistic
+  
   script.
     $('input[name="dates"]').daterangepicker({
-       "locale": {
-        "format": "YYYY/MM/DD"
+      startDate: `#{formatDate(new Date(), 'YYYY/MM/DD', -30)}`,
+       locale: {
+        format: "YYYY/MM/DD"
        }
     });
 
+    $('input[name="dates"]').on('apply.daterangepicker', function(ev, picker) {
+      $('#js-select-group').trigger('change')
+    });
+
     $('#js-select-group').change(function() {
+      $('.loading').show()
+      $('.table-statistic').empty()
       let id = $(this).val();
       var start_date = $('input[name="dates"]').data('daterangepicker').startDate._d;
       var end_date = $('input[name="dates"]').data('daterangepicker').endDate._d;
-
-       $.ajax({
-          type : 'POST',
-          url : '/statistic/get-group-statistic',
-          data: { id : id, start_date : start_date, end_date : end_date },
-          success: function(res) {
-            $('.table-statistic').html(res)
-          },
-          complete: function() {
-            
-          }
-        })
-
-
+      
+      $.ajax({
+        type : 'POST',
+        url : '/statistic/get-group-statistic',
+        data: { id : id, start_date : start_date, end_date : end_date },
+        success: function(res) {
+          $('.table-statistic').html(res)
+        },
+        complete: function() {
+          $('.loading').hide()
+        }
+      })
     })
     
     $('#js-select-group').trigger('change')

@@ -1,5 +1,11 @@
-- function formatDate(dateStr, format) {
--   let dateObj = new Date(dateStr)
+- function formatDate(dateStr, format, moreDate = 0) {
+-   let dateObj   
+-   if(dateStr instanceof Date) {
+-       dateObj = dateStr
+-   } else {
+-       dateObj = new Date(dateStr)
+-   }
+-   dateObj.setDate(dateObj.getDate() + moreDate)
 -   let year = dateObj.getFullYear()
 -   let month = ("0" + (dateObj.getMonth() + 1)).slice(-2)
 -   let date = ("0" + dateObj.getDate()).slice(-2)
@@ -7,8 +13,8 @@
 -       return `${year}年${month}月`
 -   } else if(format == 'YYYY年MM月DD日') {
 -       return `${year}年${month}月${date}日`
--   } else if(format == 'dd-MM-YYYY') {
--       return `${date}${month}${year}`
+-   } else if(format == 'DD-MM-YYYY') {
+-       return `${date}-${month}-${year}`
 -   } else if(format == 'YYYYMMDD') {
 -       return `${year}${month}${date}`
 -   } else if(format == 'YYYY/MM/DD') {

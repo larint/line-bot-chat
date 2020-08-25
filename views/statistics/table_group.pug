@@ -1,9 +1,9 @@
 include ../helpers/func.pug
--var group = groupAll[0]
-if group.accounts.length == 0
+
+if groupAll.length == 0
   span Not found data
 else
-  div
+  each group in groupAll
     h4 Group (#{group.name})
     table.tb-statistic
       thead
@@ -23,9 +23,12 @@ else
           th.a-center Delivery Count
       each account, i in group.accounts
         tr
-          td=i+1
-          td=account.id
-          td=account.name
+          td
+            span=i+1
+          td
+            span=account.id
+          td
+            span=account.name
           td
             span=account.line_account
           td
@@ -43,10 +46,10 @@ else
           td.a-right
             span #{account.block_rate}%
           td.a-right
-            span=account.broadcast
+            span=account.total_deliveries_broadcast
           td.a-right
             span=account.delivery_count
-      tfoot.tb-footer
+      tfoot
         tr
           td.a-right(colspan="7") Total
           td.a-right
@@ -58,7 +61,7 @@ else
           td.a-right
             span #{group.total.block_rate}%
           td.a-right
-            span=group.total.broadcast
+            span=group.total.deliveries_broadcast
           td.a-right
             span=group.total.delivery_count
         tr
@@ -72,6 +75,6 @@ else
           td.a-right
             span #{group.average.block_rate}%
           td.a-right
-            span=group.average.broadcast
+            span=group.average.deliveries_broadcast
           td.a-right
             span=group.average.delivery_count

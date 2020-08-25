@@ -13,12 +13,6 @@ const friend_graphics_areas_jp_1 = require("../models/friend_graphics_areas_jp")
 const friend_graphics_areas_th_1 = require("../models/friend_graphics_areas_th");
 const friend_graphics_areas_tw_1 = require("../models/friend_graphics_areas_tw");
 const friend_graphics_areas_id_1 = require("../models/friend_graphics_areas_id");
-require('dotenv').config();
-const config = {
-    channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN,
-    channelSecret: process.env.LINE_CHANNEL_SECRET
-};
-const client = new bot_sdk_1.Client(config);
 class LineSchedule {
 }
 exports.LineSchedule = LineSchedule;
@@ -31,13 +25,14 @@ LineSchedule.run = async () => {
             channelSecret: account.secret
         });
         let date = helper_1.formatDate('YYYYMMDD', new Date(), -1);
+        LineSchedule.saveFollowerStatistic(client, account.id, date);
         let friend = await client.getFriendDemographics();
-        await LineSchedule.saveGraphicsGenders(friend, account.id, date);
-        await LineSchedule.saveGraphicsAges(friend, account.id, date);
-        await LineSchedule.saveGraphicsAppTypes(friend, account.id, date);
-        await LineSchedule.saveGraphicsSubscription(friend, account.id, date);
-        await LineSchedule.saveGraphicsAreas(friend, account.id, date);
-        await LineSchedule.saveMessageStatistic(client, account.id, date);
+        LineSchedule.saveGraphicsGenders(friend, account.id, date);
+        LineSchedule.saveGraphicsAges(friend, account.id, date);
+        LineSchedule.saveGraphicsAppTypes(friend, account.id, date);
+        LineSchedule.saveGraphicsSubscription(friend, account.id, date);
+        LineSchedule.saveGraphicsAreas(friend, account.id, date);
+        LineSchedule.saveMessageStatistic(client, account.id, date);
     }
 };
 LineSchedule.saveGraphicsGenders = async (friend, accountId, dateUpdate) => {
@@ -56,7 +51,7 @@ LineSchedule.saveGraphicsGenders = async (friend, accountId, dateUpdate) => {
             friendGraphicsGenders.column.slice(3).forEach((column, idx) => {
                 fields.push({ field: column, data: 0 });
             });
-            await friendGraphicsGenders.save(fields);
+            friendGraphicsGenders.save(fields);
         }
     }
     else {
@@ -68,14 +63,14 @@ LineSchedule.saveGraphicsGenders = async (friend, accountId, dateUpdate) => {
             (_b = friend.genders) === null || _b === void 0 ? void 0 : _b.forEach((item) => {
                 fields.push({ field: item.gender, data: item.percentage });
             });
-            await friendGraphicsGenders.save(fields);
+            friendGraphicsGenders.save(fields);
         }
         else {
             let fields = [{ field: 'id', data: isExist.id }];
             (_c = friend.genders) === null || _c === void 0 ? void 0 : _c.forEach((item) => {
                 fields.push({ field: item.gender, data: item.percentage });
             });
-            await friendGraphicsGenders.update(fields);
+            friendGraphicsGenders.update(fields);
         }
     }
 };
@@ -95,7 +90,7 @@ LineSchedule.saveGraphicsAges = async (friend, accountId, dateUpdate) => {
             friendGraphicsAges.column.slice(3).forEach((column, idx) => {
                 fields.push({ field: column, data: 0 });
             });
-            await friendGraphicsAges.save(fields);
+            friendGraphicsAges.save(fields);
         }
     }
     else {
@@ -107,14 +102,14 @@ LineSchedule.saveGraphicsAges = async (friend, accountId, dateUpdate) => {
             (_b = friend.ages) === null || _b === void 0 ? void 0 : _b.forEach((item) => {
                 fields.push({ field: item.age, data: item.percentage });
             });
-            await friendGraphicsAges.save(fields);
+            friendGraphicsAges.save(fields);
         }
         else {
             let fields = [{ field: 'id', data: isExist.id }];
             (_c = friend.ages) === null || _c === void 0 ? void 0 : _c.forEach((item) => {
                 fields.push({ field: item.age, data: item.percentage });
             });
-            await friendGraphicsAges.update(fields);
+            friendGraphicsAges.update(fields);
         }
     }
 };
@@ -134,7 +129,7 @@ LineSchedule.saveGraphicsAppTypes = async (friend, accountId, dateUpdate) => {
             friendGraphicsApptypes.column.slice(3).forEach((column, idx) => {
                 fields.push({ field: column, data: 0 });
             });
-            await friendGraphicsApptypes.save(fields);
+            friendGraphicsApptypes.save(fields);
         }
     }
     else {
@@ -146,14 +141,14 @@ LineSchedule.saveGraphicsAppTypes = async (friend, accountId, dateUpdate) => {
             (_b = friend.appTypes) === null || _b === void 0 ? void 0 : _b.forEach((item) => {
                 fields.push({ field: item.appType, data: item.percentage });
             });
-            await friendGraphicsApptypes.save(fields);
+            friendGraphicsApptypes.save(fields);
         }
         else {
             let fields = [{ field: 'id', data: isExist.id }];
             (_c = friend.appTypes) === null || _c === void 0 ? void 0 : _c.forEach((item) => {
                 fields.push({ field: item.appType, data: item.percentage });
             });
-            await friendGraphicsApptypes.update(fields);
+            friendGraphicsApptypes.update(fields);
         }
     }
 };
@@ -173,7 +168,7 @@ LineSchedule.saveGraphicsSubscription = async (friend, accountId, dateUpdate) =>
             friendGraphicsSubscriptions.column.slice(3).forEach((column, idx) => {
                 fields.push({ field: column, data: 0 });
             });
-            await friendGraphicsSubscriptions.save(fields);
+            friendGraphicsSubscriptions.save(fields);
         }
     }
     else {
@@ -185,14 +180,14 @@ LineSchedule.saveGraphicsSubscription = async (friend, accountId, dateUpdate) =>
             (_b = friend.subscriptionPeriods) === null || _b === void 0 ? void 0 : _b.forEach((item) => {
                 fields.push({ field: item.subscriptionPeriod, data: item.percentage });
             });
-            await friendGraphicsSubscriptions.save(fields);
+            friendGraphicsSubscriptions.save(fields);
         }
         else {
             let fields = [{ field: 'id', data: isExist.id }];
             (_c = friend.subscriptionPeriods) === null || _c === void 0 ? void 0 : _c.forEach((item) => {
                 fields.push({ field: item.subscriptionPeriod, data: item.percentage });
             });
-            await friendGraphicsSubscriptions.update(fields);
+            friendGraphicsSubscriptions.update(fields);
         }
     }
 };
@@ -231,7 +226,7 @@ LineSchedule.saveGraphicsAreas = async (friend, accountId, dateUpdate) => {
             for (const city of citys) {
                 fields.push({ field: city, data: 0 });
             }
-            await friendGraphicsArea.save(fields);
+            friendGraphicsArea.save(fields);
         }
     }
     else {
@@ -243,19 +238,19 @@ LineSchedule.saveGraphicsAreas = async (friend, accountId, dateUpdate) => {
             (_b = friend.areas) === null || _b === void 0 ? void 0 : _b.forEach((item) => {
                 fields.push({ field: areaTrans[item.area], data: item.percentage });
             });
-            await friendGraphicsArea.save(fields);
+            friendGraphicsArea.save(fields);
         }
         else {
             let fields = [{ field: 'id', data: isExist.id }];
             (_c = friend.areas) === null || _c === void 0 ? void 0 : _c.forEach((item) => {
                 fields.push({ field: areaTrans[item.area], data: item.percentage });
             });
-            await friendGraphicsArea.update(fields);
+            friendGraphicsArea.update(fields);
         }
     }
 };
 LineSchedule.saveMessageStatistic = async (client, accountId, dateUpdate) => {
-    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t, _u, _v, _w, _x, _y, _z, _0, _1;
+    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p, _q, _r, _s, _t;
     let messageStatistic = new messages_statistic_1.MessageStatistic();
     let result = {};
     result.reply = await client.getNumberOfSentReplyMessages(dateUpdate);
@@ -263,6 +258,7 @@ LineSchedule.saveMessageStatistic = async (client, accountId, dateUpdate) => {
     result.sentMulticast = await client.getNumberOfSentMulticastMessages(dateUpdate);
     result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(dateUpdate);
     result.messageDeliveries = await client.getNumberOfMessageDeliveries(dateUpdate);
+    let follower = await client.getNumberOfFollowers(dateUpdate);
     let isExist = await messageStatistic.find([
         { field: 'account_id', data: accountId },
         { field: 'date_update', data: dateUpdate }
@@ -284,10 +280,9 @@ LineSchedule.saveMessageStatistic = async (client, accountId, dateUpdate) => {
             { field: 'deliveries_auto_response', data: (_g = result.messageDeliveries.autoResponse) !== null && _g !== void 0 ? _g : 0 },
             { field: 'deliveries_welcome_response', data: (_h = result.messageDeliveries.welcomeResponse) !== null && _h !== void 0 ? _h : 0 },
             { field: 'deliveries_chat', data: (_j = result.messageDeliveries.chat) !== null && _j !== void 0 ? _j : 0 },
-            { field: 'deliveries_api_broadcast', data: (_k = result.messageDeliveries.apiBroadcast) !== null && _k !== void 0 ? _k : 0 },
-            { field: 'deliveries_api_push', data: (_l = result.messageDeliveries.apiPush) !== null && _l !== void 0 ? _l : 0 },
-            { field: 'deliveries_api_multicast', data: (_m = result.messageDeliveries.apiMulticast) !== null && _m !== void 0 ? _m : 0 },
-            { field: 'deliveries_api_reply', data: (_o = result.messageDeliveries.apiReply) !== null && _o !== void 0 ? _o : 0 }
+            { field: 'friends', data: follower.followers },
+            { field: 'target_reach', data: follower.targetedReaches },
+            { field: 'block', data: follower.blocks }
         ]);
     }
     else {
@@ -295,23 +290,34 @@ LineSchedule.saveMessageStatistic = async (client, accountId, dateUpdate) => {
             { field: 'account_id', data: accountId },
             { field: 'date_update', data: dateUpdate },
             { field: 'reply_status', data: result.reply.status },
-            { field: 'reply_number', data: (_p = result.reply.success) !== null && _p !== void 0 ? _p : 0 },
+            { field: 'reply_number', data: (_k = result.reply.success) !== null && _k !== void 0 ? _k : 0 },
             { field: 'push_status', data: result.sentPush.status },
-            { field: 'push_number', data: (_q = result.sentPush.success) !== null && _q !== void 0 ? _q : 0 },
+            { field: 'push_number', data: (_l = result.sentPush.success) !== null && _l !== void 0 ? _l : 0 },
             { field: 'multicast_status', data: result.sentMulticast.status },
-            { field: 'multicast_number', data: (_r = result.sentMulticast.success) !== null && _r !== void 0 ? _r : 0 },
+            { field: 'multicast_number', data: (_m = result.sentMulticast.success) !== null && _m !== void 0 ? _m : 0 },
             { field: 'broadcast_status', data: result.sentBroadcast.status },
-            { field: 'broadcast_number', data: (_s = result.sentBroadcast.success) !== null && _s !== void 0 ? _s : 0 },
+            { field: 'broadcast_number', data: (_o = result.sentBroadcast.success) !== null && _o !== void 0 ? _o : 0 },
             { field: 'deliveries_status', data: result.messageDeliveries.status },
-            { field: 'deliveries_broadcast', data: (_t = result.messageDeliveries.broadcast) !== null && _t !== void 0 ? _t : 0 },
-            { field: 'deliveries_targeting', data: (_u = result.messageDeliveries.targeting) !== null && _u !== void 0 ? _u : 0 },
-            { field: 'deliveries_auto_response', data: (_v = result.messageDeliveries.autoResponse) !== null && _v !== void 0 ? _v : 0 },
-            { field: 'deliveries_welcome_response', data: (_w = result.messageDeliveries.welcomeResponse) !== null && _w !== void 0 ? _w : 0 },
-            { field: 'deliveries_chat', data: (_x = result.messageDeliveries.chat) !== null && _x !== void 0 ? _x : 0 },
-            { field: 'deliveries_api_broadcast', data: (_y = result.messageDeliveries.apiBroadcast) !== null && _y !== void 0 ? _y : 0 },
-            { field: 'deliveries_api_push', data: (_z = result.messageDeliveries.apiPush) !== null && _z !== void 0 ? _z : 0 },
-            { field: 'deliveries_api_multicast', data: (_0 = result.messageDeliveries.apiMulticast) !== null && _0 !== void 0 ? _0 : 0 },
-            { field: 'deliveries_api_reply', data: (_1 = result.messageDeliveries.apiReply) !== null && _1 !== void 0 ? _1 : 0 }
+            { field: 'deliveries_broadcast', data: (_p = result.messageDeliveries.broadcast) !== null && _p !== void 0 ? _p : 0 },
+            { field: 'deliveries_targeting', data: (_q = result.messageDeliveries.targeting) !== null && _q !== void 0 ? _q : 0 },
+            { field: 'deliveries_auto_response', data: (_r = result.messageDeliveries.autoResponse) !== null && _r !== void 0 ? _r : 0 },
+            { field: 'deliveries_welcome_response', data: (_s = result.messageDeliveries.welcomeResponse) !== null && _s !== void 0 ? _s : 0 },
+            { field: 'deliveries_chat', data: (_t = result.messageDeliveries.chat) !== null && _t !== void 0 ? _t : 0 },
+            { field: 'friends', data: follower.followers },
+            { field: 'target_reach', data: follower.targetedReaches },
+            { field: 'block', data: follower.blocks }
         ]);
     }
+};
+LineSchedule.saveFollowerStatistic = async (client, accountId, dateUpdate) => {
+    let follower = await client.getNumberOfFollowers(dateUpdate);
+    let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
+    let channelAccounts = new channel_accounts_1.ChannelAccounts();
+    channelAccounts.update([
+        { field: 'id', data: accountId },
+        { field: 'friends', data: follower.followers },
+        { field: 'target_reach', data: follower.targetedReaches },
+        { field: 'block', data: follower.blocks },
+        { field: 'block_rate', data: block_rate }
+    ]);
 };

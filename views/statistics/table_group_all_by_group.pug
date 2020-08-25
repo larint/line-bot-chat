@@ -1,0 +1,75 @@
+table.tb-statistic
+    thead
+        tr
+            th.a-center #
+            th.a-center No
+            th.a-center Line Account Name
+            th.a-center Account ID
+            th.a-center Start Date
+            th.a-center Duration
+            th.a-center Friends
+            th.a-center Target Reach
+            th.a-center Block
+            th.a-center Block Rate
+            th.a-center Broadcasts
+            th.a-center Delivery Count
+    each group in groupAll
+        tr.tb-head
+            td(colspan="12")
+                span=group.name
+        each account, i in group.accounts
+            tr
+                td
+                    span=i+1
+                td
+                    span=account.id
+                td
+                    span=account.line_account
+                td
+                    span=account.account_id
+                td.a-right
+                    span #{formatDate(account.start_date, 'YYYY年MM月')}
+                td.a-right
+                    span #{monthDiff(new Date(account.start_date), new Date())} months
+                td.a-right
+                    span=account.friends
+                td.a-right
+                    span=account.target_reach
+                td.a-right
+                    span=account.block
+                td.a-right
+                    span #{account.block_rate}%
+                td.a-right
+                    span=account.total_deliveries_broadcast
+                td.a-right
+                    span=account.delivery_count
+        tr.tb-footer1
+            td.a-right(colspan="6")
+                span Total
+            td.a-right
+                span=group.total.friend
+            td.a-right
+                span=group.total.target_reach
+            td.a-right
+                span=group.total.block
+            td.a-right
+                span #{group.total.block_rate}%
+            td.a-right
+                span=group.total.deliveries_broadcast
+            td.a-right
+                span=group.total.delivery_count
+        tr.tb-footer2
+            td.a-right(colspan="6")
+                span Average
+            td.a-right
+                span=group.average.friend
+            td.a-right
+                span=group.average.target_reach
+            td.a-right
+                span=group.average.block
+            td.a-right
+                span #{group.average.block_rate}%
+            td.a-right
+                span=group.average.deliveries_broadcast
+            td.a-right
+                span=group.average.delivery_count

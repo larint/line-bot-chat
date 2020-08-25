@@ -13,7 +13,7 @@ export interface Params {
 
 export interface DataWhere {
 	field?: string | number,
-	data?: string | number | boolean | any[]
+	data?: any | any[]
 }
 
 export interface DataUpdate extends DataWhere {
@@ -71,6 +71,7 @@ class DB {
 	static exeQuery = (sql: string, selectPlainObj: boolean = false, returnArrayCsv: boolean = false): Promise<any> => {
 		if (process.env.ENV == 'development') {
 			console.log(sql)
+			console.log('-------------------------------------------------------------')
 		}
 		return new Promise((resolve, reject) => {
 			connection.query(sql, (err: mysql.MysqlError, result, fields) => {

@@ -1,6 +1,6 @@
 import { Client } from '@line/bot-sdk'
 import * as Types from '@line/bot-sdk/dist/types'
-import { formatDate } from '../helpers/helper'
+import { formatDate, round } from '../helpers/helper'
 import { Faker } from '../faker/faker'
 import { DataWhere } from '../helpers/db'
 import { messageStatistic as TypeMessageStatistic } from '../helpers/type'
@@ -14,16 +14,6 @@ import { FriendGraphicsAreasJP } from '../models/friend_graphics_areas_jp'
 import { FriendGraphicsAreasTH } from '../models/friend_graphics_areas_th'
 import { FriendGraphicsAreasTW } from '../models/friend_graphics_areas_tw'
 import { FriendGraphicsAreasID } from '../models/friend_graphics_areas_id'
-
-
-require('dotenv').config()
-
-const config = {
-    channelAccessToken: process.env.LINE_CHANNEL_ACCESS_TOKEN as string,
-    channelSecret: process.env.LINE_CHANNEL_SECRET as string
-}
-
-const client = new Client(config)
 
 class LineSchedule {
     /**
@@ -45,16 +35,18 @@ class LineSchedule {
 
             // Only get information from the previous day
             let date = formatDate('YYYYMMDD', new Date(), -1)
+            LineSchedule.saveFollowerStatistic(client, account.id, date)
+
             let friend: Types.FriendDemographics = await client.getFriendDemographics()
             // let friend = await Faker.getFakeJsonFriendGraphics()
 
-            await LineSchedule.saveGraphicsGenders(friend, account.id, date)
-            await LineSchedule.saveGraphicsAges(friend, account.id, date)
-            await LineSchedule.saveGraphicsAppTypes(friend, account.id, date)
-            await LineSchedule.saveGraphicsSubscription(friend, account.id, date)
-            await LineSchedule.saveGraphicsAreas(friend, account.id, date)
+            LineSchedule.saveGraphicsGenders(friend, account.id, date)
+            LineSchedule.saveGraphicsAges(friend, account.id, date)
+            LineSchedule.saveGraphicsAppTypes(friend, account.id, date)
+            LineSchedule.saveGraphicsSubscription(friend, account.id, date)
+            LineSchedule.saveGraphicsAreas(friend, account.id, date)
+            LineSchedule.saveMessageStatistic(client, account.id, date)
 
-            await LineSchedule.saveMessageStatistic(client, account.id, date)
         }
 
     }
@@ -77,7 +69,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                await friendGraphicsGenders.save(fields)
+                friendGraphicsGenders.save(fields)
             }
         } else {
             if (!isExist) {
@@ -90,7 +82,7 @@ class LineSchedule {
                     fields.push({ field: item.gender, data: item.percentage })
                 })
 
-                await friendGraphicsGenders.save(fields)
+                friendGraphicsGenders.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -98,7 +90,7 @@ class LineSchedule {
                     fields.push({ field: item.gender, data: item.percentage })
                 })
 
-                await friendGraphicsGenders.update(fields)
+                friendGraphicsGenders.update(fields)
             }
         }
     }
@@ -121,7 +113,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                await friendGraphicsAges.save(fields)
+                friendGraphicsAges.save(fields)
             }
         } else {
             if (!isExist) {
@@ -134,7 +126,7 @@ class LineSchedule {
                     fields.push({ field: item.age, data: item.percentage })
                 })
 
-                await friendGraphicsAges.save(fields)
+                friendGraphicsAges.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -142,7 +134,7 @@ class LineSchedule {
                     fields.push({ field: item.age, data: item.percentage })
                 })
 
-                await friendGraphicsAges.update(fields)
+                friendGraphicsAges.update(fields)
             }
         }
     }
@@ -165,7 +157,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                await friendGraphicsApptypes.save(fields)
+                friendGraphicsApptypes.save(fields)
             }
         } else {
             if (!isExist) {
@@ -178,7 +170,7 @@ class LineSchedule {
                     fields.push({ field: item.appType, data: item.percentage })
                 })
 
-                await friendGraphicsApptypes.save(fields)
+                friendGraphicsApptypes.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -186,7 +178,7 @@ class LineSchedule {
                     fields.push({ field: item.appType, data: item.percentage })
                 })
 
-                await friendGraphicsApptypes.update(fields)
+                friendGraphicsApptypes.update(fields)
             }
         }
     }
@@ -209,7 +201,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                await friendGraphicsSubscriptions.save(fields)
+                friendGraphicsSubscriptions.save(fields)
             }
         } else {
             if (!isExist) {
@@ -222,7 +214,7 @@ class LineSchedule {
                     fields.push({ field: item.subscriptionPeriod, data: item.percentage })
                 })
 
-                await friendGraphicsSubscriptions.save(fields)
+                friendGraphicsSubscriptions.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -230,7 +222,7 @@ class LineSchedule {
                     fields.push({ field: item.subscriptionPeriod, data: item.percentage })
                 })
 
-                await friendGraphicsSubscriptions.update(fields)
+                friendGraphicsSubscriptions.update(fields)
             }
         }
     }
@@ -273,7 +265,7 @@ class LineSchedule {
                     fields.push({ field: city as string, data: 0 })
                 }
 
-                await friendGraphicsArea.save(fields)
+                friendGraphicsArea.save(fields)
             }
         } else {
             if (!isExist) {
@@ -286,7 +278,7 @@ class LineSchedule {
                     fields.push({ field: areaTrans[item.area], data: item.percentage })
                 })
 
-                await friendGraphicsArea.save(fields)
+                friendGraphicsArea.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -294,7 +286,7 @@ class LineSchedule {
                     fields.push({ field: areaTrans[item.area], data: item.percentage })
                 })
 
-                await friendGraphicsArea.update(fields)
+                friendGraphicsArea.update(fields)
             }
         }
 
@@ -313,6 +305,8 @@ class LineSchedule {
         result.sentMulticast = await client.getNumberOfSentMulticastMessages(dateUpdate)
         result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(dateUpdate)
         result.messageDeliveries = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(dateUpdate)
+
+        let follower: any = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
 
         let isExist = await messageStatistic.find([
             { field: 'account_id', data: accountId },
@@ -336,10 +330,9 @@ class LineSchedule {
                 { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
                 { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
                 { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
-                { field: 'deliveries_api_broadcast', data: result.messageDeliveries.apiBroadcast ?? 0 },
-                { field: 'deliveries_api_push', data: result.messageDeliveries.apiPush ?? 0 },
-                { field: 'deliveries_api_multicast', data: result.messageDeliveries.apiMulticast ?? 0 },
-                { field: 'deliveries_api_reply', data: result.messageDeliveries.apiReply ?? 0 }
+                { field: 'friends', data: follower.followers },
+                { field: 'target_reach', data: follower.targetedReaches },
+                { field: 'block', data: follower.blocks }
             ])
         } else {
             messageStatistic.save([
@@ -359,13 +352,31 @@ class LineSchedule {
                 { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
                 { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
                 { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
-                { field: 'deliveries_api_broadcast', data: result.messageDeliveries.apiBroadcast ?? 0 },
-                { field: 'deliveries_api_push', data: result.messageDeliveries.apiPush ?? 0 },
-                { field: 'deliveries_api_multicast', data: result.messageDeliveries.apiMulticast ?? 0 },
-                { field: 'deliveries_api_reply', data: result.messageDeliveries.apiReply ?? 0 }
+                { field: 'friends', data: follower.followers },
+                { field: 'target_reach', data: follower.targetedReaches },
+                { field: 'block', data: follower.blocks }
             ])
         }
 
+    }
+
+    /**
+     * Update the number of friends every day
+     */
+    static saveFollowerStatistic = async (client: Client, accountId: number, dateUpdate: string) => {
+        let follower: any = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
+
+        let block_rate = round(follower.blocks / follower.targetedReaches * 100)
+
+        let channelAccounts = new ChannelAccounts()
+
+        channelAccounts.update([
+            { field: 'id', data: accountId },
+            { field: 'friends', data: follower.followers },
+            { field: 'target_reach', data: follower.targetedReaches },
+            { field: 'block', data: follower.blocks },
+            { field: 'block_rate', data: block_rate }
+        ])
     }
 }
 

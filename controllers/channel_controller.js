@@ -14,7 +14,6 @@ class ChannelController {
             return res.render('channels/index', { accountList: accountList, groupList: groupList });
         };
         this.addAccount = async (req, res) => {
-            var _a;
             let data = req.body;
             if (!data.name || !data.access_token || !data.secret) {
             }
@@ -25,7 +24,6 @@ class ChannelController {
                 });
                 let currentDate = helper_1.formatDate('YYYYMMDD', new Date(), -1);
                 let follower = await client.getNumberOfFollowers(currentDate);
-                let messageDelivery = await client.getNumberOfMessageDeliveries(currentDate);
                 let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
                 await this.channelAccounts.save([
                     { field: 'name', data: data.name },
@@ -35,8 +33,6 @@ class ChannelController {
                     { field: 'target_reach', data: follower.targetedReaches },
                     { field: 'block', data: follower.blocks },
                     { field: 'block_rate', data: block_rate },
-                    { field: 'broadcast', data: (_a = messageDelivery.broadcast) !== null && _a !== void 0 ? _a : 0 },
-                    { field: 'delivery_count', data: 0 },
                     { field: 'access_token', data: data.access_token },
                     { field: 'secret', data: data.secret },
                     { field: 'start_date', data: data.start_date }
@@ -52,7 +48,6 @@ class ChannelController {
             return res.render('channels/index', { account: account, accountList: accountList, groupList: groupList });
         };
         this.updateAccount = async (req, res) => {
-            var _a;
             let data = req.body;
             let client = new bot_sdk_1.Client({
                 channelAccessToken: data.access_token,
@@ -60,7 +55,6 @@ class ChannelController {
             });
             let currentDate = helper_1.formatDate('YYYYMMDD', new Date(), -1);
             let follower = await client.getNumberOfFollowers(currentDate);
-            let messageDelivery = await client.getNumberOfMessageDeliveries(currentDate);
             let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
             await this.channelAccounts.update([
                 { field: 'id', data: data.id },
@@ -71,8 +65,6 @@ class ChannelController {
                 { field: 'target_reach', data: follower.targetedReaches },
                 { field: 'block', data: follower.blocks },
                 { field: 'block_rate', data: block_rate },
-                { field: 'broadcast', data: (_a = messageDelivery.broadcast) !== null && _a !== void 0 ? _a : 0 },
-                { field: 'delivery_count', data: 0 },
                 { field: 'access_token', data: data.access_token },
                 { field: 'secret', data: data.secret },
                 { field: 'start_date', data: data.start_date }

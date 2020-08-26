@@ -8,23 +8,11 @@ export interface typeArea {
 	deaths?: string,
 }
 
-export interface typeDataCovid {
-	vn: {
-		confirmed?: string,
-		active?: string,
-		recovered?: string,
-		deaths?: string,
-	},
-	tg: {
-		confirmed?: string,
-		active?: string,
-		recovered?: string,
-		deaths?: string,
-	},
-	areas: typeArea[] | undefined
+export interface DataLineFollower extends Types.NumberOfFollowers {
+	block_rate?: number
 }
 
-export interface messageStatistic {
+export interface DataMessageStatistic {
 	reply?: Types.NumberOfMessagesSentResponse,
 	sentPush?: Types.NumberOfMessagesSentResponse,
 	sentMulticast?: Types.NumberOfMessagesSentResponse,

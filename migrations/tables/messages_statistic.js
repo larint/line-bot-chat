@@ -30,5 +30,6 @@ TableMessagesStatistic.up = () => {
         table.integer('friends').default(0);
         table.integer('target_reach').default(0);
         table.integer('block').default(0);
+        table.float('block_rate').default(0);
     });
 };

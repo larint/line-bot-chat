@@ -208,17 +208,20 @@ input.date-range {
 }
 
 .btn1 {
-    background: #43425D
+    background: #43425D;
+    color: #fff;
 }
 
 .btn1:hover {
-    background: #666585
+    background: #666585;
+    color: #fff;
 }
 
 .tb-statistic {
     width: 100%;
     font-size: 14px;
     margin-bottom: 15px;
+    border-collapse: collapse;
 }
 
 .tb-statistic th,

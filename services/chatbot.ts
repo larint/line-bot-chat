@@ -1,6 +1,5 @@
 import { MessageEvent, UnfollowEvent, FollowEvent, PostbackEvent, JoinEvent, LeaveEvent, BeaconEvent } from '@line/bot-sdk/dist/types'
 import { Client } from "@line/bot-sdk"
-import * as types from "@line/bot-sdk/dist/types"
 import { BuilderMessage as Builder, BotMessage } from "../helpers/builderMessage"
 
 require('dotenv').config()

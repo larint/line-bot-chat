@@ -1,7 +1,7 @@
 import { Migration } from '../migration'
 
 class TableChannelAccount {
-    static column = ['id', 'group_id', 'name', 'access_token', 'secret']
+    static column = ['id', 'name', 'line_account', 'account_id', 'duration', 'friends', 'target_reach', 'block', 'block_rate', 'access_token', 'secret', 'start_date']
 
     static up = () => {
         let migration = new Migration()

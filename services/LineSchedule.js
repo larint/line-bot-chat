@@ -258,7 +258,14 @@ LineSchedule.saveMessageStatistic = async (client, accountId, dateUpdate) => {
     result.sentMulticast = await client.getNumberOfSentMulticastMessages(dateUpdate);
     result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(dateUpdate);
     result.messageDeliveries = await client.getNumberOfMessageDeliveries(dateUpdate);
-    let follower = await client.getNumberOfFollowers(dateUpdate);
+    let follower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 };
+    try {
+        follower = await client.getNumberOfFollowers(dateUpdate);
+        let blocks = follower.blocks;
+        let targetedReaches = follower.targetedReaches;
+        follower.block_rate = helper_1.round(blocks / targetedReaches * 100);
+    }
+    catch (error) { }
     let isExist = await messageStatistic.find([
         { field: 'account_id', data: accountId },
         { field: 'date_update', data: dateUpdate }
@@ -282,7 +289,8 @@ LineSchedule.saveMessageStatistic = async (client, accountId, dateUpdate) => {
             { field: 'deliveries_chat', data: (_j = result.messageDeliveries.chat) !== null && _j !== void 0 ? _j : 0 },
             { field: 'friends', data: follower.followers },
             { field: 'target_reach', data: follower.targetedReaches },
-            { field: 'block', data: follower.blocks }
+            { field: 'block', data: follower.blocks },
+            { field: 'block_rate', data: follower.block_rate }
         ]);
     }
     else {
@@ -305,19 +313,26 @@ LineSchedule.saveMessageStatistic = async (client, accountId, dateUpdate) => {
             { field: 'deliveries_chat', data: (_t = result.messageDeliveries.chat) !== null && _t !== void 0 ? _t : 0 },
             { field: 'friends', data: follower.followers },
             { field: 'target_reach', data: follower.targetedReaches },
-            { field: 'block', data: follower.blocks }
+            { field: 'block', data: follower.blocks },
+            { field: 'block_rate', data: follower.block_rate }
         ]);
     }
 };
 LineSchedule.saveFollowerStatistic = async (client, accountId, dateUpdate) => {
-    let follower = await client.getNumberOfFollowers(dateUpdate);
-    let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
+    let follower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 };
+    try {
+        follower = await client.getNumberOfFollowers(dateUpdate);
+        let blocks = follower.blocks;
+        let targetedReaches = follower.targetedReaches;
+        follower.block_rate = helper_1.round(blocks / targetedReaches * 100);
+    }
+    catch (error) { }
     let channelAccounts = new channel_accounts_1.ChannelAccounts();
     channelAccounts.update([
         { field: 'id', data: accountId },
         { field: 'friends', data: follower.followers },
         { field: 'target_reach', data: follower.targetedReaches },
         { field: 'block', data: follower.blocks },
-        { field: 'block_rate', data: block_rate }
+        { field: 'block_rate', data: follower.block_rate }
     ]);
 };

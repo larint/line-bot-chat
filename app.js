@@ -1,14 +1,17 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express = require("express");
-const cookieParser = require("cookie-parser");
-const session = require("express-session");
-const morgan = require("morgan");
-const nodeSchedule = require("node-schedule");
-const fs = require("fs");
-const path = require("path");
-const socketio = require("socket.io");
-const methodOverride = require("method-override");
+const express_1 = __importDefault(require("express"));
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const express_session_1 = __importDefault(require("express-session"));
+const morgan_1 = __importDefault(require("morgan"));
+const node_schedule_1 = __importDefault(require("node-schedule"));
+const fs_1 = __importDefault(require("fs"));
+const path_1 = __importDefault(require("path"));
+const socket_io_1 = __importDefault(require("socket.io"));
+const method_override_1 = __importDefault(require("method-override"));
 require('dotenv').config();
 const LineSchedule_1 = require("./services/LineSchedule");
 require("./helpers/db");
@@ -17,19 +20,19 @@ const webhook_1 = require("./routes/webhook");
 const chart_1 = require("./routes/chart");
 const statistic_1 = require("./routes/statistic");
 const channel_1 = require("./routes/channel");
-const app = express();
+const app = express_1.default();
 let http = require("http").Server(app);
-let io = socketio(http);
-app.set('views', path.join(__dirname, 'views'));
+let io = socket_io_1.default(http);
+app.set('views', path_1.default.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-var appLogStream = fs.createWriteStream(path.join(__dirname, 'app.log'), { flags: 'a' });
-app.use(morgan('combined', { stream: appLogStream, skip: (req, res) => { return res.statusCode < 400; } }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(methodOverride('_method'));
-app.use(session({ secret: "bjhbahsbdjabwdhjbwjdh", resave: true, saveUninitialized: true }));
-app.use(express.static(path.join(__dirname, 'public')));
+var appLogStream = fs_1.default.createWriteStream(path_1.default.join(__dirname, 'app.log'), { flags: 'a' });
+app.use(morgan_1.default('combined', { stream: appLogStream, skip: (req, res) => { return res.statusCode < 400; } }));
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: false }));
+app.use(cookie_parser_1.default());
+app.use(method_override_1.default('_method'));
+app.use(express_session_1.default({ secret: "bjhbahsbdjabwdhjbwjdh", resave: true, saveUninitialized: true }));
+app.use(express_1.default.static(path_1.default.join(__dirname, 'public')));
 app.use((req, res, next) => {
     res.locals.site_url = process.env.URI_PATH;
     next();
@@ -42,11 +45,14 @@ app.use('/webhook', webhook_1.router);
 app.use('/chart', chart_1.router);
 app.use('/statistic', statistic_1.router);
 app.use('/channel', channel_1.router);
+app.render('index', { title: 'res vs app render' }, function (err, html) {
+    console.log(html);
+});
 app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     res.render('error');
 });
-nodeSchedule.scheduleJob('23 * * *', function () {
+node_schedule_1.default.scheduleJob('23 * * *', function () {
     console.log('run scheduleJob ' + new Date());
     LineSchedule_1.LineSchedule.run();
     io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' });

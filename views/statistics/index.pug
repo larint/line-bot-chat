@@ -24,7 +24,11 @@ block content
               option(value=item.id)=item.name
             option(value="0") 全体
     div
-      button.btn.btn-info.btn1 PDFダウンロード
+      form(method="POST", action="/statistic/export-pdf")
+        input(name="id", type="hidden")
+        input(name="start_date", type="hidden")
+        input(name="end_date", type="hidden")
+        button.btn.btn1(type="submit") PDFダウンロード
   br
   img.loading(src="images/loading.gif")
   div.table-statistic
@@ -47,7 +51,12 @@ block content
       let id = $(this).val();
       var start_date = $('input[name="dates"]').data('daterangepicker').startDate._d;
       var end_date = $('input[name="dates"]').data('daterangepicker').endDate._d;
-      
+
+      // set data for request export pdf
+      $('input[name=id]').val(id)
+      $('input[name=start_date]').val(start_date)
+      $('input[name=end_date]').val(end_date)
+
       $.ajax({
         type : 'POST',
         url : '/statistic/get-group-statistic',

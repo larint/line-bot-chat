@@ -1,0 +1,45 @@
+.a-right {
+    text-align: right;
+}
+
+.a-center {
+    text-align: center;
+}
+
+.tb-statistic a {
+    text-decoration: none
+}
+
+.tb-statistic {
+    width: 100%;
+    font-size: 14px;
+    margin-bottom: 15px;
+    border-collapse: collapse;
+}
+
+.tb-statistic th,
+.tb-statistic td {
+    border: 1px solid #ababab;
+}
+
+.tb-statistic thead th {
+    background: #4F82BD;
+    color: #fff;
+}
+
+.tb-statistic .tb-footer1,
+.tb-statistic tfoot tr:nth-child(1) {
+    background: #C5D9F1;
+    font-weight: bold;
+}
+
+.tb-statistic .tb-footer2,
+.tb-statistic tfoot tr:nth-child(2) {
+    background: #DCE6F1;
+    font-weight: bold;
+}
+
+.tb-statistic td,
+.tb-statistic th {
+    padding: 2px 5px;
+}

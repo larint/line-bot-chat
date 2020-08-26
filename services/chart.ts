@@ -1,5 +1,5 @@
 import { DB } from '../helpers/db'
-import { randomColorHex, formatDate } from '../helpers/helper'
+import { randomColorHex } from '../helpers/helper'
 import { dataChartPie, dataChartLine, datasetChartLine, dataChartLineItem } from '../helpers/type'
 
 class Chart {

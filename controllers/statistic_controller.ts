@@ -1,7 +1,10 @@
 import { Request, Response, } from 'express'
 import { DB } from '../helpers/db'
 import { writeToPath } from '@fast-csv/format';
-import * as path from 'path'
+import path from 'path'
+import fs from 'fs'
+import { PDF } from '../services/pdf_pup'
+
 import { formatDate, round } from '../helpers/helper'
 import { ChannelGroups } from '../models/channel_groups'
 import { ChannelGroupsAccounts } from '../models/channel_groups_accounts'
@@ -32,8 +35,11 @@ class StatisticController {
      */
     getGroupStatistic = async (req: Request, res: Response) => {
         let groupId = parseInt(req.body.id),
-            groupAll = [], template = ''
+            template = '', groupAll: ChannelGroups[] = []
+        let startDate = req.body.start_date
+        let endDate = req.body.end_date
 
+        // if groupId is 0 then filter all group
         if (groupId == 0) {
             groupAll = await this.channelGroups.selectAll()
             template = 'statistics/table_group_all'
@@ -43,6 +49,13 @@ class StatisticController {
             ])
             template = 'statistics/table_group'
         }
+
+        let dataFilterAcccount = await this.getDataFilterAccountByDate(groupAll, startDate, endDate)
+
+        return res.render(template, dataFilterAcccount)
+    }
+
+    getDataFilterAccountByDate = async (groupAll: any[], startDate: string, endDate: string) => {
 
         let numberOfAccountAll = 0, totalFriendAll = 0, targetReachAll = 0, blockAll = 0, broadcastAll = 0, deliveryCountAll = 0
         for (const group of groupAll) {
@@ -57,7 +70,7 @@ class StatisticController {
                 ids.push(it.account_id)
             }
 
-            let accounts = await this.channelAccounts.selectWithTotalStatistic(ids, req.body.start_date, req.body.end_date)
+            let accounts = await this.channelAccounts.selectWithTotalStatistic(ids, startDate, endDate)
 
             let friend = 0, targetReach = 0, block = 0, broadcast = 0, deliveryCount = 0, max = accounts.length
             for (const account of accounts) {
@@ -115,8 +128,41 @@ class StatisticController {
             }
         }
 
+        return { groupAll: groupAll, statistic: statisticAll }
+    }
 
-        return res.render(template, { groupAll: groupAll, statistic: statisticAll })
+    exportPdf = async (req: Request, res: Response) => {
+        let startDate = req.body.start_date
+        let endDate = req.body.end_date
+        let fileName = formatDate('YYYYMMDD', new Date(startDate)) + '-' + formatDate('YYYYMMDD', new Date(endDate)) + '_line_statistics.pdf'
+
+        let pathHtml = path.join(path.dirname(__dirname), `/data/table.html`)
+        let pathPdf = path.join(path.dirname(__dirname), `/data/${fileName}`)
+
+        let groupId = parseInt(req.body.id),
+            template = '', groupAll: ChannelGroups[] = []
+
+        // if groupId is 0 then filter all group
+        if (groupId == 0) {
+            groupAll = await this.channelGroups.selectAll()
+            template = 'statistics/pdf/table_group_all'
+        } else {
+            groupAll = await this.channelGroups.select([
+                { field: 'id', data: groupId }
+            ])
+            template = 'statistics/pdf/table_group'
+        }
+
+        let dataFilterAcccount = await this.getDataFilterAccountByDate(groupAll, startDate, endDate)
+
+        return res.render(template, dataFilterAcccount,
+            async (err, html) => {
+                fs.writeFileSync(pathHtml, html)
+                let pdf = await PDF.capturePdf(pathHtml)
+                fs.writeFileSync(pathPdf, pdf);
+                res.download(pathPdf);
+            }
+        )
     }
 
     downCsv = async (req: Request, res: Response) => {

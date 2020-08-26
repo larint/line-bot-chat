@@ -10,8 +10,6 @@ else
           tr
             th.a-center(colspan="2", rowspan="2") Group Name
             th.a-center(rowspan="2") Number of Accounts
-            th.a-center(rowspan="2") SS向けLINE運用開始
-            th.a-center(rowspan="2") SS向けLINE運用開始前
             th.a-center(colspan="2") Friends
             th.a-center(colspan="2") Target Reach
             th.a-center(colspan="2") Block
@@ -38,10 +36,6 @@ else
                 span=group.name
               td.a-right
                 span=group.account_number
-              td.a-right
-                span 0
-              td.a-right
-                span 0
               td.a-right
                 span=group.total.friend
               td.a-right
@@ -70,10 +64,6 @@ else
               span Total
             td.a-right 
               span=statistic.total.number_of_account
-            td.a-right 
-              span 0
-            td.a-right 
-              span 0
             td.a-right
               span=statistic.total.total_friend
             td.a-right
@@ -97,7 +87,7 @@ else
             td.a-right 
               span -
           tr
-            td.a-center(colspan="5",style="height: 40px")
+            td.a-center(colspan="3",style="height: 40px")
               span Average of branches
             td.a-right 
               span=statistic.average.total_friend

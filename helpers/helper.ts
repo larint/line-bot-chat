@@ -1,6 +1,14 @@
 import * as fs from 'fs'
 import * as path from 'path'
 
+export function isExistFile(filePath: string) {
+    try {
+        fs.statSync(filePath); // get information of the specified file path.
+        return true;
+    } catch (error) { }
+    return false;
+}
+
 export function round(num: number, pad: number = 10) {
     return Math.round(num * pad) / pad
 }

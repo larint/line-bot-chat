@@ -3,7 +3,7 @@ import * as Types from '@line/bot-sdk/dist/types'
 import { formatDate, round } from '../helpers/helper'
 import { Faker } from '../faker/faker'
 import { DataWhere } from '../helpers/db'
-import { messageStatistic as TypeMessageStatistic } from '../helpers/type'
+import { DataMessageStatistic, DataLineFollower } from '../helpers/type'
 import { MessageStatistic } from '../models/messages_statistic'
 import { ChannelAccounts } from '../models/channel_accounts'
 import { FriendGraphicsAges } from '../models/friend_graphics_ages'
@@ -33,7 +33,7 @@ class LineSchedule {
                 channelSecret: account.secret
             })
 
-            // Only get information from the previous day
+            // Only get information from the yesterday
             let date = formatDate('YYYYMMDD', new Date(), -1)
             LineSchedule.saveFollowerStatistic(client, account.id, date)
 
@@ -46,7 +46,6 @@ class LineSchedule {
             LineSchedule.saveGraphicsSubscription(friend, account.id, date)
             LineSchedule.saveGraphicsAreas(friend, account.id, date)
             LineSchedule.saveMessageStatistic(client, account.id, date)
-
         }
 
     }
@@ -299,14 +298,20 @@ class LineSchedule {
      */
     static saveMessageStatistic = async (client: Client, accountId: number, dateUpdate: string) => {
         let messageStatistic = new MessageStatistic()
-        let result: TypeMessageStatistic = {}
+        let result: DataMessageStatistic = {}
         result.reply = await client.getNumberOfSentReplyMessages(dateUpdate)
         result.sentPush = await client.getNumberOfSentPushMessages(dateUpdate)
         result.sentMulticast = await client.getNumberOfSentMulticastMessages(dateUpdate)
         result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(dateUpdate)
         result.messageDeliveries = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(dateUpdate)
 
-        let follower: any = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
+        let follower: DataLineFollower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 }
+        try {
+            follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
+            let blocks = follower.blocks as number
+            let targetedReaches = follower.targetedReaches as number
+            follower.block_rate = round(blocks / targetedReaches * 100)
+        } catch (error) { }
 
         let isExist = await messageStatistic.find([
             { field: 'account_id', data: accountId },
@@ -332,7 +337,8 @@ class LineSchedule {
                 { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
                 { field: 'friends', data: follower.followers },
                 { field: 'target_reach', data: follower.targetedReaches },
-                { field: 'block', data: follower.blocks }
+                { field: 'block', data: follower.blocks },
+                { field: 'block_rate', data: follower.block_rate }
             ])
         } else {
             messageStatistic.save([
@@ -354,7 +360,8 @@ class LineSchedule {
                 { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
                 { field: 'friends', data: follower.followers },
                 { field: 'target_reach', data: follower.targetedReaches },
-                { field: 'block', data: follower.blocks }
+                { field: 'block', data: follower.blocks },
+                { field: 'block_rate', data: follower.block_rate }
             ])
         }
 
@@ -364,9 +371,13 @@ class LineSchedule {
      * Update the number of friends every day
      */
     static saveFollowerStatistic = async (client: Client, accountId: number, dateUpdate: string) => {
-        let follower: any = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
-
-        let block_rate = round(follower.blocks / follower.targetedReaches * 100)
+        let follower: DataLineFollower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 }
+        try {
+            follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
+            let blocks = follower.blocks as number
+            let targetedReaches = follower.targetedReaches as number
+            follower.block_rate = round(blocks / targetedReaches * 100)
+        } catch (error) { }
 
         let channelAccounts = new ChannelAccounts()
 
@@ -375,7 +386,7 @@ class LineSchedule {
             { field: 'friends', data: follower.followers },
             { field: 'target_reach', data: follower.targetedReaches },
             { field: 'block', data: follower.blocks },
-            { field: 'block_rate', data: block_rate }
+            { field: 'block_rate', data: follower.block_rate }
         ])
     }
 }

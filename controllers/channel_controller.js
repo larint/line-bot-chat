@@ -15,7 +15,7 @@ class ChannelController {
         };
         this.addAccount = async (req, res) => {
             let data = req.body;
-            if (!data.name || !data.access_token || !data.secret) {
+            if (!data.name || !data.line_account || !data.access_token || !data.secret) {
             }
             else {
                 let client = new bot_sdk_1.Client({
@@ -23,8 +23,14 @@ class ChannelController {
                     channelSecret: data.secret
                 });
                 let currentDate = helper_1.formatDate('YYYYMMDD', new Date(), -1);
-                let follower = await client.getNumberOfFollowers(currentDate);
-                let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
+                let follower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 };
+                try {
+                    follower = await client.getNumberOfFollowers(currentDate);
+                    let blocks = follower.blocks;
+                    let targetedReaches = follower.targetedReaches;
+                    follower.block_rate = helper_1.round(blocks / targetedReaches * 100);
+                }
+                catch (error) { }
                 await this.channelAccounts.save([
                     { field: 'name', data: data.name },
                     { field: 'line_account', data: data.line_account },
@@ -32,7 +38,7 @@ class ChannelController {
                     { field: 'friends', data: follower.followers },
                     { field: 'target_reach', data: follower.targetedReaches },
                     { field: 'block', data: follower.blocks },
-                    { field: 'block_rate', data: block_rate },
+                    { field: 'block_rate', data: follower.block_rate },
                     { field: 'access_token', data: data.access_token },
                     { field: 'secret', data: data.secret },
                     { field: 'start_date', data: data.start_date }
@@ -54,8 +60,14 @@ class ChannelController {
                 channelSecret: data.secret
             });
             let currentDate = helper_1.formatDate('YYYYMMDD', new Date(), -1);
-            let follower = await client.getNumberOfFollowers(currentDate);
-            let block_rate = helper_1.round(follower.blocks / follower.targetedReaches * 100);
+            let follower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 };
+            try {
+                follower = await client.getNumberOfFollowers(currentDate);
+                let blocks = follower.blocks;
+                let targetedReaches = follower.targetedReaches;
+                follower.block_rate = helper_1.round(blocks / targetedReaches * 100);
+            }
+            catch (error) { }
             await this.channelAccounts.update([
                 { field: 'id', data: data.id },
                 { field: 'name', data: data.name },
@@ -64,7 +76,7 @@ class ChannelController {
                 { field: 'friends', data: follower.followers },
                 { field: 'target_reach', data: follower.targetedReaches },
                 { field: 'block', data: follower.blocks },
-                { field: 'block_rate', data: block_rate },
+                { field: 'block_rate', data: follower.block_rate },
                 { field: 'access_token', data: data.access_token },
                 { field: 'secret', data: data.secret },
                 { field: 'start_date', data: data.start_date }

@@ -1,9 +1,14 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.StatisticController = void 0;
 const db_1 = require("../helpers/db");
 const format_1 = require("@fast-csv/format");
-const path = require("path");
+const path_1 = __importDefault(require("path"));
+const fs_1 = __importDefault(require("fs"));
+const pdf_pup_1 = require("../services/pdf_pup");
 const helper_1 = require("../helpers/helper");
 const channel_groups_1 = require("../models/channel_groups");
 const channel_groups_accounts_1 = require("../models/channel_groups_accounts");
@@ -15,7 +20,9 @@ class StatisticController {
             return res.render('statistics/index', { groupAll: groupAll });
         };
         this.getGroupStatistic = async (req, res) => {
-            let groupId = parseInt(req.body.id), groupAll = [], template = '';
+            let groupId = parseInt(req.body.id), template = '', groupAll = [];
+            let startDate = req.body.start_date;
+            let endDate = req.body.end_date;
             if (groupId == 0) {
                 groupAll = await this.channelGroups.selectAll();
                 template = 'statistics/table_group_all';
@@ -26,6 +33,10 @@ class StatisticController {
                 ]);
                 template = 'statistics/table_group';
             }
+            let dataFilterAcccount = await this.getDataFilterAccountByDate(groupAll, startDate, endDate);
+            return res.render(template, dataFilterAcccount);
+        };
+        this.getDataFilterAccountByDate = async (groupAll, startDate, endDate) => {
             let numberOfAccountAll = 0, totalFriendAll = 0, targetReachAll = 0, blockAll = 0, broadcastAll = 0, deliveryCountAll = 0;
             for (const group of groupAll) {
                 let groupAccount = await this.channelGroupsAccounts.select([
@@ -35,7 +46,7 @@ class StatisticController {
                 for (const it of groupAccount) {
                     ids.push(it.account_id);
                 }
-                let accounts = await this.channelAccounts.selectWithTotalStatistic(ids, req.body.start_date, req.body.end_date);
+                let accounts = await this.channelAccounts.selectWithTotalStatistic(ids, startDate, endDate);
                 let friend = 0, targetReach = 0, block = 0, broadcast = 0, deliveryCount = 0, max = accounts.length;
                 for (const account of accounts) {
                     friend += account.friends;
@@ -87,7 +98,32 @@ class StatisticController {
                     delivery_count: Math.ceil(deliveryCountAll / groupAll.length),
                 }
             };
-            return res.render(template, { groupAll: groupAll, statistic: statisticAll });
+            return { groupAll: groupAll, statistic: statisticAll };
+        };
+        this.exportPdf = async (req, res) => {
+            let startDate = req.body.start_date;
+            let endDate = req.body.end_date;
+            let fileName = helper_1.formatDate('YYYYMMDD', new Date(startDate)) + '-' + helper_1.formatDate('YYYYMMDD', new Date(endDate)) + '_line_statistics.pdf';
+            let pathHtml = path_1.default.join(path_1.default.dirname(__dirname), `/data/table.html`);
+            let pathPdf = path_1.default.join(path_1.default.dirname(__dirname), `/data/${fileName}`);
+            let groupId = parseInt(req.body.id), template = '', groupAll = [];
+            if (groupId == 0) {
+                groupAll = await this.channelGroups.selectAll();
+                template = 'statistics/pdf/table_group_all';
+            }
+            else {
+                groupAll = await this.channelGroups.select([
+                    { field: 'id', data: groupId }
+                ]);
+                template = 'statistics/pdf/table_group';
+            }
+            let dataFilterAcccount = await this.getDataFilterAccountByDate(groupAll, startDate, endDate);
+            return res.render(template, dataFilterAcccount, async (err, html) => {
+                fs_1.default.writeFileSync(pathHtml, html);
+                let pdf = await pdf_pup_1.PDF.capturePdf(pathHtml);
+                fs_1.default.writeFileSync(pathPdf, pdf);
+                res.download(pathPdf);
+            });
         };
         this.downCsv = async (req, res) => {
             let currentDate = helper_1.formatDate('YYYYMMDD');
@@ -151,7 +187,7 @@ class StatisticController {
                 default:
                     break;
             }
-            let file = path.join(path.dirname(__dirname), `/data/${filename}`);
+            let file = path_1.default.join(path_1.default.dirname(__dirname), `/data/${filename}`);
             format_1.writeToPath(file, data)
                 .on('error', err => console.error(err))
                 .on('finish', () => res.download(file));

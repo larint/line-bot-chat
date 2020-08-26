@@ -9,3 +9,4 @@ let statisticController = new statistic_controller_1.StatisticController();
 router.get('/', statisticController.index);
 router.get('/linedata/downcsv/:data', statisticController.downCsv);
 router.post('/get-group-statistic', statisticController.getGroupStatistic);
+router.post('/export-pdf', statisticController.exportPdf);

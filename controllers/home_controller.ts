@@ -10,4 +10,4 @@ class HomeController {
 
 }
 
-export { HomeController }
+export default new HomeController

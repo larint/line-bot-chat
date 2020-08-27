@@ -1,20 +1,20 @@
 div
-    h4 Groups (#{groupList.length})
+    h5 グループリスト (#{groupList.length})
     table.table.tb-statistic
         thead
             tr
-                th Group name
-                th Account
-                th Create at
+                th.a-center Group name
+                th.a-center Account
+                th.a-center Create at
                 th.a-center(style="width:170px")
             each group in groupList
                 tr
                     td
                         a(href="/channel/group/detail/"+group.id)
                             b=group.name
-                    td
+                    td.a-right
                         span=group.account_number
-                    td
+                    td.a-right
                         span #{formatDate(group.created_at, 'YYYY年MM月DD日')}
                     td.a-center
                         a.remove-link(href="/channel/group/delete/"+group.id, onclick="return confirm('Are you sure you want to destroy this item?')") remove

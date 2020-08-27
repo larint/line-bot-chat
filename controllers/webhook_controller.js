@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WebhookController = void 0;
 const helper_1 = require("../helpers/helper");
 const chatbot_1 = require("../services/chatbot");
 class WebhookController {
@@ -47,4 +46,4 @@ class WebhookController {
         };
     }
 }
-exports.WebhookController = WebhookController;
+exports.default = new WebhookController;

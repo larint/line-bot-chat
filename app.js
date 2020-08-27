@@ -15,11 +15,12 @@ const method_override_1 = __importDefault(require("method-override"));
 require('dotenv').config();
 const LineSchedule_1 = require("./services/LineSchedule");
 require("./helpers/db");
-const index_1 = require("./routes/index");
-const webhook_1 = require("./routes/webhook");
-const chart_1 = require("./routes/chart");
-const statistic_1 = require("./routes/statistic");
-const channel_1 = require("./routes/channel");
+const index_1 = __importDefault(require("./routes/index"));
+const webhook_1 = __importDefault(require("./routes/webhook"));
+const chart_1 = __importDefault(require("./routes/chart"));
+const statistic_1 = __importDefault(require("./routes/statistic"));
+const channel_1 = __importDefault(require("./routes/channel"));
+const broadcast_1 = __importDefault(require("./routes/broadcast"));
 const app = express_1.default();
 let http = require("http").Server(app);
 let io = socket_io_1.default(http);
@@ -40,11 +41,12 @@ app.use((req, res, next) => {
 app.use(/\/(app.js|package.json)/, (req, res, next) => {
     res.sendStatus(404);
 });
-app.use('/', index_1.router);
-app.use('/webhook', webhook_1.router);
-app.use('/chart', chart_1.router);
-app.use('/statistic', statistic_1.router);
-app.use('/channel', channel_1.router);
+app.use('/', index_1.default);
+app.use('/webhook', webhook_1.default);
+app.use('/chart', chart_1.default);
+app.use('/statistic', statistic_1.default);
+app.use('/channel', channel_1.default);
+app.use('/broadcast', broadcast_1.default);
 app.render('index', { title: 'res vs app render' }, function (err, html) {
     console.log(html);
 });

@@ -51,13 +51,13 @@ else
               td.a-right
                 span #{group.total.block_rate}%
               td.a-right
-                span=group.total.deliveries_broadcast 
+                span #{group.total.deliveries_broadcast} 回
               td.a-right
-                span=group.average.deliveries_broadcast
+                span #{group.average.deliveries_broadcast} 回
               td.a-right
-                span=group.total.delivery_count
+                span #{group.total.delivery_count} 通
               td.a-right
-                span=group.average.delivery_count
+                span #{group.average.delivery_count} 通
         tfoot
           tr
             td.a-center(colspan="2",style="height: 40px")
@@ -79,11 +79,11 @@ else
             td.a-right 
               span -
             td.a-right 
-              span=statistic.total.broadcast
+              span #{statistic.total.broadcast} 回
             td.a-right 
               span -
             td.a-right 
-              span=statistic.total.delivery_count
+              span #{statistic.total.delivery_count} 通
             td.a-right 
               span -
           tr
@@ -104,11 +104,11 @@ else
             td.a-right 
               span -
             td.a-right 
-              span=statistic.average.broadcast
+              span #{statistic.average.broadcast} 回
             td.a-right 
               span -
             td.a-right 
-              span=statistic.average.delivery_count
+              span #{statistic.average.delivery_count} 通
             td.a-right 
               span -
     include table_group_all_by_group.pug    

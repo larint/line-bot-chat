@@ -1,9 +1,11 @@
 div
+  hr
   form#form(action="")
     input(type="hidden", name="name_group", value="")
-    button.btn.btn-info.btn-sm#btn-create-group(type="button") Create new account group
+    button.btn.btn-info.btn-sm#btn-create-group(type="button") グループ作成
     br
     br
+    h5 アカウントリスト (#{accountList.length})
     table.tb-statistic
       thead
         tr
@@ -34,8 +36,8 @@ div
             span=account.line_account
           td
             span=account.account_id
-          td
-            span #{formatDate(account.start_date, 'YYYY年MM月DD日')}
+          td.a-right
+            span #{formatDate(account.start_date, 'YYYY年MM月')}
           td.a-right
             span #{monthDiff(new Date(account.start_date), new Date())} months
           td.a-right
@@ -55,11 +57,11 @@ div
 script.
   $('#btn-create-group').click(function() {
     if($('input[name=id]:checked').length == 0) {
-      vex.dialog.alert('Please choose account name!')
+      vex.dialog.alert('アカウント名を選択してください')
     } else {
       vex.dialog.prompt({
-          message: 'Enter group name?',
-          placeholder: 'Group name',
+          message: 'グループ名を入力してください',
+          placeholder: 'グループ名',
           callback: function (name) {
             if(name){
               $('input[name=name_group]').val(name);

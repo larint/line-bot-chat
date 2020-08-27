@@ -11,12 +11,16 @@ ul.menu1
       span LINE統計チャート
   li
     a(href="/statistic", class={active: active_menu == 'statistic'})
-      i.fas.fa-user
+      i.fas.fa-chart-line
       span LINE統計表
   li
     a(href="/channel", class={active: active_menu == 'channel'})
-      i.fas.fa-envelope
+      i.fas.fa-users
       span LINEアカウントグループ
+  li
+    a(href="/broadcast", class={active: active_menu == 'broadcast'})
+      i.fas.fa-broadcast-tower
+      span LINE Broadcast
 ul.menu2
   li
     a(href="", class={active: active_menu == 'calendar'})

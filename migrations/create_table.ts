@@ -10,17 +10,19 @@ import { TableFriendGraphicsAreaID } from './tables/friend_graphics__areas_id'
 import { TableChannelAccount } from './tables/channel__account'
 import { TableChannelGroup } from './tables/channel__groups'
 import { TableChannelGroupAccount } from './tables/channel__groups_accounts'
+import { TableMessagesBroadcast } from './tables/messages_broadcast'
 
-TableFriendGraphicsGenders.up()
-TableFriendGraphicsAges.up()
-TableFriendGraphicsApptypes.up()
-TableFriendGraphicsSubscriptions.up()
-TableFriendGraphicsAreaJP.up() // japan
+// TableFriendGraphicsGenders.up()
+// TableFriendGraphicsAges.up()
+// TableFriendGraphicsApptypes.up()
+// TableFriendGraphicsSubscriptions.up()
+// TableFriendGraphicsAreaJP.up() // japan
 // TableFriendGraphicsAreaTW.up() // taiwan
 // TableFriendGraphicsAreaTH.up() // thailan
 // TableFriendGraphicsAreaID.up() // indonesia
 
-TableMessagesStatistic.up()
+// TableMessagesStatistic.up()
+TableMessagesBroadcast.up()
 
 // TableChannelAccount.up()
 // TableChannelGroup.up()

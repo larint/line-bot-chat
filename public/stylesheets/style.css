@@ -6,8 +6,16 @@ body {
     margin: 0;
 }
 
+.scroll-box{
+    overflow-y: scroll;
+    height: calc(100vh - 147px);
+}
+
+.fas {
+    width: 16px;
+}
+
 .loading {
-    display: none;
     height: 20px;
 }
 
@@ -212,6 +220,10 @@ input.date-range {
     color: #fff;
 }
 
+.btn1 .loading {
+    height: 20px;
+}
+
 .btn1:hover {
     background: #666585;
     color: #fff;
@@ -251,6 +263,12 @@ input.date-range {
     padding: 2px 5px;
 }
 
+.tb-statistic label {
+    margin: 0px;
+}
+.tb-statistic input[type=checkbox] {
+    margin-right: 5px;
+}
 .date-range {
     width: 210px;
 }

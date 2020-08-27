@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.HomeController = void 0;
 class HomeController {
     constructor() {
         this.index = async (req, res) => {
@@ -8,4 +7,4 @@ class HomeController {
         };
     }
 }
-exports.HomeController = HomeController;
+exports.default = new HomeController;

@@ -1,18 +1,17 @@
 import { Router } from 'express'
-import { ChannelController } from '../controllers/channel_controller'
+import ChannelController from '../controllers/channel_controller'
 
 let router = Router()
-let channelController = new ChannelController()
 
-router.get('/', channelController.index)
-router.post('/account/add', channelController.addAccount)
-router.get('/account/delete/:id', channelController.deleteAccount)
-router.get('/account/edit/:id', channelController.editAccount)
-router.post('/account/update', channelController.updateAccount)
+router.get('/', ChannelController.index)
+router.post('/account/add', ChannelController.addAccount)
+router.get('/account/delete/:id', ChannelController.deleteAccount)
+router.get('/account/edit/:id', ChannelController.editAccount)
+router.post('/account/update', ChannelController.updateAccount)
 
-router.post('/group/add', channelController.createGroup)
-router.get('/group/delete/:id', channelController.deleteGroup)
-router.get('/group/export', channelController.exportDataInGroup)
-router.get('/group/detail/:id', channelController.groupDetail)
+router.post('/group/add', ChannelController.createGroup)
+router.get('/group/delete/:id', ChannelController.deleteGroup)
+router.get('/group/export', ChannelController.exportDataInGroup)
+router.get('/group/detail/:id', ChannelController.groupDetail)
 
-export { router }
+export default router 

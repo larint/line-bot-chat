@@ -60,4 +60,4 @@ class WebhookController {
     }
 }
 
-export { WebhookController }
+export default new WebhookController

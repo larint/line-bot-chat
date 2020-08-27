@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChartController = void 0;
 const chart_1 = require("../services/chart");
 class ChartController {
     constructor() {
@@ -30,4 +29,4 @@ class ChartController {
         };
     }
 }
-exports.ChartController = ChartController;
+exports.default = new ChartController;

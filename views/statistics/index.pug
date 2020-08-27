@@ -1,7 +1,6 @@
 extends ../layout
 
 block style
-  script(src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js")
   script(src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js")
   script(src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js")
 
@@ -28,7 +27,9 @@ block content
         input(name="id", type="hidden")
         input(name="start_date", type="hidden")
         input(name="end_date", type="hidden")
-        button.btn.btn1(type="submit") PDFダウンロード
+        button.btn.btn1(type="submit") 
+          span PDFダウンロード
+          
   br
   img.loading(src="images/loading.gif")
   div.table-statistic
@@ -37,7 +38,30 @@ block content
     $('input[name="dates"]').daterangepicker({
       startDate: `#{formatDate(new Date(), 'YYYY/MM/DD', -30)}`,
        locale: {
-        format: "YYYY/MM/DD"
+        format: "YYYY/MM/DD",
+        daysOfWeek: [
+            "日",
+            "月",
+            "火",
+            "水",
+            "木",
+            "金",
+            "土"
+        ],
+        monthNames: [
+            "1月",
+            "2月",
+            "3月",
+            "4月",
+            "5月",
+            "6月",
+            "7月",
+            "8月",
+            "9月",
+            "10月",
+            "11月",
+            "12月"
+        ],
        }
     });
 
@@ -59,10 +83,14 @@ block content
 
       $.ajax({
         type : 'POST',
-        url : '/statistic/get-group-statistic',
+        url : '/statistic/get-list-statistic',
         data: { id : id, start_date : start_date, end_date : end_date },
         success: function(res) {
-          $('.table-statistic').html(res)
+          if(res.code == 200) {
+            $('.table-statistic').html(res.data)
+          } else {
+            $('.table-statistic').html(`<span class="red">${res.data}</span>`)
+          }
         },
         complete: function() {
           $('.loading').hide()

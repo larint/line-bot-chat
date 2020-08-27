@@ -33,7 +33,7 @@ class StatisticController {
      * @param req 
      * @param res 
      */
-    getGroupStatistic = async (req: Request, res: Response) => {
+    getListStatistic = async (req: Request, res: Response) => {
         let groupId = parseInt(req.body.id),
             template = '', groupAll: ChannelGroups[] = []
         let startDate = req.body.start_date
@@ -51,8 +51,13 @@ class StatisticController {
         }
 
         let dataFilterAcccount = await this.getDataFilterAccountByDate(groupAll, startDate, endDate)
-
-        return res.render(template, dataFilterAcccount)
+        // if there is no data that matches the search criteria
+        if (dataFilterAcccount.groupAll[0].accounts.length == 0) {
+            return res.json({ code: 201, data: 'データが見つかりません' })
+        }
+        return res.render(template, dataFilterAcccount, async (err, html) => {
+            res.json({ code: 200, data: html })
+        })
     }
 
     getDataFilterAccountByDate = async (groupAll: any[], startDate: string, endDate: string) => {
@@ -159,8 +164,8 @@ class StatisticController {
             async (err, html) => {
                 fs.writeFileSync(pathHtml, html)
                 let pdf = await PDF.capturePdf(pathHtml)
-                fs.writeFileSync(pathPdf, pdf);
-                res.download(pathPdf);
+                fs.writeFileSync(pathPdf, pdf)
+                res.download(pathPdf)
             }
         )
     }
@@ -238,4 +243,4 @@ class StatisticController {
     }
 }
 
-export { StatisticController }
+export default new StatisticController

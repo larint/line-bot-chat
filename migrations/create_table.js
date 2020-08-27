@@ -1,14 +1,4 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const friend_graphics__genders_1 = require("./tables/friend_graphics__genders");
-const friend_graphics__ages_1 = require("./tables/friend_graphics__ages");
-const friend_graphics__apptypes_1 = require("./tables/friend_graphics__apptypes");
-const friend_graphics__subscriptions_1 = require("./tables/friend_graphics__subscriptions");
-const messages_statistic_1 = require("./tables/messages_statistic");
-const friend_graphics__areas_jp_1 = require("./tables/friend_graphics__areas_jp");
-friend_graphics__genders_1.TableFriendGraphicsGenders.up();
-friend_graphics__ages_1.TableFriendGraphicsAges.up();
-friend_graphics__apptypes_1.TableFriendGraphicsApptypes.up();
-friend_graphics__subscriptions_1.TableFriendGraphicsSubscriptions.up();
-friend_graphics__areas_jp_1.TableFriendGraphicsAreaJP.up();
-messages_statistic_1.TableMessagesStatistic.up();
+const messages_broadcast_1 = require("./tables/messages_broadcast");
+messages_broadcast_1.TableMessagesBroadcast.up();

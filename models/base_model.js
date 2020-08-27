@@ -23,7 +23,11 @@ class BaseModel {
             });
         };
         this.selectIn = async (attrs) => {
-            return await this.executeQuery(`select * from ${this.table} where ${attrs[0].field} in (${attrs[0].data})`);
+            let data = attrs[0].data;
+            if (Array.isArray(data)) {
+                data = attrs[0].data.join();
+            }
+            return await this.executeQuery(`select * from ${this.table} where ${attrs[0].field} in (${data})`);
         };
         this.selectAll = async () => {
             return await db_1.DB.selectByParams({

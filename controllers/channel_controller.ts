@@ -177,4 +177,4 @@ class ChannelController {
 
 }
 
-export { ChannelController }
+export default new ChannelController

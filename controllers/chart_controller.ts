@@ -30,4 +30,4 @@ class ChartController {
     }
 }
 
-export { ChartController }
+export default new ChartController

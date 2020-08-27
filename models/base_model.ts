@@ -29,7 +29,13 @@ class BaseModel {
     }
 
     selectIn = async (attrs: DataWhere[]) => {
-        return await this.executeQuery(`select * from ${this.table} where ${attrs[0].field} in (${attrs[0].data})`)
+        let data = attrs[0].data
+
+        if (Array.isArray(data)) {
+            data = attrs[0].data.join()
+        }
+
+        return await this.executeQuery(`select * from ${this.table} where ${attrs[0].field} in (${data})`)
     }
 
     selectAll = async () => {

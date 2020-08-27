@@ -15,12 +15,12 @@ import { LineSchedule } from './services/LineSchedule'
 import './helpers/db'
 
 // ROUTER
-import { router as indexRouter } from './routes/index'
-import { router as webhookRouter } from './routes/webhook'
-import { router as chartRouter } from './routes/chart'
-import { router as statisticRouter } from './routes/statistic'
-import { router as channelRouter } from './routes/channel'
-
+import indexRouter from './routes/index'
+import webhookRouter from './routes/webhook'
+import chartRouter from './routes/chart'
+import statisticRouter from './routes/statistic'
+import channelRouter from './routes/channel'
+import broadcastRouter from './routes/broadcast'
 
 const app = express()
 
@@ -58,6 +58,7 @@ app.use('/webhook', webhookRouter)
 app.use('/chart', chartRouter)
 app.use('/statistic', statisticRouter)
 app.use('/channel', channelRouter)
+app.use('/broadcast', broadcastRouter)
 
 app.render('index', { title: 'res vs app render' }, function (err, html) {
 	console.log(html)

@@ -1,0 +1,23 @@
+include ../helpers/func.pug
+
+hr
+h5 グループリスト (#{groupList.length})
+table.tb-statistic
+    thead
+        tr
+            th.a-center(style="width: 45px") No
+            th.a-center Group name
+            th.a-center Account
+            th.a-center Create at
+        each group, i in groupList
+            tr
+                td
+                    span=i+1
+                td
+                    input(type="checkbox", value=group.id, name="id", id='group'+group.id) 
+                    label(for='group'+group.id) 
+                        b= group.name
+                td.a-right
+                    span=group.account_number
+                td.a-right
+                    span #{formatDate(group.created_at, 'YYYY年MM月DD日')}

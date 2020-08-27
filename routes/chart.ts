@@ -1,10 +1,8 @@
 import { Router } from 'express'
-import { ChartController } from '../controllers/chart_controller'
+import ChartController from '../controllers/chart_controller'
 
 let router = Router();
-let chartController = new ChartController()
 
-//adas
-router.get('/', chartController.index)
+router.get('/', ChartController.index)
 
-export { router }
+export default router 

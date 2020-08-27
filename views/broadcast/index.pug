@@ -1,0 +1,78 @@
+extends ../layout
+
+block style
+  -var active_menu = 'broadcast'
+
+block main_title
+  h3 LINE Broadcast
+
+block content
+  include ../helpers/func.pug
+  form#form-send(action="", method="POST")
+    .form-row
+        .form-group.col-6
+            .form-row
+                .col-4
+                    label Choose target send broadcast:
+                .col-3
+                    select.form-control#select-type(name="type")
+                        option(value="account") アカウント
+                        option(value="group") グループ
+                        option(value="all") 全体
+            .scroll-box
+                img.loading(src="images/loading.gif")
+                .table-statistic
+        .form-group.col-6
+            label(for="message") JSON形式でメッセージを入力します 
+                span.red *
+            textarea.form-control#message(name="message", cols="30", rows="10") {"type":"text","text":"Hello, world1"}
+            br
+            .a-right
+                button.btn.btn-primary.btn-sm#btn-send-broadcast(type="submit") 
+                    img.loading(src="images/loading.gif")
+                    span 配信
+    script.
+        $('#select-type').change(function() {
+            $('.loading').show()
+            $('.table-statistic').empty()
+            var type = $(this).val()
+ 
+            $.ajax({
+                type : 'POST',
+                url : '/broadcast/get-list-account-group',
+                data: { type : type },
+                success: function(res) {
+
+                    if(res.code == 200) {
+                        $('.table-statistic').html(res.data)
+                    } else {
+                        $('.table-statistic').html(`<span class="red">${res.data}</span>`)
+                    }
+                },
+                complete: function() {
+                    $('.loading').hide()
+                }
+            })
+        })
+        $('#select-type').trigger('change')
+
+        $('#form-send').submit(function() {
+            $('.loading').show()
+            $('#form-send').find('button').prop('disabled', true)
+            
+            $.ajax({
+                type : 'POST',
+                url : '/broadcast/send',
+                data: $(this).serialize(),
+                success: function(res) {
+                    vex.dialog.alert(res.message)
+                },
+                complete: function() {
+                    $('.loading').hide()
+                    $('#form-send').find('button').prop('disabled', false)
+                }
+            })
+            return false
+        })
+
+      

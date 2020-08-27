@@ -1,0 +1,29 @@
+include ../helpers/func.pug
+
+hr
+h5 アカウントリスト (#{accountList.length})
+table.tb-statistic
+    thead
+        tr
+            th.a-center(style="width: 45px") No
+            th.a-center Account name
+            th.a-center Account ID
+            th.a-center Start date
+            th.a-center Duration
+            th.a-center Friends
+    each account, i in accountList
+        tr
+            td
+                span=i+1
+            td
+                input(type="checkbox", value=account.id, name="id", id='account'+account.id)
+                label(for='account'+account.id)
+                    b=account.name
+            td
+                span=account.account_id
+            td.a-right
+                span #{formatDate(account.start_date, 'YYYY年MM月')}
+            td.a-right
+                span #{monthDiff(new Date(account.start_date), new Date())} months
+            td.a-right
+                span=account.friends

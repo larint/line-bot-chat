@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.StatisticController = void 0;
 const db_1 = require("../helpers/db");
 const format_1 = require("@fast-csv/format");
 const path_1 = __importDefault(require("path"));
@@ -19,7 +18,7 @@ class StatisticController {
             let groupAll = await this.channelGroups.selectAll();
             return res.render('statistics/index', { groupAll: groupAll });
         };
-        this.getGroupStatistic = async (req, res) => {
+        this.getListStatistic = async (req, res) => {
             let groupId = parseInt(req.body.id), template = '', groupAll = [];
             let startDate = req.body.start_date;
             let endDate = req.body.end_date;
@@ -34,7 +33,12 @@ class StatisticController {
                 template = 'statistics/table_group';
             }
             let dataFilterAcccount = await this.getDataFilterAccountByDate(groupAll, startDate, endDate);
-            return res.render(template, dataFilterAcccount);
+            if (dataFilterAcccount.groupAll[0].accounts.length == 0) {
+                return res.json({ code: 201, data: 'データが見つかりません' });
+            }
+            return res.render(template, dataFilterAcccount, async (err, html) => {
+                res.json({ code: 200, data: html });
+            });
         };
         this.getDataFilterAccountByDate = async (groupAll, startDate, endDate) => {
             let numberOfAccountAll = 0, totalFriendAll = 0, targetReachAll = 0, blockAll = 0, broadcastAll = 0, deliveryCountAll = 0;
@@ -197,4 +201,4 @@ class StatisticController {
         this.channelGroupsAccounts = new channel_groups_accounts_1.ChannelGroupsAccounts();
     }
 }
-exports.StatisticController = StatisticController;
+exports.default = new StatisticController;

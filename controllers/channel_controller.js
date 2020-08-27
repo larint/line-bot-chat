@@ -1,6 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ChannelController = void 0;
 const bot_sdk_1 = require("@line/bot-sdk");
 const helper_1 = require("../helpers/helper");
 const channel_groups_1 = require("../models/channel_groups");
@@ -136,4 +135,4 @@ class ChannelController {
         this.channelGroupsAccounts = new channel_groups_accounts_1.ChannelGroupsAccounts();
     }
 }
-exports.ChannelController = ChannelController;
+exports.default = new ChannelController;

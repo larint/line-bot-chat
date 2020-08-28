@@ -16,8 +16,8 @@ class ChartController {
             for (let account of accounts) {
                 dataChart1.push({
                     category: account.name,
-                    friends: account.friends,
-                    target_reach: account.target_reach,
+                    friends: account.friends_date_range,
+                    target_reach: account.target_reach_date_range,
                     block: account.block
                 });
                 dataChart2.push({

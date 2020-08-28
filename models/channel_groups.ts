@@ -10,6 +10,8 @@ class ChannelGroups extends BaseModel {
 
         let sql = `SELECT 
                 b.*,
+                MAX(c.friends) as friends_date_range,
+                MAX(c.target_reach) as target_reach_date_range,
                 SUM(c.reply_number) as total_reply,
                 SUM(c.push_number) as total_push,
                 SUM(c.multicast_number) as total_multicast,

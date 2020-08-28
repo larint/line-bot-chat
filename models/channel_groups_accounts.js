@@ -7,7 +7,7 @@ class ChannelGroupsAccounts extends base_model_1.BaseModel {
         super(...arguments);
         this.table = 'channel__groups_accounts';
         this.selectAllAccountInGroup = async (groupIds) => {
-            let ids = groupIds.join();
+            let ids = (groupIds instanceof Array) ? groupIds.join() : [groupIds];
             let sql = `SELECT DISTINCT(b.id), b.* FROM channel__groups_accounts as a LEFT JOIN channel__accounts as b
             ON a.account_id = b.id
             WHERE a.group_id in (${ids})`;

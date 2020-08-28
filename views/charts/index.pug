@@ -1,11 +1,11 @@
 extends ../layout
 
 block style
-  link(href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.css")
-  script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.bundle.min.js")
-  script(src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js")
   script(src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js")
   script(src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js")
+  script(src="https://cdn.amcharts.com/lib/4/core.js")
+  script(src="https://cdn.amcharts.com/lib/4/charts.js")
+  script(src="https://cdn.amcharts.com/lib/4/themes/animated.js")
 
   link(rel="stylesheet", href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css")
   script(src="javascripts/utils.js")
@@ -24,14 +24,140 @@ block content
     div
       button.btn.btn-info.btn1 PDFダウンロード
   br
-  .d-flex.flex-row
-    .d-flex.flex-row.justify-content-between.w50
-      .w50
-        span LINE統計チャート#1
-      select
-        option グループ　１
-        option グループ　2
-    .d-flex.flex-row
-      span LINE統計チャート#2
+  .row
+    .col-6
+      .row
+        .col-6
+          h4 LINE統計チャート#1
+        .col-6.jus
+          select.form-control#select-group
+            each item in groupAll
+              option(value=item.id)=item.name
+      .row
+        .col-12
+          br
+          img.loading(src="images/loading.gif")
+          .chart1(style="width:100%; height: 500px")
+    .col-6
+      .row
+        .col-12
+          h4 LINE統計チャート#2
+      .row
+        .col-12
+          br
+          img.loading(src="images/loading.gif")
+          .chart2(style="width:100%; height: 500px")
+
   script.
-    $('input[name="dates"]').daterangepicker();
+    function buildChartColumn(chartSelector) {
+      let chart = am4core.create(chartSelector, am4charts.XYChart)
+      chart.legend = new am4charts.Legend()
+      chart.legend.position = 'top'
+      chart.legend.paddingBottom = 20
+      chart.legend.useDefaultMarker = true;
+      var marker = chart.legend.markers.template.children.getIndex(0);
+      marker.cornerRadius(12, 12, 12, 12);
+      marker.strokeWidth = 2;
+      marker.strokeOpacity = 1;
+      marker.stroke = am4core.color("#ccc");
+
+      var xAxis = chart.xAxes.push(new am4charts.CategoryAxis())
+      xAxis.dataFields.category = 'category'
+      xAxis.renderer.cellStartLocation = 0.1
+      xAxis.renderer.cellEndLocation = 0.9
+      xAxis.renderer.grid.template.location = 0
+      xAxis.renderer.labels.template.fontSize = 10
+
+      var yAxis = chart.yAxes.push(new am4charts.ValueAxis())
+      yAxis.min = 0
+      return chart
+    }
+
+    function createSeries(chart, value, name) {
+      var series = chart.series.push(new am4charts.ColumnSeries())
+      series.dataFields.valueY = value
+      series.dataFields.categoryX = 'category'
+      series.name = name
+      series.fontSize = 0.1
+
+      var bullet = series.bullets.push(new am4charts.LabelBullet())
+      bullet.interactionsEnabled = true
+      bullet.dy = 10;
+      bullet.label.fill = am4core.color('#d11313')
+      bullet.label.text = '{valueY}'
+      bullet.tooltipText = "[bold]{valueY}[/]";
+      bullet.label.fontSize = 10
+  
+      return series;
+    }
+
+    am4core.ready(function() {
+      am4core.useTheme(am4themes_animated);
+    });
+    
+    $('input[name="dates"]').daterangepicker({
+      startDate: `#{formatDate(new Date(), 'YYYY/MM/DD', -30)}`,
+       locale: {
+        format: "YYYY/MM/DD",
+        daysOfWeek: [
+            "日",
+            "月",
+            "火",
+            "水",
+            "木",
+            "金",
+            "土"
+        ],
+        monthNames: [
+            "1月",
+            "2月",
+            "3月",
+            "4月",
+            "5月",
+            "6月",
+            "7月",
+            "8月",
+            "9月",
+            "10月",
+            "11月",
+            "12月"
+        ],
+       }
+    });
+
+    $('input[name="dates"]').on('apply.daterangepicker', function(ev, picker) {
+      $('#select-group').trigger('change')
+    });
+
+    $('#select-group').change(function() {
+        $('.loading').show()
+        $('.chart1').empty()
+        $('.chart2').empty()
+
+        let id = $(this).val()
+        var start_date = $('input[name="dates"]').data('daterangepicker').startDate._d;
+        var end_date = $('input[name="dates"]').data('daterangepicker').endDate._d;
+
+        $.ajax({
+            type : 'POST',
+            url : '/chart/get-chart-data',
+            data: { id : id, start_date:start_date, end_date:end_date },
+            success: function(res) {
+              let chart1 = buildChartColumn('chart1')
+              let chart2 = buildChartColumn('chart2')
+              chart1.data = res.dataChart1
+              chart2.data = res.dataChart2
+              $.each(res.seriesChart1, function(k, v) {
+                createSeries(chart1, v.dataFields, v.name);
+              })
+
+              $.each(res.seriesChart2, function(k, v) {
+                createSeries(chart2, v.dataFields, v.name);
+              })
+            },
+            complete: function() {
+                $('.loading').hide()
+            }
+        })
+    })
+    $('#select-group').trigger('change')

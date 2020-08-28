@@ -17,8 +17,8 @@ class ChannelAccounts extends base_model_1.BaseModel {
             }
             return accounts;
         };
-        this.selectWithTotalStatistic = async (idArr, startDate, endDate) => {
-            let ids = idArr.join(',');
+        this.selectStatisticBetweenDate = async (accountIds, startDate, endDate) => {
+            let ids = (accountIds instanceof Array) ? accountIds.join() : [accountIds];
             startDate = helper_1.formatDate('YYYYMMDD', new Date(startDate));
             endDate = helper_1.formatDate('YYYYMMDD', new Date(endDate));
             let sql = `SELECT 

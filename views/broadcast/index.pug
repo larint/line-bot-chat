@@ -42,7 +42,6 @@ block content
                 url : '/broadcast/get-list-account-group',
                 data: { type : type },
                 success: function(res) {
-
                     if(res.code == 200) {
                         $('.table-statistic').html(res.data)
                     } else {
@@ -70,6 +69,9 @@ block content
                 complete: function() {
                     $('button').find('.loading').hide()
                     $('#form-send').find('button').prop('disabled', false)
+                    $('.tb-statistic').find('input[type=checkbox]').each(function () {
+                        $(this).prop('checked', false)
+                    })
                 }
             })
             return false

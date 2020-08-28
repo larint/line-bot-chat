@@ -24,9 +24,7 @@ class BaseModel {
         };
         this.selectIn = async (attrs) => {
             let data = attrs[0].data;
-            if (Array.isArray(data)) {
-                data = attrs[0].data.join();
-            }
+            data = (data instanceof Array) ? data.join() : [data];
             return await this.executeQuery(`select * from ${this.table} where ${attrs[0].field} in (${data})`);
         };
         this.selectAll = async () => {

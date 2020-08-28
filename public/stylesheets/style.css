@@ -6,6 +6,14 @@ body {
     margin: 0;
 }
 
+select {
+    width: auto !important;
+}
+
+.pad-10 {
+    padding: 10px;
+}
+
 .scroll-box{
     overflow-y: scroll;
     height: calc(100vh - 165px);

@@ -24,9 +24,15 @@ class ChannelAccounts extends BaseModel {
         return accounts
     }
 
+    /**
+     * Get the account's message statistics on the period of time. 
+     * @param accountIds 
+     * @param startDate 
+     * @param endDate 
+     */
+    selectStatisticBetweenDate = async (accountIds: number[], startDate: string, endDate: string) => {
+        let ids = (accountIds instanceof Array) ? accountIds.join() : [accountIds]
 
-    selectWithTotalStatistic = async (idArr: number[], startDate: string, endDate: string) => {
-        let ids = idArr.join(',')
         startDate = formatDate('YYYYMMDD', new Date(startDate))
         endDate = formatDate('YYYYMMDD', new Date(endDate))
 

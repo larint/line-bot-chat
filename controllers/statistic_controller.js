@@ -43,14 +43,7 @@ class StatisticController {
         this.getDataFilterAccountByDate = async (groupAll, startDate, endDate) => {
             let numberOfAccountAll = 0, totalFriendAll = 0, targetReachAll = 0, blockAll = 0, broadcastAll = 0, deliveryCountAll = 0;
             for (const group of groupAll) {
-                let groupAccount = await this.channelGroupsAccounts.select([
-                    { field: 'group_id', data: group.id }
-                ]);
-                let ids = [];
-                for (const it of groupAccount) {
-                    ids.push(it.account_id);
-                }
-                let accounts = await this.channelAccounts.selectWithTotalStatistic(ids, startDate, endDate);
+                let accounts = await this.channelGroups.getAccountStatisticBetweenDate(group.id, startDate, endDate);
                 let friend = 0, targetReach = 0, block = 0, broadcast = 0, deliveryCount = 0, max = accounts.length;
                 for (const account of accounts) {
                     friend += account.friends;

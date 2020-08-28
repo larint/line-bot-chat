@@ -3,9 +3,7 @@ import { ChannelGroups } from '../models/channel_groups'
 import { MessagesBroadcast } from '../models/messages_broadcast'
 import { ChannelAccounts, FieldChannelAccount } from '../models/channel_accounts'
 import { ChannelGroupsAccounts } from '../models/channel_groups_accounts'
-
 import { Client } from '@line/bot-sdk'
-import { Message } from '@line/bot-sdk/dist/types'
 
 class BroadcastController {
     channelAccounts: ChannelAccounts

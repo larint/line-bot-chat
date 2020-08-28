@@ -12,8 +12,8 @@ block content
     .form-row
         .form-group.col-6
             .form-row
-                .col-4
-                    label Choose target send broadcast:
+                .col-5
+                    label ターゲット送信ブロードキャストを選択：
                 .col-3
                     select.form-control#select-type(name="type")
                         option(value="account") アカウント
@@ -25,7 +25,7 @@ block content
         .form-group.col-6
             label(for="message") JSON形式でメッセージを入力します 
                 span.red *
-            textarea.form-control#message(name="message", cols="30", rows="10") {"type":"text","text":"Hello, world1"}
+            textarea.form-control#message(name="message", cols="30", rows="15") {"type":"text","text":"Hello, world1"}
             br
             .a-right
                 button.btn.btn-primary.btn-sm#btn-send-broadcast(type="submit") 
@@ -57,7 +57,7 @@ block content
         $('#select-type').trigger('change')
 
         $('#form-send').submit(function() {
-            $('.loading').show()
+            $('button').find('.loading').show()
             $('#form-send').find('button').prop('disabled', true)
             
             $.ajax({
@@ -68,7 +68,7 @@ block content
                     vex.dialog.alert(res.message)
                 },
                 complete: function() {
-                    $('.loading').hide()
+                    $('button').find('.loading').hide()
                     $('#form-send').find('button').prop('disabled', false)
                 }
             })

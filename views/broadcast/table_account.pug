@@ -6,6 +6,8 @@ table.tb-statistic
     thead
         tr
             th.a-center(style="width: 45px") No
+            th.a-center(style="width: 10px")
+                input.cb-all(type="checkbox")
             th.a-center Account name
             th.a-center Account ID
             th.a-center Start date
@@ -15,8 +17,9 @@ table.tb-statistic
         tr
             td
                 span=i+1
-            td
+            td.a-center 
                 input(type="checkbox", value=account.id, name="id", id='account'+account.id)
+            td
                 label(for='account'+account.id)
                     b=account.name
             td

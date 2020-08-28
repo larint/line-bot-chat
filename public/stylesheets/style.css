@@ -8,7 +8,7 @@ body {
 
 .scroll-box{
     overflow-y: scroll;
-    height: calc(100vh - 147px);
+    height: calc(100vh - 165px);
 }
 
 .fas {

@@ -27,7 +27,7 @@ class ChannelController {
     addAccount = async (req: Request, res: Response) => {
         let data: FieldChannelAccount = req.body
 
-        if (!data.name || !data.line_account || !data.access_token || !data.secret) {
+        if (!data.name || !data.access_token || !data.secret) {
 
         } else {
             let client = new Client({
@@ -55,7 +55,7 @@ class ChannelController {
                 { field: 'block_rate', data: follower.block_rate },
                 { field: 'access_token', data: data.access_token },
                 { field: 'secret', data: data.secret },
-                { field: 'start_date', data: data.start_date }
+                { field: 'start_date', data: data.start_date ? data.start_date : new Date() }
             ])
 
         }

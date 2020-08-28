@@ -5,6 +5,7 @@ import { ChannelAccounts, FieldChannelAccount } from '../models/channel_accounts
 import { ChannelGroupsAccounts } from '../models/channel_groups_accounts'
 
 import { Client } from '@line/bot-sdk'
+import { Message } from '@line/bot-sdk/dist/types'
 
 class BroadcastController {
     channelAccounts: ChannelAccounts
@@ -30,64 +31,58 @@ class BroadcastController {
     sendBroadcast = async (req: Request, res: Response) => {
         let type = req.body.type,
             message = req.body.message,
-            ids = req.body.id
+            ids = req.body.id,
+            accountList: FieldChannelAccount[] = [],
+            accountSendFail = []
 
-        try {
-            if (message != '') {
-                if (type == 'account') {
-                    let accountList: FieldChannelAccount[] = await this.channelAccounts.selectIn([
-                        { field: 'id', data: ids }
-                    ])
-
-                    for (const account of accountList) {
-                        let client = new Client({
-                            channelAccessToken: account.access_token,
-                            channelSecret: account.secret
-
-                        })
-                        let jsonMessage = JSON.parse(message)
-
-                        let result = await client.broadcast(jsonMessage)
-                        if (result) {
-                            await this.messagesBroadcast.save([
-                                { field: 'request_id', data: result['x-line-request-id'] },
-                                { field: 'target', data: account.account_id },
-                                { field: 'type', data: type }
-                            ])
-                        }
-                    }
-                } else if (type == 'group') {
-                    let accountList = await this.channelGroupsAccounts.selectAllAccountInGroup(ids)
-
-                    for (const account of accountList) {
-                        let client = new Client({
-                            channelAccessToken: account.access_token,
-                            channelSecret: account.secret
-
-                        })
-                        let jsonMessage = JSON.parse(message)
-
-                        let result = await client.broadcast(jsonMessage)
-                        if (result) {
-                            await this.messagesBroadcast.save([
-                                { field: 'request_id', data: result['x-line-request-id'] },
-                                { field: 'target', data: account.account_id },
-                                { field: 'type', data: type }
-                            ])
-                        }
-                    }
-
-                } else {
-
-                }
-            }
-
-            return res.json({ code: 200, message: '正常に送信されました' })
-        } catch (error) {
-
+        if (type != 'all' && ids == undefined) {
+            return res.json({ code: 201, message: 'アカウントを選択していません' })
         }
 
-        return res.json({ code: 201, message: '送信できませんでした' })
+        if (message == '') {
+            return res.json({ code: 201, message: 'メッセージの内容はjson形式です' })
+        }
+
+        if (type == 'account') {
+            accountList = await this.channelAccounts.selectIn([
+                { field: 'id', data: ids }
+            ])
+        } else if (type == 'group') {
+            accountList = await this.channelGroupsAccounts.selectAllAccountInGroup(ids)
+        } else { // send all
+            accountList = await this.channelAccounts.selectAll()
+        }
+
+        for (const account of accountList) {
+            let client = new Client({
+                channelAccessToken: account.access_token,
+                channelSecret: account.secret
+
+            })
+            let jsonMessage = JSON.parse(message)
+
+            try {
+                let result = await client.broadcast(jsonMessage)
+
+                if (result) {
+                    await this.messagesBroadcast.save([
+                        { field: 'request_id', data: result['x-line-request-id'] },
+                        { field: 'target', data: account.id },
+                        { field: 'type', data: type }
+                    ])
+                }
+            } catch (error) {
+                accountSendFail.push(account.name)
+            }
+        }
+
+        if (accountSendFail.length == accountList.length) {
+            return res.json({ code: 201, message: '送信できませんでした' })
+        } else if (accountSendFail.length == 0) {
+            return res.json({ code: 200, message: '正常に送信されました' })
+        } else {
+            return res.json({ code: 200, message: '正常に送信されましたが、次のアカウントは送信できませんでした：' + accountSendFail.join('/') })
+        }
     }
 
     getListAccountGroup = async (req: Request, res: Response) => {
@@ -105,7 +100,7 @@ class BroadcastController {
                 dataFilter = { accountList: accountList }
                 break;
             default: // get all
-                return res.json({ code: 200, data: '' })
+                return res.json({ code: 200, data: 'すべてのアカウントに送信されます。' })
         }
 
         return res.render(template, dataFilter, async (err, html) => {

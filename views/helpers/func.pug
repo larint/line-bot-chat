@@ -1,9 +1,11 @@
 - function formatDate(dateStr, format, moreDate = 0) {
--   let dateObj   
+-   let dateObj
 -   if(dateStr instanceof Date) {
 -       dateObj = dateStr
--   } else {
+-   } else if(dateStr != null) {
 -       dateObj = new Date(dateStr)
+-   } else {
+-       dateObj = new Date()
 -   }
 -   dateObj.setDate(dateObj.getDate() + moreDate)
 -   let year = dateObj.getFullYear()
@@ -25,9 +27,17 @@
 -   return new Date(dateStr).toLocaleString('en-US', { year: 'numeric', month: 'numeric', day: 'numeric' })
 - }
 - function monthDiff(d1, d2) {
+-   let dateObj
+-   if(d1 instanceof Date) {
+-       dateObj = d1
+-   } else if(dateStr != null) {
+-       dateObj = new Date(d1)
+-   } else {
+-       dateObj = new Date()
+-   }
 -    var months;
--    months = (d2.getFullYear() - d1.getFullYear()) * 12;
--    months -= d1.getMonth();
+-    months = (d2.getFullYear() - dateObj.getFullYear()) * 12;
+-    months -= dateObj.getMonth();
 -    months += d2.getMonth();
 -    return months <= 0 ? 1 : months;
 -  }

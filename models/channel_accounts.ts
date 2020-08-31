@@ -24,6 +24,30 @@ class ChannelAccounts extends BaseModel {
         return accounts
     }
 
+    selectAllStatisticAccount = async () => {
+        let sql = `SELECT 
+            a.*, 
+            SUM(b.reply_number) as total_reply, 
+            SUM(b.push_number) as total_push, 
+            SUM(b.multicast_number) as total_multicast, 
+            SUM(b.broadcast_number) as total_broadcast, 
+            SUM(b.deliveries_broadcast) as total_deliveries_broadcast, 
+            SUM(b.deliveries_targeting) as total_deliveries_targeting, 
+            SUM(b.deliveries_auto_response) as total_deliveries_auto_response, 
+            SUM(b.deliveries_welcome_response) as total_deliveries_welcome_response, 
+            SUM(b.deliveries_chat) as total_deliveries_chat, 
+            SUM(b.friends * b.deliveries_broadcast) as delivery_count
+        FROM channel__accounts as a LEFT JOIN messages_statistic as b 
+        on a.id = b.account_id 
+        GROUP BY a.id`
+
+        let accounts = await this.executeQuery(sql)
+        if (!accounts) {
+            return []
+        }
+        return accounts
+    }
+
     /**
      * Get the account's message statistics on the period of time. 
      * @param accountIds 
@@ -33,8 +57,8 @@ class ChannelAccounts extends BaseModel {
     selectStatisticBetweenDate = async (accountIds: number[], startDate: string, endDate: string) => {
         let ids = (accountIds instanceof Array) ? accountIds.join() : [accountIds]
 
-        startDate = formatDate('YYYYMMDD', new Date(startDate))
-        endDate = formatDate('YYYYMMDD', new Date(endDate))
+        startDate = formatDate('YYYY-MM-DD', new Date(startDate))
+        endDate = formatDate('YYYY-MM-DD', new Date(endDate))
 
         let sql = `SELECT 
             a.*, 

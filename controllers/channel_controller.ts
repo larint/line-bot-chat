@@ -18,7 +18,7 @@ class ChannelController {
     }
 
     index = async (req: Request, res: Response) => {
-        let accountList = await this.channelAccounts.selectAll()
+        let accountList = await this.channelAccounts.selectAllStatisticAccount()
         let groupList = await this.channelGroups.selectAll()
 
         return res.render('channels/index', { accountList: accountList, groupList: groupList })
@@ -27,7 +27,7 @@ class ChannelController {
     addAccount = async (req: Request, res: Response) => {
         let data: FieldChannelAccount = req.body
 
-        if (!data.name || !data.access_token || !data.secret) {
+        if (!data.name || !data.access_token || !data.secret || !data.start_date) {
 
         } else {
             let client = new Client({
@@ -35,14 +35,14 @@ class ChannelController {
                 channelSecret: data.secret
             })
 
-            let currentDate = formatDate('YYYYMMDD', new Date(), -1)
+            let currentDate = formatDate('YYYYMMDD', new Date(data.start_date))
 
             let follower: DataLineFollower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 }
             try {
                 follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(currentDate)
                 let blocks = follower.blocks as number
                 let targetedReaches = follower.targetedReaches as number
-                follower.block_rate = round(blocks / targetedReaches * 100)
+                follower.block_rate = targetedReaches > 0 ? round(blocks / targetedReaches * 100) : 0
             } catch (error) { }
 
             await this.channelAccounts.save([
@@ -55,7 +55,7 @@ class ChannelController {
                 { field: 'block_rate', data: follower.block_rate },
                 { field: 'access_token', data: data.access_token },
                 { field: 'secret', data: data.secret },
-                { field: 'start_date', data: data.start_date ? data.start_date : new Date() }
+                { field: 'start_date', data: data.start_date }
             ])
 
         }
@@ -81,14 +81,14 @@ class ChannelController {
             channelSecret: data.secret
         })
 
-        let currentDate = formatDate('YYYYMMDD', new Date(), -1)
+        let currentDate = formatDate('YYYYMMDD', new Date(data.start_date))
 
         let follower: DataLineFollower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 }
         try {
             follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(currentDate)
             let blocks = follower.blocks as number
             let targetedReaches = follower.targetedReaches as number
-            follower.block_rate = round(blocks / targetedReaches * 100)
+            follower.block_rate = targetedReaches > 0 ? round(blocks / targetedReaches * 100) : 0
         } catch (error) { }
 
         await this.channelAccounts.update([

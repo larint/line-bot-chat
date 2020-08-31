@@ -8,8 +8,8 @@ class ChannelGroups extends base_model_1.BaseModel {
         super(...arguments);
         this.table = 'channel__groups';
         this.getAccountStatisticBetweenDate = async (groupId, startDate, endDate) => {
-            startDate = helper_1.formatDate('YYYYMMDD', new Date(startDate));
-            endDate = helper_1.formatDate('YYYYMMDD', new Date(endDate));
+            startDate = helper_1.formatDate('YYYY-MM-DD', new Date(startDate));
+            endDate = helper_1.formatDate('YYYY-MM-DD', new Date(endDate));
             let sql = `SELECT 
                 b.*,
                 MAX(c.friends) as friends_date_range,

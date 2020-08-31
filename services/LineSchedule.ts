@@ -1,6 +1,6 @@
 import { Client } from '@line/bot-sdk'
 import * as Types from '@line/bot-sdk/dist/types'
-import { formatDate, round } from '../helpers/helper'
+import { formatDate, round, getDateRangeLimitNow } from '../helpers/helper'
 import { Faker } from '../faker/faker'
 import { DataWhere } from '../helpers/db'
 import { DataMessageStatistic, DataLineFollower } from '../helpers/type'
@@ -20,34 +20,42 @@ class LineSchedule {
      * Get statistical information for all accounts at the current date 
      */
     static run = async () => {
-        // send notification to chat bot
-        // await client.broadcast({ type: 'text', text: 'Updated data from LINE success' })
-
         // Updates for all accounts by date
         let channelAccounts = new ChannelAccounts()
+        let messageStatistic = new MessageStatistic()
         let accountList = await channelAccounts.selectAll()
 
-        for (const account of accountList) {
+        Promise.all(accountList.map(async (account: any) => {
             let client = new Client({
                 channelAccessToken: account.access_token,
                 channelSecret: account.secret
             })
 
             // Only get information from the yesterday
-            let date = formatDate('YYYYMMDD', new Date(), -1)
-            LineSchedule.saveFollowerStatistic(client, account.id, date)
+            await LineSchedule.saveFollowerStatistic(client, account.id)
 
-            let friend: Types.FriendDemographics = await client.getFriendDemographics()
-            // let friend = await Faker.getFakeJsonFriendGraphics()
+            let maxDate = await messageStatistic.getMaxDateUpdateOnAccount(account.id)
 
-            LineSchedule.saveGraphicsGenders(friend, account.id, date)
-            LineSchedule.saveGraphicsAges(friend, account.id, date)
-            LineSchedule.saveGraphicsAppTypes(friend, account.id, date)
-            LineSchedule.saveGraphicsSubscription(friend, account.id, date)
-            LineSchedule.saveGraphicsAreas(friend, account.id, date)
-            LineSchedule.saveMessageStatistic(client, account.id, date)
-        }
+            // Each hour will retrieve data for the next 15 days, starting from the date of account creation
+            let dateRange: any[] = []
+            if (maxDate) {
+                dateRange = getDateRangeLimitNow(maxDate, 15, 'YYYY-MM-DD')
+            } else {
+                dateRange = getDateRangeLimitNow(account.start_date, 15, 'YYYY-MM-DD')
+            }
 
+            for (const date of dateRange) {
+                let friend: Types.FriendDemographics = await client.getFriendDemographics()
+                // let friend = await Faker.getFakeJsonFriendGraphics()
+
+                await LineSchedule.saveGraphicsGenders(friend, account.id, date)
+                await LineSchedule.saveGraphicsAges(friend, account.id, date)
+                await LineSchedule.saveGraphicsAppTypes(friend, account.id, date)
+                await LineSchedule.saveGraphicsSubscription(friend, account.id, date)
+                await LineSchedule.saveGraphicsAreas(friend, account.id, date)
+                await LineSchedule.saveMessageStatistic(client, account.id, date)
+            }
+        }))
     }
 
     static saveGraphicsGenders = async (friend: Types.FriendDemographics, accountId: number, dateUpdate: string) => {
@@ -68,7 +76,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                friendGraphicsGenders.save(fields)
+                await friendGraphicsGenders.save(fields)
             }
         } else {
             if (!isExist) {
@@ -81,7 +89,7 @@ class LineSchedule {
                     fields.push({ field: item.gender, data: item.percentage })
                 })
 
-                friendGraphicsGenders.save(fields)
+                await friendGraphicsGenders.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -89,7 +97,7 @@ class LineSchedule {
                     fields.push({ field: item.gender, data: item.percentage })
                 })
 
-                friendGraphicsGenders.update(fields)
+                await friendGraphicsGenders.update(fields)
             }
         }
     }
@@ -112,7 +120,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                friendGraphicsAges.save(fields)
+                await friendGraphicsAges.save(fields)
             }
         } else {
             if (!isExist) {
@@ -125,7 +133,7 @@ class LineSchedule {
                     fields.push({ field: item.age, data: item.percentage })
                 })
 
-                friendGraphicsAges.save(fields)
+                await friendGraphicsAges.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -133,7 +141,7 @@ class LineSchedule {
                     fields.push({ field: item.age, data: item.percentage })
                 })
 
-                friendGraphicsAges.update(fields)
+                await friendGraphicsAges.update(fields)
             }
         }
     }
@@ -156,7 +164,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                friendGraphicsApptypes.save(fields)
+                await friendGraphicsApptypes.save(fields)
             }
         } else {
             if (!isExist) {
@@ -169,7 +177,7 @@ class LineSchedule {
                     fields.push({ field: item.appType, data: item.percentage })
                 })
 
-                friendGraphicsApptypes.save(fields)
+                await friendGraphicsApptypes.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -177,7 +185,7 @@ class LineSchedule {
                     fields.push({ field: item.appType, data: item.percentage })
                 })
 
-                friendGraphicsApptypes.update(fields)
+                await friendGraphicsApptypes.update(fields)
             }
         }
     }
@@ -200,7 +208,7 @@ class LineSchedule {
                     fields.push({ field: column, data: 0 })
                 })
 
-                friendGraphicsSubscriptions.save(fields)
+                await friendGraphicsSubscriptions.save(fields)
             }
         } else {
             if (!isExist) {
@@ -213,7 +221,7 @@ class LineSchedule {
                     fields.push({ field: item.subscriptionPeriod, data: item.percentage })
                 })
 
-                friendGraphicsSubscriptions.save(fields)
+                await friendGraphicsSubscriptions.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -221,7 +229,7 @@ class LineSchedule {
                     fields.push({ field: item.subscriptionPeriod, data: item.percentage })
                 })
 
-                friendGraphicsSubscriptions.update(fields)
+                await friendGraphicsSubscriptions.update(fields)
             }
         }
     }
@@ -264,7 +272,7 @@ class LineSchedule {
                     fields.push({ field: city as string, data: 0 })
                 }
 
-                friendGraphicsArea.save(fields)
+                await friendGraphicsArea.save(fields)
             }
         } else {
             if (!isExist) {
@@ -277,7 +285,7 @@ class LineSchedule {
                     fields.push({ field: areaTrans[item.area], data: item.percentage })
                 })
 
-                friendGraphicsArea.save(fields)
+                await friendGraphicsArea.save(fields)
             } else {
                 let fields: DataWhere[] = [{ field: 'id', data: isExist.id }]
 
@@ -285,7 +293,7 @@ class LineSchedule {
                     fields.push({ field: areaTrans[item.area], data: item.percentage })
                 })
 
-                friendGraphicsArea.update(fields)
+                await friendGraphicsArea.update(fields)
             }
         }
 
@@ -297,91 +305,95 @@ class LineSchedule {
      * @param date 
      */
     static saveMessageStatistic = async (client: Client, accountId: number, dateUpdate: string) => {
+        let apiDate = formatDate('YYYYMMDD', new Date(dateUpdate))
+
         let messageStatistic = new MessageStatistic()
         let result: DataMessageStatistic = {}
-        result.reply = await client.getNumberOfSentReplyMessages(dateUpdate)
-        result.sentPush = await client.getNumberOfSentPushMessages(dateUpdate)
-        result.sentMulticast = await client.getNumberOfSentMulticastMessages(dateUpdate)
-        result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(dateUpdate)
-        result.messageDeliveries = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(dateUpdate)
 
-        let follower: DataLineFollower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 }
         try {
-            follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
+            result.reply = await client.getNumberOfSentReplyMessages(apiDate)
+            result.sentPush = await client.getNumberOfSentPushMessages(apiDate)
+            result.sentMulticast = await client.getNumberOfSentMulticastMessages(apiDate)
+            result.sentBroadcast = await client.getNumberOfSentBroadcastMessages(apiDate)
+            result.messageDeliveries = <Types.NumberOfMessageDeliveries>await client.getNumberOfMessageDeliveries(apiDate)
+
+            let follower: DataLineFollower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 }
+            follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(apiDate)
             let blocks = follower.blocks as number
             let targetedReaches = follower.targetedReaches as number
-            follower.block_rate = round(blocks / targetedReaches * 100)
-        } catch (error) { }
+            follower.block_rate = targetedReaches > 0 ? round(blocks / targetedReaches * 100) : 0
 
-        let isExist = await messageStatistic.find([
-            { field: 'account_id', data: accountId },
-            { field: 'date_update', data: dateUpdate }
-        ])
-
-        if (isExist) {
-            messageStatistic.update([
-                { field: 'id', data: isExist.id },
-                { field: 'reply_status', data: result.reply.status },
-                { field: 'reply_number', data: result.reply.success ?? 0 },
-                { field: 'push_status', data: result.sentPush.status },
-                { field: 'push_number', data: result.sentPush.success ?? 0 },
-                { field: 'multicast_status', data: result.sentMulticast.status },
-                { field: 'multicast_number', data: result.sentMulticast.success ?? 0 },
-                { field: 'broadcast_status', data: result.sentBroadcast.status },
-                { field: 'broadcast_number', data: result.sentBroadcast.success ?? 0 },
-                { field: 'deliveries_status', data: result.messageDeliveries.status },
-                { field: 'deliveries_broadcast', data: result.messageDeliveries.broadcast ?? 0 },
-                { field: 'deliveries_targeting', data: result.messageDeliveries.targeting ?? 0 },
-                { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
-                { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
-                { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
-                { field: 'friends', data: follower.followers },
-                { field: 'target_reach', data: follower.targetedReaches },
-                { field: 'block', data: follower.blocks },
-                { field: 'block_rate', data: follower.block_rate }
-            ])
-        } else {
-            messageStatistic.save([
+            let isExist = await messageStatistic.find([
                 { field: 'account_id', data: accountId },
-                { field: 'date_update', data: dateUpdate },
-                { field: 'reply_status', data: result.reply.status },
-                { field: 'reply_number', data: result.reply.success ?? 0 },
-                { field: 'push_status', data: result.sentPush.status },
-                { field: 'push_number', data: result.sentPush.success ?? 0 },
-                { field: 'multicast_status', data: result.sentMulticast.status },
-                { field: 'multicast_number', data: result.sentMulticast.success ?? 0 },
-                { field: 'broadcast_status', data: result.sentBroadcast.status },
-                { field: 'broadcast_number', data: result.sentBroadcast.success ?? 0 },
-                { field: 'deliveries_status', data: result.messageDeliveries.status },
-                { field: 'deliveries_broadcast', data: result.messageDeliveries.broadcast ?? 0 },
-                { field: 'deliveries_targeting', data: result.messageDeliveries.targeting ?? 0 },
-                { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
-                { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
-                { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
-                { field: 'friends', data: follower.followers },
-                { field: 'target_reach', data: follower.targetedReaches },
-                { field: 'block', data: follower.blocks },
-                { field: 'block_rate', data: follower.block_rate }
+                { field: 'date_update', data: dateUpdate }
             ])
-        }
 
+            if (isExist) {
+                await messageStatistic.update([
+                    { field: 'id', data: isExist.id },
+                    { field: 'reply_status', data: result.reply.status },
+                    { field: 'reply_number', data: result.reply.success ?? 0 },
+                    { field: 'push_status', data: result.sentPush.status },
+                    { field: 'push_number', data: result.sentPush.success ?? 0 },
+                    { field: 'multicast_status', data: result.sentMulticast.status },
+                    { field: 'multicast_number', data: result.sentMulticast.success ?? 0 },
+                    { field: 'broadcast_status', data: result.sentBroadcast.status },
+                    { field: 'broadcast_number', data: result.sentBroadcast.success ?? 0 },
+                    { field: 'deliveries_status', data: result.messageDeliveries.status },
+                    { field: 'deliveries_broadcast', data: result.messageDeliveries.broadcast ?? 0 },
+                    { field: 'deliveries_targeting', data: result.messageDeliveries.targeting ?? 0 },
+                    { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
+                    { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
+                    { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
+                    { field: 'friends', data: follower.followers },
+                    { field: 'target_reach', data: follower.targetedReaches },
+                    { field: 'block', data: follower.blocks },
+                    { field: 'block_rate', data: follower.block_rate }
+                ])
+            } else {
+                await messageStatistic.save([
+                    { field: 'account_id', data: accountId },
+                    { field: 'date_update', data: dateUpdate },
+                    { field: 'reply_status', data: result.reply.status },
+                    { field: 'reply_number', data: result.reply.success ?? 0 },
+                    { field: 'push_status', data: result.sentPush.status },
+                    { field: 'push_number', data: result.sentPush.success ?? 0 },
+                    { field: 'multicast_status', data: result.sentMulticast.status },
+                    { field: 'multicast_number', data: result.sentMulticast.success ?? 0 },
+                    { field: 'broadcast_status', data: result.sentBroadcast.status },
+                    { field: 'broadcast_number', data: result.sentBroadcast.success ?? 0 },
+                    { field: 'deliveries_status', data: result.messageDeliveries.status },
+                    { field: 'deliveries_broadcast', data: result.messageDeliveries.broadcast ?? 0 },
+                    { field: 'deliveries_targeting', data: result.messageDeliveries.targeting ?? 0 },
+                    { field: 'deliveries_auto_response', data: result.messageDeliveries.autoResponse ?? 0 },
+                    { field: 'deliveries_welcome_response', data: result.messageDeliveries.welcomeResponse ?? 0 },
+                    { field: 'deliveries_chat', data: result.messageDeliveries.chat ?? 0 },
+                    { field: 'friends', data: follower.followers },
+                    { field: 'target_reach', data: follower.targetedReaches },
+                    { field: 'block', data: follower.blocks },
+                    { field: 'block_rate', data: follower.block_rate }
+                ])
+            }
+        } catch (error) { }
     }
 
     /**
      * Update the number of friends every day
      */
-    static saveFollowerStatistic = async (client: Client, accountId: number, dateUpdate: string) => {
+    static saveFollowerStatistic = async (client: Client, accountId: number) => {
+        let apiDate = formatDate('YYYYMMDD', new Date(), -1)
+
         let follower: DataLineFollower = { status: 'unready', blocks: 0, targetedReaches: 0, followers: 0, block_rate: 0 }
         try {
-            follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(dateUpdate)
+            follower = <Types.NumberOfFollowers>await client.getNumberOfFollowers(apiDate)
             let blocks = follower.blocks as number
             let targetedReaches = follower.targetedReaches as number
-            follower.block_rate = round(blocks / targetedReaches * 100)
+            follower.block_rate = targetedReaches > 0 ? round(blocks / targetedReaches * 100) : 0
         } catch (error) { }
 
         let channelAccounts = new ChannelAccounts()
 
-        channelAccounts.update([
+        await channelAccounts.update([
             { field: 'id', data: accountId },
             { field: 'friends', data: follower.followers },
             { field: 'target_reach', data: follower.targetedReaches },

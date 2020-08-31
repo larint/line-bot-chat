@@ -18,10 +18,11 @@ block content
         .date-wrap
           input.form-control.date-range(name="dates")
         div
-          select.form-control#js-select-group
-            each item in groupAll
-              option(value=item.id)=item.name
-            option(value="0") 全体
+          if groupAll
+            select.form-control#js-select-group
+              each item in groupAll
+                option(value=item.id)=item.name
+              option(value="0") 全体
     div
       form(method="POST", action="/statistic/export-pdf")
         input(name="id", type="hidden")

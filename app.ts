@@ -6,7 +6,6 @@ import morgan from 'morgan'
 import nodeSchedule from 'node-schedule'
 import fs from 'fs'
 import path from 'path'
-import socketio from "socket.io"
 import methodOverride from 'method-override'
 
 require('dotenv').config()
@@ -27,7 +26,6 @@ const app = express()
 // Real-time notification updates
 let http = require("http").Server(app)
 // set up socket.io and bind it to server
-let io = socketio(http)
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'))
@@ -77,16 +75,10 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 });
 
 
-// Run the schedule once at 23pm every day
-nodeSchedule.scheduleJob('23 * * *', function () {
+// Run the schedule once time on each hour
+nodeSchedule.scheduleJob('0 * * * *', function () {
 	console.log('run scheduleJob ' + new Date())
 	LineSchedule.run()
-	io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' })
 })
-
-io.on("connection", (socket: any) => {
-	console.log('connected')
-})
-
 
 http.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()))

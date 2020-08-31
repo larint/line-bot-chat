@@ -24,7 +24,6 @@ class StatisticController {
 
     index = async (req: Request, res: Response) => {
         let groupAll = await this.channelGroups.selectAll()
-
         return res.render('statistics/index', { groupAll: groupAll })
     }
 

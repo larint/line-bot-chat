@@ -30,9 +30,10 @@ block content
         .col-6
           h4 LINE統計チャート#1
         .col-6.jus
-          select.form-control#select-group
-            each item in groupAll
-              option(value=item.id)=item.name
+          if groupAll
+            select.form-control#select-group
+              each item in groupAll
+                option(value=item.id)=item.name
       .row
         .col-12
           br
@@ -134,7 +135,7 @@ block content
         $('.chart1').empty()
         $('.chart2').empty()
 
-        let id = $(this).val()
+        let id = $(this).val() == null ? 0 : $(this).val()
         var start_date = $('input[name="dates"]').data('daterangepicker').startDate._d;
         var end_date = $('input[name="dates"]').data('daterangepicker').endDate._d;
 
@@ -171,4 +172,5 @@ block content
             }
         })
     })
+    
     $('#select-group').trigger('change')

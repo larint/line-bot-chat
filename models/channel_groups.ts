@@ -5,8 +5,8 @@ class ChannelGroups extends BaseModel {
     protected table: string = 'channel__groups'
 
     getAccountStatisticBetweenDate = async (groupId: number, startDate: string, endDate: string) => {
-        startDate = formatDate('YYYYMMDD', new Date(startDate))
-        endDate = formatDate('YYYYMMDD', new Date(endDate))
+        startDate = formatDate('YYYY-MM-DD', new Date(startDate))
+        endDate = formatDate('YYYY-MM-DD', new Date(endDate))
 
         let sql = `SELECT 
                 b.*,

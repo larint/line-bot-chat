@@ -19,7 +19,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateNumberProportion = exports.randomColorHex = exports.formatDate = exports.log = exports.round = exports.isExistFile = void 0;
+exports.generateNumberProportion = exports.randomColorHex = exports.formatDate = exports.getDateRangeLimitNow = exports.log = exports.round = exports.isExistFile = void 0;
 const fs = __importStar(require("fs"));
 const path = __importStar(require("path"));
 function isExistFile(filePath) {
@@ -41,6 +41,22 @@ function log(msg, file = 'log.log') {
     stream.write(msg + '\n');
 }
 exports.log = log;
+function getDateRangeLimitNow(fromDate, addDate = 0, format = 'dd-MM-YYYY') {
+    let dateNow = new Date();
+    let yesterday = new Date(dateNow.setDate(dateNow.getDate() - 1));
+    let start = (fromDate instanceof Date) ? fromDate : new Date(fromDate);
+    let rangeDate = [];
+    for (let i = 0; i < addDate; i++) {
+        if (start < yesterday) {
+            let date = formatDate(format, start);
+            let nextDate = start.setDate(start.getDate() + 1);
+            start = new Date(nextDate);
+            rangeDate.push(date);
+        }
+    }
+    return rangeDate;
+}
+exports.getDateRangeLimitNow = getDateRangeLimitNow;
 function formatDate(format = 'dd-MM-YYYY', dateObj = new Date(), moreDate = 0) {
     dateObj.setDate(dateObj.getDate() + moreDate);
     let year = dateObj.getFullYear();

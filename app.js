@@ -10,7 +10,6 @@ const morgan_1 = __importDefault(require("morgan"));
 const node_schedule_1 = __importDefault(require("node-schedule"));
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
-const socket_io_1 = __importDefault(require("socket.io"));
 const method_override_1 = __importDefault(require("method-override"));
 require('dotenv').config();
 const LineSchedule_1 = require("./services/LineSchedule");
@@ -23,7 +22,6 @@ const channel_1 = __importDefault(require("./routes/channel"));
 const broadcast_1 = __importDefault(require("./routes/broadcast"));
 const app = express_1.default();
 let http = require("http").Server(app);
-let io = socket_io_1.default(http);
 app.set('views', path_1.default.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 var appLogStream = fs_1.default.createWriteStream(path_1.default.join(__dirname, 'app.log'), { flags: 'a' });
@@ -54,12 +52,8 @@ app.use((err, req, res, next) => {
     res.locals.error = req.app.get('env') === 'development' ? err : {};
     res.render('error');
 });
-node_schedule_1.default.scheduleJob('23 * * *', function () {
+node_schedule_1.default.scheduleJob('0 * * * *', function () {
     console.log('run scheduleJob ' + new Date());
     LineSchedule_1.LineSchedule.run();
-    io.emit('schedule_get_line_data', { message: 'Updated data from LINE success' });
-});
-io.on("connection", (socket) => {
-    console.log('connected');
 });
 http.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()));

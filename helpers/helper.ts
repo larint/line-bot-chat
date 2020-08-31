@@ -18,6 +18,25 @@ export function log(msg: any, file: string = 'log.log') {
     let stream = fs.createWriteStream(pathFile, { flags: 'a' })
     stream.write(msg + '\n');
 }
+
+export function getDateRangeLimitNow(fromDate: string | Date, addDate: number = 0, format: string = 'dd-MM-YYYY') {
+    let dateNow = new Date()
+    let yesterday = new Date(dateNow.setDate(dateNow.getDate() - 1))
+
+    let start = (fromDate instanceof Date) ? fromDate : new Date(fromDate)
+    let rangeDate = []
+    for (let i = 0; i < addDate; i++) {
+        if (start < yesterday) {
+            let date = formatDate(format, start)
+            let nextDate = start.setDate(start.getDate() + 1)
+            start = new Date(nextDate)
+            rangeDate.push(date)
+        }
+    }
+
+    return rangeDate
+}
+
 // sub or add more date
 // ex: +1, -2
 export function formatDate(format: string = 'dd-MM-YYYY', dateObj: Date = new Date(), moreDate: number = 0): string {

@@ -58,11 +58,6 @@ app.use('/statistic', statisticRouter)
 app.use('/channel', channelRouter)
 app.use('/broadcast', broadcastRouter)
 
-app.render('index', { title: 'res vs app render' }, function (err, html) {
-	console.log(html)
-});
-
-
 // error handler
 app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
 	// set locals, only providing error in development
@@ -76,9 +71,11 @@ app.use((err: ErrorRequestHandler, req: Request, res: Response, next: NextFuncti
 
 
 // Run the schedule once time on each hour
-nodeSchedule.scheduleJob('0 * * * *', function () {
+nodeSchedule.scheduleJob('48 * * * *', function () {
 	console.log('run scheduleJob ' + new Date())
 	LineSchedule.run()
 })
+
+LineSchedule.run()
 
 http.listen(process.env.PORT || 3000, () => console.log('listening @ 3000', new Date()))

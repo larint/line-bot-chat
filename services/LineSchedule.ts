@@ -44,7 +44,7 @@ class LineSchedule {
                 dateRange = getDateRangeLimitNow(account.start_date, 15, 'YYYY-MM-DD')
             }
 
-            for (const date of dateRange) {
+            return Promise.all(dateRange.map(async (date) => {
                 let friend: Types.FriendDemographics = await client.getFriendDemographics()
                 // let friend = await Faker.getFakeJsonFriendGraphics()
 
@@ -54,8 +54,10 @@ class LineSchedule {
                 await LineSchedule.saveGraphicsSubscription(friend, account.id, date)
                 await LineSchedule.saveGraphicsAreas(friend, account.id, date)
                 await LineSchedule.saveMessageStatistic(client, account.id, date)
-            }
+            }))
+
         }))
+
     }
 
     static saveGraphicsGenders = async (friend: Types.FriendDemographics, accountId: number, dateUpdate: string) => {

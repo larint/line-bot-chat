@@ -34,7 +34,7 @@ LineSchedule.run = async () => {
         else {
             dateRange = helper_1.getDateRangeLimitNow(account.start_date, 15, 'YYYY-MM-DD');
         }
-        for (const date of dateRange) {
+        return Promise.all(dateRange.map(async (date) => {
             let friend = await client.getFriendDemographics();
             await LineSchedule.saveGraphicsGenders(friend, account.id, date);
             await LineSchedule.saveGraphicsAges(friend, account.id, date);
@@ -42,7 +42,7 @@ LineSchedule.run = async () => {
             await LineSchedule.saveGraphicsSubscription(friend, account.id, date);
             await LineSchedule.saveGraphicsAreas(friend, account.id, date);
             await LineSchedule.saveMessageStatistic(client, account.id, date);
-        }
+        }));
     }));
 };
 LineSchedule.saveGraphicsGenders = async (friend, accountId, dateUpdate) => {

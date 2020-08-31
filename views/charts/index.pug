@@ -140,19 +140,30 @@ block content
 
         $.ajax({
             type : 'POST',
-            url : '/chart/get-chart-data',
+            url : '/chart/get-chart-data-friend',
             data: { id : id, start_date:start_date, end_date:end_date },
             success: function(res) {
-              let chart1 = buildChartColumn('chart1')
-              let chart2 = buildChartColumn('chart2')
-              chart1.data = res.dataChart1
-              chart2.data = res.dataChart2
-              $.each(res.seriesChart1, function(k, v) {
-                createSeries(chart1, v.dataFields, v.name);
+              let chart = buildChartColumn('chart1')
+              chart.data = res.data
+              $.each(res.series, function(k, v) {
+                createSeries(chart, v.dataFields, v.name);
               })
 
-              $.each(res.seriesChart2, function(k, v) {
-                createSeries(chart2, v.dataFields, v.name);
+            },
+            complete: function() {
+                $('.loading').hide()
+            }
+        })
+
+        $.ajax({
+            type : 'POST',
+            url : '/chart/get-chart-data-message',
+            data: { id : id, start_date:start_date, end_date:end_date },
+            success: function(res) {
+              let chart = buildChartColumn('chart2')
+              chart.data = res.data
+              $.each(res.series, function(k, v) {
+                createSeries(chart, v.dataFields, v.name);
               })
             },
             complete: function() {

@@ -8,11 +8,13 @@ class ChartController {
     channelAccounts: ChannelAccounts
     channelGroups: ChannelGroups
     channelGroupsAccounts: ChannelGroupsAccounts
+    chart: Chart
 
     constructor() {
         this.channelAccounts = new ChannelAccounts()
         this.channelGroups = new ChannelGroups()
         this.channelGroupsAccounts = new ChannelGroupsAccounts()
+        this.chart = new Chart()
     }
 
     index = async (req: Request, res: Response) => {
@@ -21,47 +23,22 @@ class ChartController {
         return res.render('charts/index', { groupAll: groupAll })
     }
 
-    getChartData = async (req: Request, res: Response) => {
+    getChartDataFriend = async (req: Request, res: Response) => {
         let groupId = req.body.id,
             startDate = req.body.start_date,
             endDate = req.body.end_date
+        let data = await this.chart.prepareDataStatisticFriend(groupId, startDate, endDate)
 
-        let accounts = await this.channelGroups.getAccountStatisticBetweenDate(groupId, startDate, endDate)
+        res.json(data)
+    }
 
-        // build data for chart 1, chart 2
-        let dataChart1 = [], seriesChart1 = [], dataChart2 = [], seriesChart2 = []
-        for (let account of accounts) {
+    getChartDataMessage = async (req: Request, res: Response) => {
+        let groupId = req.body.id,
+            startDate = req.body.start_date,
+            endDate = req.body.end_date
+        let data = await this.chart.prepareDataStatisticMessage(groupId, startDate, endDate)
 
-            dataChart1.push({
-                category: account.name,
-                friends: account.friends_date_range,
-                target_reach: account.target_reach_date_range,
-                block: account.block
-            })
-
-            dataChart2.push({
-                category: account.name,
-                deliveries_broadcast: account.total_deliveries_broadcast,
-                delivery_count: account.delivery_count,
-            })
-
-        }
-
-        seriesChart1 = [{
-            dataFields: 'friends', name: 'Friend'
-        }, {
-            dataFields: 'target_reach', name: 'Target Reach'
-        }, {
-            dataFields: 'block', name: 'Block'
-        }]
-
-        seriesChart2 = [{
-            dataFields: 'deliveries_broadcast', name: 'Total Broadcast'
-        }, {
-            dataFields: 'delivery_count', name: 'Delivery Count'
-        }]
-
-        res.json({ dataChart1: dataChart1, seriesChart1: seriesChart1, dataChart2: dataChart2, seriesChart2: seriesChart2 })
+        res.json(data)
     }
 
     getChart1 = async (req: Request, res: Response) => {

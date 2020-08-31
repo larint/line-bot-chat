@@ -1,10 +1,69 @@
 import { DB } from '../helpers/db'
 import { randomColorHex } from '../helpers/helper'
 import { dataChartPie, dataChartLine, datasetChartLine, dataChartLineItem } from '../helpers/type'
+import { ChannelGroups } from '../models/channel_groups'
 
 class Chart {
 
-    static prepareDataChartPieFromTable = async (table: string) => {
+    channelGroups: ChannelGroups
+
+    constructor() {
+        this.channelGroups = new ChannelGroups()
+    }
+
+    /**
+     * Get friend data for a column chart
+     */
+    prepareDataStatisticFriend = async (groupId: number, startDate: string, endDate: string) => {
+
+        let accounts = await this.channelGroups.getAccountStatisticBetweenDate(groupId, startDate, endDate)
+
+        // build data for chart 
+        let dataChart = [], seriesChart = []
+        for (let account of accounts) {
+            dataChart.push({
+                category: account.name,
+                friends: account.friends_date_range,
+                target_reach: account.target_reach_date_range,
+                block: account.block
+            })
+        }
+
+        seriesChart = [{
+            dataFields: 'friends', name: 'Friend'
+        }, {
+            dataFields: 'target_reach', name: 'Target Reach'
+        }, {
+            dataFields: 'block', name: 'Block'
+        }]
+
+        return { data: dataChart, series: seriesChart }
+    }
+
+    prepareDataStatisticMessage = async (groupId: number, startDate: string, endDate: string) => {
+
+        let accounts = await this.channelGroups.getAccountStatisticBetweenDate(groupId, startDate, endDate)
+
+        // build data for chart 1, chart 2
+        let dataChart = [], seriesChart = []
+        for (let account of accounts) {
+            dataChart.push({
+                category: account.name,
+                deliveries_broadcast: account.total_deliveries_broadcast,
+                delivery_count: account.delivery_count,
+            })
+        }
+
+        seriesChart = [{
+            dataFields: 'deliveries_broadcast', name: 'Total Broadcast'
+        }, {
+            dataFields: 'delivery_count', name: 'Delivery Count'
+        }]
+
+        return { data: dataChart, series: seriesChart }
+    }
+
+    prepareDataChartPieFromTable = async (table: string) => {
         let dataTable = await DB.selectBySql(`select * from ${table} order by id desc limit 1`, true, true)
         let dataChart: dataChartPie = { data: '', labels: '', bgcolor: '' }
 
@@ -27,7 +86,7 @@ class Chart {
 
         return dataChart
     }
-    static prepareDataChartLineFromTable = async (table: string) => {
+    prepareDataChartLineFromTable = async (table: string) => {
         let dataTable = await DB.selectBySql(`select * from ${table} order by date_update desc limit 10`, true)
         let dataChart: dataChartLine = { datasets: '', labels: '', suggestedMin: 0, suggestedMax: 0 }
 
@@ -70,7 +129,6 @@ class Chart {
             dataChart.labels = JSON.stringify(labels)
             dataChart.datasets = JSON.stringify(datasets)
         }
-
 
         return dataChart
     }
